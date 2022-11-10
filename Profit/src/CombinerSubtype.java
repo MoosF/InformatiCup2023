@@ -1,2 +1,6 @@
-package PACKAGE_NAME;public enum CombinerSubtype {
+public enum CombinerSubtype {
+    OUTPUT_NORTH,
+    OUTPUT_EAST,
+    OUTPUT_SOUTH,
+    OUTPUT_WEST
 }

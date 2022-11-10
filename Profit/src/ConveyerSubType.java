@@ -1,2 +1,10 @@
-package PACKAGE_NAME;public enum ConveyerSubType {
+public enum ConveyerSubType {
+    SHORT_NORTH_SOUTH,
+    SHORT_EAST_WEST,
+    SHORT_SOUTH_NORTH,
+    SHORT_WEST_EAST,
+    LONG_NORTH_SOUTH,
+    LONG_EAST_WEST,
+    LONG_SOUTH_NORTH,
+    LONG_WEST_EAST
 }
