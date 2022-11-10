@@ -1,11 +1,30 @@
-public class Conveyer extends MovableObject {
+/**
+*This class models a {@link Conveyor}.
+ *
+ * @author Yannick Kraml
+*/
+public class Conveyor extends MovableObject {
 
 
-    private Conveyer(int xCoord, int yCoord, Tile[] tiles) {
+/**
+ * Constructor of {@link Conveyor}
+ * @param xCoord X-Coordinate of the {@link Conveyor}.
+ * @param yCoord Y-Coordinate of the {@link Conveyor}.
+ * @param tiles Tiles, that construct the {@link Conveyor}.
+*/
+    private Conveyor(int xCoord, int yCoord, Tile[] tiles) {
         super(xCoord, yCoord, tiles);
     }
 
-    public static Conveyer createConveyer(int xCoord, int yCoord, ConveyerSubType subType) {
+/**
+ * Creates an instance of a {@link Conveyor}.
+ *
+ * @param xCoord X-Coordinate of the {@link Conveyor}.
+ * @param yCoord Y-Coordinate of the {@link Conveyor}.
+ * @param subType Subtype of the {@link Conveyor}.
+ * @return New instance of a {@link Conveyor}.
+*/
+    public static Conveyor createConveyor(int xCoord, int yCoord, ConveyerSubType subType) {
 
         Tile[] tiles = null;
         switch (subType) {
@@ -64,6 +83,6 @@ public class Conveyer extends MovableObject {
             }
         }
 
-        return new Conveyer(xCoord, yCoord, tiles);
+        return new Conveyor(xCoord, yCoord, tiles);
     }
 }

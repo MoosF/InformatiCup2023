@@ -1,10 +1,29 @@
+/**
+*This class models a {@link Mine}.
+*/
 public class Mine extends MovableObject {
 
 
+/**
+ * Constructor of {@link Mine}.
+ *
+ * @param xCoord X-Coordinate of the {@link Mine}.
+ * @param yCoord Y-Coordinate of the {@link Mine}.
+ * @param tiles Tiles, that constructs the {@link Mine}.
+*/
     private Mine(int xCoord, int yCoord, Tile[] tiles) {
         super(xCoord, yCoord, tiles);
     }
 
+/**
+*
+ * Creates a new instance of {@link Mine}.
+ *
+ * @param xCoord X-Coordinate of the {@link Mine}.
+ * @param yCoord Y-Coordinate of the {@link Mine}.
+ * @param mineSubtype Subtype of the {@link Mine}.
+ * @return New instance of {@link Mine}.
+*/
     public static Mine createMine(int xCoord, int yCoord, MineSubtype mineSubtype) {
 
         Tile[] tiles = null;
