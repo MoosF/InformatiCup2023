@@ -1,3 +1,5 @@
+package model;
+
 /**
  * This enum represents the four subtypes of {@link Combiner}.
  *

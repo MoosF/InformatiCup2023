@@ -1,3 +1,5 @@
+package model;
+
 public class Tile {
 
     private final int xCoord;
@@ -22,5 +24,9 @@ public class Tile {
      */
     public int getY() {
         return yCoord;
+    }
+
+    public TileType getType() {
+        return type;
     }
 }

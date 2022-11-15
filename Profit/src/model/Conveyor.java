@@ -1,3 +1,5 @@
+package model;
+
 /**
  * This class models a {@link Conveyor}.
  *

@@ -1,3 +1,5 @@
+package model;
+
 /**
  * This class models {@link FixedObject}.
  *

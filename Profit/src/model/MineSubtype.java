@@ -1,3 +1,5 @@
+package model;
+
 /**
  * This enum represents the subtypes of {@link Mine}.
  */

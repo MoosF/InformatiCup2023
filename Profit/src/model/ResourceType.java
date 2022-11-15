@@ -1,3 +1,7 @@
+package model;
+
+import model.Deposit;
+
 /**
  * This enum represents the type of resources of {@link Deposit}
  */

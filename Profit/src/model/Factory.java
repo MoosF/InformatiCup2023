@@ -1,3 +1,5 @@
+package model;
+
 /**
  * This class models a {@link Factory}.
  *
@@ -60,4 +62,5 @@ public class Factory extends MovableObject {
 
     return new Factory(xCoord, yCoord, tiles, product);
   }
+
 }
