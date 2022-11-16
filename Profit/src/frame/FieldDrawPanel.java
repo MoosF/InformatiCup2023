@@ -16,7 +16,7 @@ import model.Tile;
 public class FieldDrawPanel extends JPanel {
 
 
-  public static final int TILE_SIZE = 40;
+  public static final int TILE_SIZE = 20;
   private final Field field;
 
   /**

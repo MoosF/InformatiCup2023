@@ -1,9 +1,8 @@
 package model;
 
 import frame.FieldFrame;
-
+import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * This class models {@link Field}.
@@ -12,12 +11,14 @@ import java.util.List;
  */
 public class Field {
 
-  private List<BaseObject> objects;
+  private final Collection<BaseObject> objects;
   private final int width;
   private final int height;
-  private Tile[][] tiles;
+  private final Tile[][] tiles;
 
   /**
+   * Constructor of {@link Field}.
+   *
    * @param width  width of the {@link Field}.
    * @param height height of the {@link Field}.
    */
@@ -25,67 +26,78 @@ public class Field {
     this.width = width;
     this.height = height;
     objects = new LinkedList<>();
-    tiles = new Tile[width][height];
-  }
 
-  /**
-   * @param width   width of the {@link Field}.
-   * @param height  height of the {@link Field}.
-   * @param objects input objects of the {@link Field}.
-   */
-  public Field(int width, int height, List<BaseObject> objects) {
-    this(width, height);
-    this.objects = objects;
-  }
-
-  /**
-   * @return Tiles, that construct the {@link Field}.
-   */
-  public Tile[][] getArray() {
     tiles = new Tile[width][height];
-    for (int i = 0; i < tiles.length; i++) {
-      for (int j = 0; j < tiles[0].length; j++) {
+    for (int i = 0; i < width; i++) {
+      for (int j = 0; j < height; j++) {
         tiles[i][j] = new Tile(i, j, TileType.EMPTY);
       }
     }
 
-    for (BaseObject o : objects) {
-      for (Tile tile : o.getTiles()) {
-        tiles[o.getX() + tile.getX()][o.getY() + tile.getY()] = tile;
-      }
-    }
+  }
 
+  /**
+   * Returns all {@link Tile} of this {@link Field}.
+   *
+   * @return Tiles, that construct the {@link Field}.
+   */
+  public Tile[][] getArray() {
     return tiles;
   }
 
   /**
+   * Adds a {@link BaseObject} to this {@link Field}.
+   *
    * @param o new model.BaseObject on the {@link Field}.
    */
-  public void addBaseObject(BaseObject o) {
-    objects.add(o);
+  public void addBaseObject(BaseObject o) throws CouldNotPlaceObjectException {
 
     for (Tile tile : o.getTiles()) {
-      tiles[o.getX() + tile.getX()][o.getY() + tile.getY()] = tile;
+      int verticalLocation = o.getX() + tile.getX();
+      int horizontalLocation = o.getY() + tile.getY();
+      if (!tiles[verticalLocation][horizontalLocation].getType().equals(TileType.EMPTY)) {
+        throw new CouldNotPlaceObjectException(verticalLocation, horizontalLocation);
+      }
+      tiles[verticalLocation][horizontalLocation] = tile;
     }
+
+    objects.add(o);
   }
 
   /**
+   * Removes a {@link BaseObject} of this {@link Field}.
+   *
    * @param o model.BaseObject on the {@link Field}, that will be removed.
    */
-  public void removeBaseObject(BaseObject o) {
-    for (Tile tile : o.getTiles()) {
-      tiles[o.getX() + tile.getX()][o.getY() + tile.getY()] =
-          new Tile(o.getX() + tile.getX(), o.getY() + tile.getY(), TileType.EMPTY);
+  public void removeBaseObject(BaseObject o) throws CouldNotRemoveObjectException {
+    if (!this.getObjects().contains(o)) {
+      throw new CouldNotRemoveObjectException(o);
     }
 
     objects.remove(o);
+    for (Tile tile : o.getTiles()) {
+      int verticalPostion = o.getX() + tile.getX();
+      int horizontalPosition = o.getY() + tile.getY();
+      tiles[verticalPostion][horizontalPosition] =
+          new Tile(verticalPostion, horizontalPosition, TileType.EMPTY);
+    }
+
   }
 
+  /**
+   * Shows the {@link Field} in a {@link javax.swing.JFrame}.
+   */
   public void show() {
     FieldFrame.createFieldFrame(this);
   }
 
-  public List<BaseObject> getObjects() {
+  /**
+   * Returns all {@link BaseObject}, that are placed on this {@link Field}.
+   *
+   * @return Collection of all placed {@link BaseObject}.
+   */
+  public Collection<BaseObject> getObjects() {
     return objects;
   }
+
 }
