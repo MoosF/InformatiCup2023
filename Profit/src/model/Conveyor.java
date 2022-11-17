@@ -29,7 +29,7 @@ public class Conveyor extends MovableObject {
    * @param subType Subtype of the {@link Conveyor}.
    * @return New instance of a {@link Conveyor}.
    */
-  public static Conveyor createConveyor(int xCoord, int yCoord, ConveyorSubType subType) {
+  public static Conveyor createConveyor(int xCoord, int yCoord, ConveyerSubType subType) {
 
     Tile[] tiles = null;
     switch (subType) {
@@ -99,5 +99,21 @@ public class Conveyor extends MovableObject {
   public Map<ResourceType, Integer> getResourcesToOutput(
       Map<ResourceType, Integer> storedResources) {
     return storedResources;
+  }
+
+  /**
+   * This enum represents the subtypes of {@link Conveyor}.
+   *
+   * @author Yannick Kraml
+   */
+  public enum ConveyerSubType {
+    SHORT_NORTH_SOUTH,
+    SHORT_EAST_WEST,
+    SHORT_SOUTH_NORTH,
+    SHORT_WEST_EAST,
+    LONG_NORTH_SOUTH,
+    LONG_EAST_WEST,
+    LONG_SOUTH_NORTH,
+    LONG_WEST_EAST
   }
 }

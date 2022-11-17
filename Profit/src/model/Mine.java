@@ -26,13 +26,13 @@ public class Mine extends MovableObject {
    *
    * @param xCoord      X-Coordinate of the {@link Mine}.
    * @param yCoord      Y-Coordinate of the {@link Mine}.
-   * @param mineSubtype Subtype of the {@link Mine}.
+   * @param type Subtype of the {@link Mine}.
    * @return New instance of {@link Mine}.
    */
-  public static Mine createMine(int xCoord, int yCoord, MineSubtype mineSubtype) {
+  public static Mine createMine(int xCoord, int yCoord, MineSubType type) {
 
     Tile[] tiles = null;
-    switch (mineSubtype) {
+    switch (type) {
 
       case OUTPUT_EAST -> {
         tiles = new Tile[]{
@@ -86,5 +86,15 @@ public class Mine extends MovableObject {
   public Map<ResourceType, Integer> getResourcesToOutput(
       Map<ResourceType, Integer> storedResources) {
     return storedResources;
+  }
+
+  /**
+   * This enum represents the subtypes of {@link Mine}.
+   */
+  public enum MineSubType {
+      OUTPUT_NORTH,
+      OUTPUT_EAST,
+      OUTPUT_SOUTH,
+      OUTPUT_WEST
   }
 }

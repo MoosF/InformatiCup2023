@@ -29,7 +29,7 @@ public class Combiner extends MovableObject {
    * @param subtype Subtype of the {@link Combiner}.
    * @return New instnace of {@link Combiner}.
    */
-  public static Combiner createCombiner(int xCoord, int yCoord, CombinerSubtype subtype) {
+  public static Combiner createCombiner(int xCoord, int yCoord, CombinerSubType subtype) {
 
     Tile[] tiles = null;
     switch (subtype) {
@@ -90,5 +90,17 @@ public class Combiner extends MovableObject {
   public Map<ResourceType, Integer> getResourcesToOutput(
       Map<ResourceType, Integer> storedResources) {
     return storedResources;
+  }
+
+  /**
+   * This enum represents the four subtypes of {@link Combiner}.
+   *
+   * @author Yannick Kraml.
+   */
+  public enum CombinerSubType {
+    OUTPUT_NORTH,
+    OUTPUT_EAST,
+    OUTPUT_SOUTH,
+    OUTPUT_WEST
   }
 }
