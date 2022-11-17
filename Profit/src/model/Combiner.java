@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Map;
+
 /**
  * This class models a {@link Combiner}.
  *
@@ -82,5 +84,11 @@ public class Combiner extends MovableObject {
     }
 
     return new Combiner(xCoord, yCoord, tiles);
+  }
+
+  @Override
+  public Map<ResourceType, Integer> getResourcesToOutput(
+      Map<ResourceType, Integer> storedResources) {
+    return storedResources;
   }
 }

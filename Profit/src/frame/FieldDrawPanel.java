@@ -16,7 +16,7 @@ import model.Tile;
 public class FieldDrawPanel extends JPanel {
 
 
-  public static final int TILE_SIZE = 20;
+  public static final int TILE_SIZE = 40;
   private final Field field;
 
   /**
@@ -68,6 +68,8 @@ public class FieldDrawPanel extends JPanel {
       case EMPTY -> letter = ' ';
       case CROSSABLE -> letter = '#';
       case SOLID -> letter = '.';
+      case MINE_INPUT -> letter = '+';
+      case DEPOSIT_OUTPUT -> letter = '-';
       default -> throw new IllegalStateException("Unexpected value: " + tile.getType());
     }
 

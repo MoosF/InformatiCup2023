@@ -1,5 +1,8 @@
 package model;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
 /**
  * This class models a {@link Factory}.
  *
@@ -63,4 +66,49 @@ public class Factory extends MovableObject {
     return new Factory(xCoord, yCoord, tiles, product);
   }
 
+  @Override
+  public int doWorkForPoints(Map<ResourceType, Integer> storedResources) {
+    int points = 0;
+
+    boolean addedPoints = true;
+    while (addedPoints) {
+      addedPoints = false;
+
+      Map<ResourceType, Integer> neededResourcesMap = product.getNeededResourcesMap();
+
+      //Check if neededResources are present.
+      boolean willProduce = true;
+      for (Entry<ResourceType, Integer> entry : neededResourcesMap.entrySet()) {
+        Integer amountNeeded = entry.getValue();
+        ResourceType typeNeeded = entry.getKey();
+
+        if (!storedResources.containsKey(typeNeeded)) {
+          willProduce = false;
+          break;
+        }
+
+        Integer storedAmount = storedResources.get(typeNeeded);
+        if (amountNeeded > storedAmount) {
+          willProduce = false;
+          break;
+        }
+      }
+
+      //Remove needed resources and add points.
+      if (willProduce) {
+
+        for (Entry<ResourceType, Integer> entry : neededResourcesMap.entrySet()) {
+          Integer amountNeeded = entry.getValue();
+          ResourceType typeNeeded = entry.getKey();
+          Integer oldAmount = storedResources.get(typeNeeded);
+          storedResources.put(typeNeeded, oldAmount - amountNeeded);
+        }
+
+        points += product.getPoints();
+        addedPoints = true;
+      }
+    }
+
+    return points;
+  }
 }

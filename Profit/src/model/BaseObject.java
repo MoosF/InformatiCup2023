@@ -1,5 +1,8 @@
 package model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * This class models {@link BaseObject}.
  *
@@ -22,6 +25,9 @@ public abstract class BaseObject {
     this.xCoord = xCoord;
     this.yCoord = yCoord;
     this.tiles = tiles;
+    for (Tile tile : tiles) {
+      tile.setObject(this);
+    }
   }
 
   /**
@@ -49,6 +55,19 @@ public abstract class BaseObject {
    */
   public int getY() {
     return yCoord;
+  }
+
+  public int doWorkForPoints(Map<ResourceType, Integer> storedResources) {
+    return 0;
+  }
+
+  public Map<ResourceType, Integer> getStartResources() {
+    return new HashMap<>();
+  }
+
+  public Map<ResourceType, Integer> getResourcesToOutput(
+      Map<ResourceType, Integer> storedResources) {
+    return new HashMap<>();
   }
 
 }

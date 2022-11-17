@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Map;
+
 /**
  * This class models a {@link Mine}.
  *
@@ -34,7 +36,7 @@ public class Mine extends MovableObject {
 
       case OUTPUT_EAST -> {
         tiles = new Tile[]{
-            new Tile(-1, 1, TileType.INPUT),
+            new Tile(-1, 1, TileType.MINE_INPUT),
             new Tile(0, 0, TileType.SOLID),
             new Tile(0, 1, TileType.SOLID),
             new Tile(1, 1, TileType.SOLID),
@@ -44,7 +46,7 @@ public class Mine extends MovableObject {
       }
       case OUTPUT_SOUTH -> {
         tiles = new Tile[]{
-            new Tile(0, -1, TileType.INPUT),
+            new Tile(0, -1, TileType.MINE_INPUT),
             new Tile(0, 0, TileType.SOLID),
             new Tile(0, 1, TileType.SOLID),
             new Tile(1, 1, TileType.SOLID),
@@ -54,7 +56,7 @@ public class Mine extends MovableObject {
       }
       case OUTPUT_WEST -> {
         tiles = new Tile[]{
-            new Tile(2, 0, TileType.INPUT),
+            new Tile(2, 0, TileType.MINE_INPUT),
             new Tile(0, 0, TileType.SOLID),
             new Tile(0, 1, TileType.SOLID),
             new Tile(1, 1, TileType.SOLID),
@@ -64,7 +66,7 @@ public class Mine extends MovableObject {
       }
       case OUTPUT_NORTH -> {
         tiles = new Tile[]{
-            new Tile(1, 2, TileType.INPUT),
+            new Tile(1, 2, TileType.MINE_INPUT),
             new Tile(0, 0, TileType.SOLID),
             new Tile(0, 1, TileType.SOLID),
             new Tile(1, 1, TileType.SOLID),
@@ -78,5 +80,11 @@ public class Mine extends MovableObject {
     }
 
     return new Mine(xCoord, yCoord, tiles);
+  }
+
+  @Override
+  public Map<ResourceType, Integer> getResourcesToOutput(
+      Map<ResourceType, Integer> storedResources) {
+    return storedResources;
   }
 }

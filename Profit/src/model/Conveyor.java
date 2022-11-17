@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Map;
+
 /**
  * This class models a {@link Conveyor}.
  *
@@ -90,5 +92,12 @@ public class Conveyor extends MovableObject {
     }
 
     return new Conveyor(xCoord, yCoord, tiles);
+  }
+
+
+  @Override
+  public Map<ResourceType, Integer> getResourcesToOutput(
+      Map<ResourceType, Integer> storedResources) {
+    return storedResources;
   }
 }

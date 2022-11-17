@@ -1,5 +1,8 @@
 package model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * This class models {@link Deposit}.
  *
@@ -33,7 +36,7 @@ public class Deposit extends FixedObject {
     for (int i = 0; i < newTiles.length; i++) {
 
       if (x == 0 || y == 0 || x == width - 1 || y == height - 1) {
-        newTiles[i] = new Tile(x, y, TileType.OUTPUT);
+        newTiles[i] = new Tile(x, y, TileType.DEPOSIT_OUTPUT);
       } else {
         newTiles[i] = new Tile(x, y, TileType.SOLID);
       }
@@ -47,5 +50,27 @@ public class Deposit extends FixedObject {
     }
 
     return new Deposit(subtype, xCoord, yCoord, width, height, newTiles);
+  }
+
+  @Override
+  public Map<ResourceType, Integer> getStartResources() {
+    Map<ResourceType, Integer> resources = new HashMap<>();
+    int startAmount = getHeight() * getWidth() * 5;
+    resources.put(resourceType, startAmount);
+    return resources;
+  }
+
+  @Override
+  public Map<ResourceType, Integer> getResourcesToOutput(
+      Map<ResourceType, Integer> storedResources) {
+
+    if (!storedResources.containsKey(resourceType)) {
+      return new HashMap<>();
+    }
+
+    Map<ResourceType, Integer> resourcesToOutput = new HashMap<>();
+    resourcesToOutput.put(resourceType, Math.min(storedResources.get(resourceType), 3));
+
+    return resourcesToOutput;
   }
 }
