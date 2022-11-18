@@ -6,43 +6,93 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.function.Consumer;
 import model.BaseObject;
 import model.ResourceType;
 
+/**
+ * {@link SimulatableObject} contains a {@link BaseObject} and enables its simulation.
+ *
+ * @author Yannick Kraml
+ */
 public class SimulatableObject {
 
   private final BaseObject worker;
   private final Map<ResourceType, Integer> storedResources;
   private final Map<ResourceType, Integer> inputtedResources;
 
+  /**
+   * Constructor of this class.
+   *
+   * @param worker {@link BaseObject}, that should be simulated.
+   */
   public SimulatableObject(BaseObject worker) {
     this.worker = worker;
     storedResources = worker.getStartResources();
     inputtedResources = new HashMap<>();
   }
 
+  /**
+   * Inputs resources into the temporary storage of this {@link SimulatableObject}.
+   *
+   * @param resources Map, that contains the resources to store.
+   */
   public void inputResources(Map<ResourceType, Integer> resources) {
     resources.forEach(this::putResourceIntoStorage);
   }
 
-  public void removeResources(Map<ResourceType, Integer> resources)
-      throws CouldNotRemoveResourceFromStorageException {
+  /**
+   * Removes resources from this {@link SimulatableObject}.
+   *
+   * @param resources Map, that contains the resources, which will be removed.
+   */
+  public void removeResources(Map<ResourceType, Integer> resources) throws SimulateException {
     for (Entry<ResourceType, Integer> entry : resources.entrySet()) {
       removeResourceFromStorage(entry.getKey(), entry.getValue());
     }
   }
 
+  /**
+   * Starts a work routine, where this {@link SimulatableObject} takes its resources and produces
+   * points.
+   *
+   * @return Points, that were generated.
+   */
   public int doWorkForPoints() {
     return worker.doWorkForPoints(storedResources);
   }
 
+  /**
+   * Stats a routine to check which resources this {@link SimulatableObject} should output at each
+   * output. Attention: this method does not remove the resources. It only checks, which should be
+   * removed.
+   *
+   * @return Resources, that should be outputted.
+   */
   public Map<ResourceType, Integer> getResourcesToOutput() {
     return new HashMap<>(worker.getResourcesToOutput(Collections.unmodifiableMap(storedResources)));
   }
 
+  /**
+   * Returns the {@link BaseObject}, that is simulated.
+   *
+   * @return BaseObject, that is wrapped inside this {@link SimulatableObject}.
+   */
   public BaseObject getWorker() {
     return worker;
+  }
+
+  /**
+   * Transfers all inputted resources from the temporary storage to the final storage.
+   */
+  public void transfer() {
+    inputtedResources.forEach((resourceType, integer) -> {
+      if (storedResources.containsKey(resourceType)) {
+        storedResources.put(resourceType, storedResources.get(resourceType) + integer);
+      } else {
+        storedResources.put(resourceType, integer);
+      }
+    });
+    inputtedResources.clear();
   }
 
   private void putResourceIntoStorage(ResourceType resourceType, Integer amount) {
@@ -54,15 +104,15 @@ public class SimulatableObject {
   }
 
   private void removeResourceFromStorage(ResourceType key, Integer amount)
-      throws CouldNotRemoveResourceFromStorageException {
+      throws SimulateException {
 
     if (!storedResources.containsKey(key)) {
-      throw new CouldNotRemoveResourceFromStorageException("Resource was not in Map.");
+      throw new SimulateException("Resource was not in Map.");
     }
 
     int newAmount = storedResources.get(key) - amount;
     if (newAmount < 0) {
-      throw new CouldNotRemoveResourceFromStorageException("Not enough Resource in Storage.");
+      throw new SimulateException("Not enough Resource in Storage.");
     }
     storedResources.put(key, newAmount);
 
@@ -74,21 +124,5 @@ public class SimulatableObject {
       }
     }
     toBeDeleted.forEach(storedResources::remove);
-  }
-
-  public Map<ResourceType, Integer> getStoredResources() {
-    return storedResources;
-  }
-
-  public void transfer() {
-
-    inputtedResources.forEach((resourceType, integer) -> {
-      if (storedResources.containsKey(resourceType)) {
-        storedResources.put(resourceType, storedResources.get(resourceType) + integer);
-      } else {
-        storedResources.put(resourceType, integer);
-      }
-    });
-    inputtedResources.clear();
   }
 }

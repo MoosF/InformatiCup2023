@@ -19,7 +19,7 @@ class SimulatorTest {
 
 
   @Test
-  public void test1() throws CouldNotPlaceObjectException {
+  public void test1() throws CouldNotPlaceObjectException, SimulateException {
 
     Product product = new Product(10);
     product.addNeededRessource(ResourceType.ZERO, 1);
@@ -38,7 +38,7 @@ class SimulatorTest {
   }
 
   @Test
-  public void test2() throws CouldNotPlaceObjectException {
+  public void test2() throws CouldNotPlaceObjectException, SimulateException {
 
     Product product = new Product(10);
     product.addNeededRessource(ResourceType.ZERO, 3);

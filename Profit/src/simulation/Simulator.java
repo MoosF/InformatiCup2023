@@ -2,11 +2,8 @@ package simulation;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.function.Consumer;
-import model.Conveyor;
 import model.Field;
 import model.ResourceType;
 import model.Tile;
@@ -43,22 +40,36 @@ public class Simulator {
    * @param field {@link Field} to simulate.
    * @return Earned points.
    */
-  public int simulate(Field field, int turns) {
+  public int simulate(Field field, int turns) throws SimulateException {
+
+    Collection<SimulatableObject> objects = field.getObjects().stream().map(SimulatableObject::new)
+        .toList();
+
+    Collection<Coupled> coupledObjects = findCoupledObjects(objects, field);
 
     int points = 0;
+    for (int i = 0; i < turns; i++) {
+      points += simulateRound(objects, coupledObjects);
+    }
 
-    Collection<SimulatableObject> simulatableObjects = field.getObjects().stream()
-        .map(SimulatableObject::new).toList();
+    return points;
+  }
 
-    Collection<Coupled> coupledObjects = findCoupledObjects(simulatableObjects, field);
+  private int simulateRound(Collection<SimulatableObject> objects, Collection<Coupled> couples)
+      throws SimulateException {
 
-    for (int i = 1; i <= turns; i++) {
-      try {
-        points += simulateRound(simulatableObjects, coupledObjects);
-      } catch (CouldNotRemoveResourceFromStorageException e) {
-        throw new RuntimeException(e);
+    for (Coupled coupledObject : couples) {
+      for (SimulatableObject giver : coupledObject.getGivers()) {
+
+        Map<ResourceType, Integer> resourcesToBeMoved = giver.getResourcesToOutput();
+        giver.removeResources(resourcesToBeMoved);
+        coupledObject.getReceiver().inputResources(resourcesToBeMoved);
+
       }
     }
+
+    int points = objects.stream().mapToInt(SimulatableObject::doWorkForPoints).sum();
+    objects.forEach(SimulatableObject::transfer);
 
     return points;
   }
@@ -72,18 +83,14 @@ public class Simulator {
 
       Collection<SimulatableObject> objectsToCouple = new ArrayList<>();
 
-      Tile[] tiles = simulatableObject.getWorker().getTiles();
+      for (Tile tile : simulatableObject.getWorker().getTiles()) {
 
-      for (Tile tile : tiles) {
+        int x = tile.getX() + simulatableObject.getWorker().getX();
+        int y = tile.getY() + simulatableObject.getWorker().getY();
 
-        int tileXLocation = tile.getX() + simulatableObject.getWorker().getX();
-        int tileYLocation = tile.getY() + simulatableObject.getWorker().getY();
-
-        for (Tile neighbor : getNeighbors(field, tileXLocation, tileYLocation)) {
-          if (areConnected(tile, neighbor)) {
-            objectsToCouple.add(getSimulatedObjectByTile(simulatableObjects, neighbor));
-          }
-        }
+        getNeighbors(field, x, y).stream().filter(neighbor -> areConnected(tile, neighbor))
+            .map(neighbor -> getSimulatedObjectByTile(simulatableObjects, neighbor))
+            .forEach(objectsToCouple::add);
 
       }
 
@@ -96,76 +103,39 @@ public class Simulator {
     return coupledObjects;
   }
 
+  private Collection<Tile> getNeighbors(Field field, int x, int y) {
+    Collection<Tile> neighbors = new LinkedList<>();
+    addNeighbor(neighbors, field, x + 1, y);
+    addNeighbor(neighbors, field, x - 1, y);
+    addNeighbor(neighbors, field, x, y + 1);
+    addNeighbor(neighbors, field, x, y - 1);
+    return neighbors;
+  }
+
+  private void addNeighbor(Collection<Tile> neighbors, Field field, int x, int y) {
+    Tile[][] array = field.getArray();
+    if (x >= 0 && y >= 0 && x < array.length && y < array[x].length) {
+      neighbors.add(array[x][y]);
+    }
+  }
+
   private boolean areConnected(Tile tile, Tile neighbor) {
     return neighbor.getType().equals(TileType.OUTPUT) && tile.getType().equals(TileType.INPUT)
         || neighbor.getType().equals(TileType.DEPOSIT_OUTPUT) && tile.getType()
         .equals(TileType.MINE_INPUT);
   }
 
+
   private SimulatableObject getSimulatedObjectByTile(
-      Collection<SimulatableObject> simulatableObjects, Tile neighbor) {
+      Collection<SimulatableObject> simulatableObjects, Tile tile) {
 
     for (SimulatableObject simulatableObject : simulatableObjects) {
-      if (neighbor.getObject().isPresent() && simulatableObject.getWorker()
-          .equals(neighbor.getObject().get())) {
+      if (tile.getObject().isPresent() && simulatableObject.getWorker()
+          .equals(tile.getObject().get())) {
         return simulatableObject;
       }
     }
 
     throw new RuntimeException("Simulatable object not found.");
-  }
-
-  private Collection<Tile> getNeighbors(Field field, int tileXLocation, int tileYLocation) {
-    Collection<Tile> neighbors = new LinkedList<>();
-
-    try {
-      neighbors.add(field.getArray()[tileXLocation + 1][tileYLocation]);
-    } catch (ArrayIndexOutOfBoundsException ignored) {
-
-    }
-    try {
-      neighbors.add(field.getArray()[tileXLocation - 1][tileYLocation]);
-    } catch (ArrayIndexOutOfBoundsException ignored) {
-
-    }
-    try {
-      neighbors.add(field.getArray()[tileXLocation][tileYLocation + 1]);
-    } catch (ArrayIndexOutOfBoundsException ignored) {
-
-    }
-    try {
-      neighbors.add(field.getArray()[tileXLocation][tileYLocation - 1]);
-    } catch (ArrayIndexOutOfBoundsException ignored) {
-
-    }
-
-    return neighbors;
-  }
-
-  private int simulateRound(Collection<SimulatableObject> simulatableObjects,
-      Collection<Coupled> coupledObjects)
-      throws CouldNotRemoveResourceFromStorageException {
-
-    int points = 0;
-
-    for (Coupled coupledObject : coupledObjects) {
-
-      SimulatableObject receiver = coupledObject.getReceiver();
-      Collection<SimulatableObject> givers = coupledObject.getGiver();
-
-      for (SimulatableObject giver : givers) {
-        Map<ResourceType, Integer> resourcesToBeMoved = giver.getResourcesToOutput();
-        giver.removeResources(resourcesToBeMoved);
-        receiver.inputResources(resourcesToBeMoved);
-      }
-    }
-
-    for (SimulatableObject simulatableObject : simulatableObjects) {
-      points += simulatableObject.doWorkForPoints();
-    }
-
-    simulatableObjects.forEach(SimulatableObject::transfer);
-
-    return points;
   }
 }
