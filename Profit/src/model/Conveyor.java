@@ -34,52 +34,52 @@ public class Conveyor extends MovableObject {
     Tile[] tiles = null;
     switch (subType) {
 
-      case SHORT_NORTH_SOUTH -> {
+      case SHORT_OUTPUT_SOUTH -> {
         tiles = new Tile[]{
             new Tile(0, -1, TileType.INPUT),
             new Tile(0, 0, TileType.CROSSABLE),
             new Tile(0, 1, TileType.OUTPUT)};
       }
-      case SHORT_EAST_WEST -> {
+      case SHORT_OUTPUT_EAST -> {
         tiles = new Tile[]{
             new Tile(-1, 0, TileType.INPUT),
             new Tile(0, 0, TileType.CROSSABLE),
             new Tile(1, 0, TileType.OUTPUT)};
       }
-      case SHORT_SOUTH_NORTH -> {
+      case SHORT_OUTPUT_NORTH -> {
         tiles = new Tile[]{
             new Tile(0, 1, TileType.INPUT),
             new Tile(0, 0, TileType.CROSSABLE),
             new Tile(0, -1, TileType.OUTPUT)};
       }
-      case SHORT_WEST_EAST -> {
+      case SHORT_OUTPUT_WEST -> {
         tiles = new Tile[]{
             new Tile(1, 0, TileType.INPUT),
             new Tile(0, 0, TileType.CROSSABLE),
             new Tile(-1, 0, TileType.OUTPUT)};
       }
-      case LONG_NORTH_SOUTH -> {
+      case LONG_OUTPUT_SOUTH -> {
         tiles = new Tile[]{
             new Tile(0, -1, TileType.INPUT),
             new Tile(0, 0, TileType.CROSSABLE),
             new Tile(0, 1, TileType.CROSSABLE),
             new Tile(0, 2, TileType.OUTPUT)};
       }
-      case LONG_EAST_WEST -> {
+      case LONG_OUTPUT_WEST -> {
         tiles = new Tile[]{
             new Tile(2, 0, TileType.INPUT),
             new Tile(1, 0, TileType.CROSSABLE),
             new Tile(0, 0, TileType.CROSSABLE),
             new Tile(-1, 0, TileType.OUTPUT)};
       }
-      case LONG_SOUTH_NORTH -> {
+      case LONG_OUTPUT_NORTH -> {
         tiles = new Tile[]{
             new Tile(0, 2, TileType.INPUT),
             new Tile(0, 1, TileType.CROSSABLE),
             new Tile(0, 0, TileType.CROSSABLE),
             new Tile(0, -1, TileType.OUTPUT)};
       }
-      case LONG_WEST_EAST -> {
+      case LONG_OUTPUT_EAST -> {
         tiles = new Tile[]{
             new Tile(-1, 0, TileType.INPUT),
             new Tile(0, 0, TileType.CROSSABLE),
@@ -107,13 +107,13 @@ public class Conveyor extends MovableObject {
    * @author Yannick Kraml
    */
   public enum ConveyerSubType {
-    SHORT_NORTH_SOUTH,
-    SHORT_EAST_WEST,
-    SHORT_SOUTH_NORTH,
-    SHORT_WEST_EAST,
-    LONG_NORTH_SOUTH,
-    LONG_EAST_WEST,
-    LONG_SOUTH_NORTH,
-    LONG_WEST_EAST
+    SHORT_OUTPUT_SOUTH,
+    SHORT_OUTPUT_EAST,
+    SHORT_OUTPUT_NORTH,
+    SHORT_OUTPUT_WEST,
+    LONG_OUTPUT_SOUTH,
+    LONG_OUTPUT_WEST,
+    LONG_OUTPUT_NORTH,
+    LONG_OUTPUT_EAST
   }
 }

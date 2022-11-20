@@ -55,10 +55,17 @@ public class Field {
     for (Tile tile : o.getTiles()) {
       int verticalLocation = o.getX() + tile.getX();
       int horizontalLocation = o.getY() + tile.getY();
-      if (!tiles[verticalLocation][horizontalLocation].getType().equals(TileType.EMPTY)) {
+
+      Tile targetTile = tiles[verticalLocation][horizontalLocation];
+      boolean targetTileIsEmpty = targetTile.getType().equals(TileType.EMPTY);
+      boolean targetTileIsCrossable = targetTile.getType().equals(TileType.CROSSABLE);
+      boolean tileIsCrossable = tile.getType().equals(TileType.CROSSABLE);
+
+      if (targetTileIsEmpty || targetTileIsCrossable && tileIsCrossable) {
+        tiles[verticalLocation][horizontalLocation] = tile;
+      } else {
         throw new CouldNotPlaceObjectException(verticalLocation, horizontalLocation);
       }
-      tiles[verticalLocation][horizontalLocation] = tile;
     }
 
     objects.add(o);
@@ -78,8 +85,8 @@ public class Field {
     for (Tile tile : o.getTiles()) {
       int verticalPostion = o.getX() + tile.getX();
       int horizontalPosition = o.getY() + tile.getY();
-      tiles[verticalPostion][horizontalPosition] =
-          new Tile(verticalPostion, horizontalPosition, TileType.EMPTY);
+      tiles[verticalPostion][horizontalPosition] = new Tile(verticalPostion, horizontalPosition,
+          TileType.EMPTY);
     }
 
   }

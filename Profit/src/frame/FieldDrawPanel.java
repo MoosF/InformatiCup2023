@@ -16,7 +16,7 @@ import model.Tile;
 public class FieldDrawPanel extends JPanel {
 
 
-  public static final int TILE_SIZE = 40;
+  public static final int TILE_SIZE = 20;
   private final Field field;
 
   /**
@@ -29,7 +29,7 @@ public class FieldDrawPanel extends JPanel {
     setBackground(Color.WHITE);
 
     Tile[][] array = field.getArray();
-    setPreferredSize(new Dimension(array[0].length * TILE_SIZE, array.length * TILE_SIZE));
+    setPreferredSize(new Dimension(array.length * TILE_SIZE, array[0].length * TILE_SIZE));
   }
 
   @Override
