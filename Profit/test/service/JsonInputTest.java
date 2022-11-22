@@ -16,7 +16,7 @@ class JsonInputTest {
   @Test
   void testConstructor001() {
     String testFile = "001.task.json";
-    Input input = new JsonInput(testFile);
+    InputFile input = JsonInput.createInputFromJsonFile(testFile);
 
     FixedObject[] expectedObjects = {
             Deposit.createDeposit(ResourceType.ZERO, 1, 1, 5, 5),
@@ -41,13 +41,13 @@ class JsonInputTest {
     };
 
     checkInputForCorrectness(input, expectedObjects, requestedProducts,
-            30, 30, 50, -1);
+            30, 20, 50, -1);
   }
 
   @Test
   void testConstructor002() {
     String testFile = "002.task.json";
-    Input input = new JsonInput(testFile);
+    InputFile input = JsonInput.createInputFromJsonFile(testFile);
 
     FixedObject[] expectedObjects = {
             Deposit.createDeposit(ResourceType.ZERO, 0, 0, 5, 5),
@@ -75,7 +75,7 @@ class JsonInputTest {
   @Test
   void testConstructor003() {
     String testFile = "003.task.json";
-    Input input = new JsonInput(testFile);
+    InputFile input = JsonInput.createInputFromJsonFile(testFile);
 
     FixedObject[] expectedObjects = {
             Deposit.createDeposit(ResourceType.ZERO, 1, 1, 7, 7),
@@ -103,7 +103,7 @@ class JsonInputTest {
   @Test
   void testConstructor004() {
     String testFile = "004.task.json";
-    Input input = new JsonInput(testFile);
+    InputFile input = JsonInput.createInputFromJsonFile(testFile);
 
     FixedObject[] expectedObjects = {
             Obstacle.createObstacle(8, 0, 4, 11),
@@ -148,31 +148,7 @@ class JsonInputTest {
             29, 23, 50, -1);
   }
 
-  @Test
-  void getWidth() {
-  }
-
-  @Test
-  void getHeight() {
-  }
-
-  @Test
-  void getInputObjects() {
-  }
-
-  @Test
-  void getProducts() {
-  }
-
-  @Test
-  void getTurns() {
-  }
-
-  @Test
-  void getTime() {
-  }
-
-  private void checkInputForCorrectness(Input input, FixedObject[] expectedObjects,
+  private void checkInputForCorrectness(InputFile input, FixedObject[] expectedObjects,
                                         Product[] expectedProducts, int expectedWidth,
                                         int expectedHeight, int expectedTurns, int expectedTime) {
     assertEquals(input.getWidth(), expectedWidth);
@@ -197,7 +173,7 @@ class JsonInputTest {
       assertEquals(expectedTiles.length, actualTiles.length);
 
       for (int j = 0; j < expectedTiles.length; ++j) {
-        assertEquals(expectedTiles[i], actualTiles[i]);
+        assertEquals(expectedTiles[j], actualTiles[j]);
       }
 
       if (actualObjects.get(i).getClass().equals(Deposit.class)) {
@@ -215,7 +191,7 @@ class JsonInputTest {
     for (int i = 0; i < actualProducts.size(); ++i) {
       Product actualProduct = actualProducts.get(i);
       Product expectedProduct = expectedProducts[i];
-      assertEquals(expectedProduct, actualProduct);
+      assertTrue(expectedProduct.equals(actualProduct));
     }
   }
 
