@@ -16,7 +16,7 @@ class JsonInputTest {
   @Test
   void testConstructor001() {
     String testFile = "001.task.json";
-    InputFile input = JsonInput.createInputFromJsonFile(testFile);
+    InputFile input = JsonInput.createInputFromFile(testFile);
 
     FixedObject[] expectedObjects = {
             Deposit.createDeposit(ResourceType.ZERO, 1, 1, 5, 5),
@@ -47,7 +47,7 @@ class JsonInputTest {
   @Test
   void testConstructor002() {
     String testFile = "002.task.json";
-    InputFile input = JsonInput.createInputFromJsonFile(testFile);
+    InputFile input = JsonInput.createInputFromFile(testFile);
 
     FixedObject[] expectedObjects = {
             Deposit.createDeposit(ResourceType.ZERO, 0, 0, 5, 5),
@@ -75,7 +75,7 @@ class JsonInputTest {
   @Test
   void testConstructor003() {
     String testFile = "003.task.json";
-    InputFile input = JsonInput.createInputFromJsonFile(testFile);
+    InputFile input = JsonInput.createInputFromFile(testFile);
 
     FixedObject[] expectedObjects = {
             Deposit.createDeposit(ResourceType.ZERO, 1, 1, 7, 7),
@@ -103,7 +103,7 @@ class JsonInputTest {
   @Test
   void testConstructor004() {
     String testFile = "004.task.json";
-    InputFile input = JsonInput.createInputFromJsonFile(testFile);
+    InputFile input = JsonInput.createInputFromFile(testFile);
 
     FixedObject[] expectedObjects = {
             Obstacle.createObstacle(8, 0, 4, 11),

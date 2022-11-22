@@ -3,7 +3,6 @@ package service;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Vector;
 
 import model.Deposit;
@@ -23,26 +22,18 @@ import model.ResourceType;
 /**
  * @author Fabian Moos
  */
-public class JsonInput implements InputFile {
-
-  private int width;
-  private int height;
-  private int turns;
-  private int time;
-  private final List<FixedObject> objects;
-  private final List<Product> products;
+public class JsonInput extends AbstractInput {
 
   /**
-   * Constructor is private because the static function {@link JsonInput#createInputFromJsonFile}
-   * should be used to create objects of type {@link JsonInput}.
+   * Constructor is private because the static function {@link JsonInput#createInputFromFile} should
+   * be used to create objects of type {@link JsonInput}.
    */
   private JsonInput() {
+    super(new Vector<>(), new Vector<>());
     this.width = -1;
     this.height = -1;
     this.turns = -1;
     this.time = -1;
-    this.objects = new Vector<>();
-    this.products = new Vector<>();
   }
 
   /**
@@ -54,12 +45,14 @@ public class JsonInput implements InputFile {
    * @return An {@link Object} that implements the interface {@link InputFile} and holds all
    * relevant information about the {@link Field} defined by the input file.
    */
-  public static InputFile createInputFromJsonFile(String jsonFile) {
+  public static InputFile createInputFromFile(String jsonFile) throws InputException {
     var inputString = JsonInput.readInputFile(jsonFile);
     var tokens = JsonInput.tokenize(inputString);
     var it = Arrays.stream(tokens).iterator();
     InputFile finalInput = parse(it);
-    assert (!it.hasNext());
+    if (it.hasNext()) {
+      throw new InputException("Input partly ignored!");
+    }
     return finalInput;
   }
 
@@ -98,9 +91,11 @@ public class JsonInput implements InputFile {
    * @return an object containing all relevant information about the {@link Field} described in the
    * input file.
    */
-  private static InputFile parse(Iterator<String> it) {
+  private static InputFile parse(Iterator<String> it) throws InputException {
     JsonInput input = new JsonInput();
-    assert (it.next().equals("{"));
+    if (!it.next().equals("{")) {
+      throw new InputException("Input is not a JSON-object!");
+    }
     while (it.hasNext()) {
       var token = it.next();
       switch (token) {
@@ -163,11 +158,14 @@ public class JsonInput implements InputFile {
 
   /**
    * @param input The {@link InputFile} object that will be filled with the parsed information.
-   * @param it An {@link Iterator} over the remaining {@link String} elements.
+   * @param it    An {@link Iterator} over the remaining {@link String} elements.
    * @param token The last JSON token that has been retrieved from the iterator.
    */
-  private static void parseObjects(JsonInput input, Iterator<String> it, String token) {
-    assert (it.next().equals("["));
+  private static void parseObjects(JsonInput input, Iterator<String> it, String token)
+      throws InputException {
+    if (!it.next().equals("[")) {
+      throw new InputException("Fixed object array is missing in input file!");
+    }
     TempFixedObject currentObject = null;
     while (it.hasNext() && !token.equals("]")) {
       if (token.equals("{")) {
@@ -190,11 +188,13 @@ public class JsonInput implements InputFile {
 
   /**
    * @param input The {@link InputFile} object that will be filled with the parsed information.
-   * @param it An {@link Iterator} over the remaining {@link String} elements.
+   * @param it    An {@link Iterator} over the remaining {@link String} elements.
    * @param token The last JSON token that has been retrieved from the iterator.
    */
   private static void parseProducts(JsonInput input, Iterator<String> it, String token) {
-    assert (it.next().equals("["));
+    if (!it.next().equals("[")) {
+      throw new InputException("Products array is missing in input file!");
+    }
     TempProduct currentProduct = null;
 
     while (it.hasNext() && !token.equals("]")) {
@@ -221,12 +221,14 @@ public class JsonInput implements InputFile {
    * Extracts all resources that are required to produce the {@code currentProduct} and directly
    * saves them in a {@link HashMap} in the current product.
    *
-   * @param it An {@link Iterator} over the remaining {@link String} elements.
+   * @param it             An {@link Iterator} over the remaining {@link String} elements.
    * @param currentProduct The current {@link Product} that is currently being extracted from the
    *                       iterator.
    */
   private static void parseResources(Iterator<String> it, TempProduct currentProduct) {
-    assert (it.next().equals("["));
+    if (!it.next().equals("[")) {
+      throw new InputException("Array for a Product's resources is missing!");
+    }
     String token = it.next();
     currentProduct.requiredResources = new HashMap<>();
     int i = 0;
@@ -239,12 +241,14 @@ public class JsonInput implements InputFile {
   }
 
   /**
-   * When the current token is a closing curly bracket the current temporary object will be added
-   * to the objects of the {@link JsonInput} object. The type of the {@link TempFixedObject} decides
+   * When the current token is a closing curly bracket the current temporary object will be added to
+   * the objects of the {@link JsonInput} object. The type of the {@link TempFixedObject} decides
    * whether it will be saved as a {@link Deposit} or as an {@link Obstacle}.
    *
-   * @param input The {@link InputFile} object that will be filled with the parsed information.
-   * @param token The last JSON token that has been retrieved from the input tokens iterator.
+   * @param input         The {@link InputFile} object that will be filled with the parsed
+   *                      information.
+   * @param token         The last JSON token that has been retrieved from the input tokens
+   *                      iterator.
    * @param currentObject The current object that will be saved in the given {@link JsonInput}
    *                      object. This is either a {@link Deposit} or an {@link Obstacle}.
    */
@@ -262,36 +266,6 @@ public class JsonInput implements InputFile {
         input.objects.add(obstacle);
       }
     }
-  }
-
-  @Override
-  public int getWidth() {
-    return this.width;
-  }
-
-  @Override
-  public int getHeight() {
-    return this.height;
-  }
-
-  @Override
-  public List<FixedObject> getInputObjects() {
-    return this.objects;
-  }
-
-  @Override
-  public List<Product> getProducts() {
-    return this.products;
-  }
-
-  @Override
-  public int getTurns() {
-    return this.turns;
-  }
-
-  @Override
-  public int getTime() {
-    return this.time;
   }
 
   /**
