@@ -52,6 +52,10 @@ public class Deposit extends FixedObject {
     return new Deposit(subtype, xCoord, yCoord, width, height, newTiles);
   }
 
+  public ResourceType getResourceType() {
+    return resourceType;
+  }
+
   @Override
   public Map<ResourceType, Integer> getStartResources() {
     Map<ResourceType, Integer> resources = new HashMap<>();

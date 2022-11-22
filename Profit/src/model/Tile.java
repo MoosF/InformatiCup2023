@@ -40,4 +40,16 @@ public class Tile {
   public Optional<BaseObject> getObject() {
     return Optional.ofNullable(object);
   }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this.getClass().equals(obj.getClass())) {
+      Tile rhs = (Tile) obj;
+      boolean result = this.xCoord == rhs.xCoord;
+      result = result && this.yCoord == rhs.yCoord;
+      return result && this.type == rhs.type;
+    } else {
+      return false;
+    }
+  }
 }
