@@ -1,13 +1,18 @@
 package service;
 
-
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
+import model.Combiner;
+import model.Conveyor;
 import model.Deposit;
+import model.Factory;
 import model.Field;
 import model.FixedObject;
+import model.Mine;
+import model.MovableObject;
 import model.Obstacle;
 import model.Product;
 
@@ -20,15 +25,16 @@ import model.ProductType;
 import model.ResourceType;
 
 /**
+ * Class for handling inputs of {@link FileType} JSON.
+ *
  * @author Fabian Moos
  */
-public class JsonInput extends AbstractInput {
+final class Json extends InputOutputHandle {
 
   /**
-   * Constructor is private because the static function {@link JsonInput#createInputFromFile} should
-   * be used to create objects of type {@link JsonInput}.
+   * Use the static function {@link Json#getInputFrom} to create objects of type {@link Json}.
    */
-  private JsonInput() {
+  private Json() {
     super(new Vector<>(), new Vector<>());
     this.width = -1;
     this.height = -1;
@@ -37,21 +43,65 @@ public class JsonInput extends AbstractInput {
   }
 
   /**
-   * This function can't parse any input files. It is made specifically for parsing the JSON-input
-   * for a {@link Field} as defined by the exercise for the InformatiCup2023.
+   * TODO
+   *
+   * @param output A {@link List} of {@link MovableObject}s.
+   * @throws InputOutputException TODO
+   */
+  public static void writeOutput(List<MovableObject> output) throws InputOutputException {
+    // TODO
+    throw new InputOutputException("Method Json.writeOutput is not yet implemented!");
+  }
+
+  /**
+   * This function can't parse any JSON input file. It is made specifically for parsing the
+   * JSON-input for a {@link Field} as defined by the exercise for the InformatiCup2023.
+   *
+   * @param input The relative or absolute path to file containing a JSON-object.
+   * @return An {@link Object} that implements the interface {@link Input} and holds all relevant
+   * information about the {@link Field} defined by the input file.
+   * @throws InputOutputException when an error has occurred while parsing the input.
+   */
+  public static Input getInputFrom(String input) throws InputOutputException {
+    var settings = Settings.getInstance();
+    if (settings.importTargetIsStdIn()) {
+      return getInputFromString(input);
+    } else {
+      return getInputFromFile(input);
+    }
+  }
+
+  /**
+   * Takes a {@link String} that contains an absolute or relative file name containing a valid
+   * JSON-object with input information for a {@link Field}.
    *
    * @param jsonFile An absolute or relative path to the JSON file that holds the
    *                 {@link FixedObject} definitions.
-   * @return An {@link Object} that implements the interface {@link InputFile} and holds all
-   * relevant information about the {@link Field} defined by the input file.
+   * @return An {@link Object} that implements the interface {@link Input} and holds all relevant
+   * information about the {@link Field} defined by the input file.
+   * @throws InputOutputException when an error has occurred while parsing the input.
    */
-  public static InputFile createInputFromFile(String jsonFile) throws InputException {
-    var inputString = JsonInput.readInputFile(jsonFile);
-    var tokens = JsonInput.tokenize(inputString);
+  private static Input getInputFromFile(String jsonFile) throws InputOutputException {
+    var inputString = Json.readInputFile(jsonFile);
+    return getInputFromString(inputString);
+  }
+
+  /**
+   * Takes a {@link String} that contains a valid JSON-object with input information for a
+   * {@link Field}.
+   *
+   * @param inputString Contains the JSON-object.
+   * @return an {@link Input} object containing all information required to build a valid
+   * {@link Field}. The returned object is never {@code null}. When an error occurs, an Exception is
+   * thrown.
+   * @throws InputOutputException when an error has occurred while parsing the input.
+   */
+  private static Input getInputFromString(String inputString) throws InputOutputException {
+    var tokens = Json.tokenize(inputString);
     var it = Arrays.stream(tokens).iterator();
-    InputFile finalInput = parse(it);
+    Input finalInput = parse(it);
     if (it.hasNext()) {
-      throw new InputException("Input partly ignored!");
+      throw new InputOutputException("Input partly ignored!");
     }
     return finalInput;
   }
@@ -91,10 +141,10 @@ public class JsonInput extends AbstractInput {
    * @return an object containing all relevant information about the {@link Field} described in the
    * input file.
    */
-  private static InputFile parse(Iterator<String> it) throws InputException {
-    JsonInput input = new JsonInput();
+  private static Input parse(Iterator<String> it) throws InputOutputException {
+    Json input = new Json();
     if (!it.next().equals("{")) {
-      throw new InputException("Input is not a JSON-object!");
+      throw new InputOutputException("Input is not a JSON-object!");
     }
     while (it.hasNext()) {
       var token = it.next();
@@ -120,10 +170,10 @@ public class JsonInput extends AbstractInput {
   /**
    * @param num The number of the required requested resource.
    * @return the {@link ProductType} variant corresponding to the given number.
-   * @throws InputException When a number is encountered that does not correspond to a valid
-   *                        {@link ProductType}.
+   * @throws InputOutputException When a number is encountered that does not correspond to a valid
+   *                              {@link ProductType}.
    */
-  private static ProductType getProductTypeFor(int num) throws InputException {
+  private static ProductType getProductTypeFor(int num) throws InputOutputException {
     return switch (num) {
       case 0 -> ProductType.ZERO;
       case 1 -> ProductType.ONE;
@@ -133,16 +183,16 @@ public class JsonInput extends AbstractInput {
       case 5 -> ProductType.FIVE;
       case 6 -> ProductType.SIX;
       case 7 -> ProductType.SEVEN;
-      default -> throw new InputException("Given product subtype does not exist!");
+      default -> throw new InputOutputException("Given product subtype does not exist!");
     };
   }
 
   /**
    * @param num The number of the resource. Must be in the interval [0,7].
    * @return The {@link ResourceType} corresponding to the given number.
-   * @throws InputException when the number input is outside the interval [0,7].
+   * @throws InputOutputException when the number input is outside the interval [0,7].
    */
-  private static ResourceType getResourceTypeFor(int num) throws InputException {
+  private static ResourceType getResourceTypeFor(int num) throws InputOutputException {
     return switch (num) {
       case 0 -> ResourceType.ZERO;
       case 1 -> ResourceType.ONE;
@@ -152,19 +202,19 @@ public class JsonInput extends AbstractInput {
       case 5 -> ResourceType.FIVE;
       case 6 -> ResourceType.SIX;
       case 7 -> ResourceType.SEVEN;
-      default -> throw new InputException("Given resource subtype does not exist!");
+      default -> throw new InputOutputException("Given resource subtype does not exist!");
     };
   }
 
   /**
-   * @param input The {@link InputFile} object that will be filled with the parsed information.
+   * @param input The {@link Input} object that will be filled with the parsed information.
    * @param it    An {@link Iterator} over the remaining {@link String} elements.
    * @param token The last JSON token that has been retrieved from the iterator.
    */
-  private static void parseObjects(JsonInput input, Iterator<String> it, String token)
-      throws InputException {
+  private static void parseObjects(Json input, Iterator<String> it, String token)
+      throws InputOutputException {
     if (!it.next().equals("[")) {
-      throw new InputException("Fixed object array is missing in input file!");
+      throw new InputOutputException("Fixed object array is missing in input file!");
     }
     TempFixedObject currentObject = null;
     while (it.hasNext() && !token.equals("]")) {
@@ -187,13 +237,13 @@ public class JsonInput extends AbstractInput {
   }
 
   /**
-   * @param input The {@link InputFile} object that will be filled with the parsed information.
+   * @param input The {@link Input} object that will be filled with the parsed information.
    * @param it    An {@link Iterator} over the remaining {@link String} elements.
    * @param token The last JSON token that has been retrieved from the iterator.
    */
-  private static void parseProducts(JsonInput input, Iterator<String> it, String token) {
+  private static void parseProducts(Json input, Iterator<String> it, String token) {
     if (!it.next().equals("[")) {
-      throw new InputException("Products array is missing in input file!");
+      throw new InputOutputException("Products array is missing in input file!");
     }
     TempProduct currentProduct = null;
 
@@ -227,7 +277,7 @@ public class JsonInput extends AbstractInput {
    */
   private static void parseResources(Iterator<String> it, TempProduct currentProduct) {
     if (!it.next().equals("[")) {
-      throw new InputException("Array for a Product's resources is missing!");
+      throw new InputOutputException("Array for a Product's resources is missing!");
     }
     String token = it.next();
     currentProduct.requiredResources = new HashMap<>();
@@ -242,17 +292,16 @@ public class JsonInput extends AbstractInput {
 
   /**
    * When the current token is a closing curly bracket the current temporary object will be added to
-   * the objects of the {@link JsonInput} object. The type of the {@link TempFixedObject} decides
-   * whether it will be saved as a {@link Deposit} or as an {@link Obstacle}.
+   * the objects of the {@link Json} object. The type of the {@link TempFixedObject} decides whether
+   * it will be saved as a {@link Deposit} or as an {@link Obstacle}.
    *
-   * @param input         The {@link InputFile} object that will be filled with the parsed
-   *                      information.
+   * @param input         The {@link Input} object that will be filled with the parsed information.
    * @param token         The last JSON token that has been retrieved from the input tokens
    *                      iterator.
-   * @param currentObject The current object that will be saved in the given {@link JsonInput}
-   *                      object. This is either a {@link Deposit} or an {@link Obstacle}.
+   * @param currentObject The current object that will be saved in the given {@link Json} object.
+   *                      This is either a {@link Deposit} or an {@link Obstacle}.
    */
-  private static void setDepositOrObstacle(JsonInput input, String token,
+  private static void setDepositOrObstacle(Json input, String token,
       TempFixedObject currentObject) {
     if (token.equals("}")) {
       if (currentObject.type.equals("deposit")) {
@@ -269,7 +318,9 @@ public class JsonInput extends AbstractInput {
   }
 
   /**
-   * Temporary class for holding information related to a {@link FixedObject}.
+   * Temporary class for holding information related to a {@link FixedObject}. This class is
+   * supposed to hold the gathered information only until all information for one specific fixed
+   * object is extracted from the JSON file.
    */
   private static class TempFixedObject {
 

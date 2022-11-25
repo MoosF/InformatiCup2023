@@ -9,13 +9,13 @@ import model.Tile;
 
 /**
  * There can only be {@code width}-, {@code height}-, {@code turns}-, {@code time}, {@code object}-
- * and {@code product} values in the input file. These can be acquired by calling the functions that
+ * and {@code product} values in the input file. These can be queried by calling the functions that
  * are defined by this interface.
  *
  * @author Fabian Moos
- * @see JsonInput
+ * @see Json
  */
-public interface InputFile {
+public interface Input {
 
     /**
      * @return the width of {@link Field} in {@link Tile}s. This value can be at maximum
@@ -35,7 +35,6 @@ public interface InputFile {
     List<FixedObject> getInputObjects();
 
     /**
-     *
      * @return the List of {@link Product}s for this {@link Field}.
      */
     List<Product> getProducts();
