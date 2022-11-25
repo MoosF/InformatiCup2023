@@ -1,14 +1,21 @@
 package service;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import model.Combiner;
+import model.Conveyor;
 import model.Deposit;
+import model.Factory;
 import model.Field;
 import model.FixedObject;
+import model.Mine;
 import model.MovableObject;
+import model.MovableObject.MovableObjectType;
 import model.Obstacle;
 import model.Product;
 
@@ -39,16 +46,84 @@ final class Json extends InputOutputHandle {
   }
 
   /**
-   * TODO
+   * Writes the {@link MovableObject}s in the given list into a file or to Standard Output. The
+   * actual behavior is determined by the values et in the {@link Settings}-class.
    *
    * @param output A {@link List} of {@link MovableObject}s.
    * @return the generated {@link String} containing the output in the format determined by
    * {@link Settings}.
-   * @throws InputOutputException TODO
    */
-  public static String generateOutput(List<MovableObject> output) throws InputOutputException {
-    // TODO
-    throw new InputOutputException("Method Json.generateOutput is not yet implemented!");
+  public static String generateOutput(List<MovableObject> output) {
+    var settings = Settings.getInstance();
+    if (settings.exportTargetIsStdOut()) {
+      return generateOutputString(output);
+    } else {
+      return writeOutputToFile(output);
+    }
+  }
+
+  /**
+   * Generates a JSON-Array from the list of {@link MovableObject}s given as a parameter.
+   *
+   * @param output the {@link MovableObject}s that will be turned into a JSON-Array.
+   * @return a {@link String} containing the {@link MovableObject}s from {@code output} as a
+   * JSON-Array.
+   */
+  private static String generateOutputString(List<MovableObject> output) {
+    StringBuilder stringBuilder = new StringBuilder("[");
+    for (int i = 0; i < output.size(); ++i) {
+      stringBuilder.append("{\"type\":");
+
+      MovableObject object = output.get(i);
+      switch (object.getType()) {
+        case COMBINER -> stringBuilder.append("\"combiner\"");
+        case CONVEYER -> stringBuilder.append("\"conveyor\"");
+        case FACTORY -> stringBuilder.append("\"factory\"");
+        case MINE -> stringBuilder.append("\"mine\"");
+      }
+
+      stringBuilder.append(",\"x\":");
+      stringBuilder.append(object.getX());
+      stringBuilder.append(",\"y\":");
+      stringBuilder.append(object.getY());
+
+      stringBuilder.append(",");
+      stringBuilder.append("\"subtype\":");
+      switch (object.getType()) {
+        case COMBINER -> stringBuilder.append(((Combiner) object).getSubType().ordinal());
+        case CONVEYER -> stringBuilder.append(((Conveyor) object).getSubType().ordinal());
+        case FACTORY -> stringBuilder.append(((Factory) object).getSubType().ordinal());
+        case MINE -> stringBuilder.append(((Mine) object).getSubType().ordinal());
+      }
+
+      stringBuilder.append("}");
+      if (i != output.size() - 1) {
+        stringBuilder.append(",");
+      }
+    }
+
+    stringBuilder.append("]");
+    return stringBuilder.toString();
+  }
+
+  /**
+   * Writes the {@link MovableObject}s in output into the file that is set in {@link Settings}.
+   *
+   * @param output A list of {@link MovableObject}s.
+   * @return An empty {@link String}.
+   */
+  private static String writeOutputToFile(List<MovableObject> output) {
+    var settings = Settings.getInstance();
+    String outputString = generateOutputString(output);
+    try {
+      BufferedWriter writer = new BufferedWriter(new FileWriter(settings.getExportFileName()));
+      writer.write(outputString);
+      writer.close();
+    } catch (IOException e) {
+      System.err.println(e.getMessage());
+      System.err.println(Arrays.toString(e.getStackTrace()));
+    }
+    return "";
   }
 
   /**

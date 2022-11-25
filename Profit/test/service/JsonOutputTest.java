@@ -1,6 +1,11 @@
 package service;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import model.Combiner;
 import model.Combiner.CombinerSubType;
@@ -12,7 +17,6 @@ import model.Mine.MineSubType;
 import model.MovableObject;
 import model.Product;
 import model.ProductType;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import service.InputOutputHandle.FileType;
 
@@ -23,15 +27,10 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class JsonOutputTest {
 
-  @BeforeAll
-  static void setSettings() {
-    var settings = Settings.getInstance();
-    settings.updateExportFileType(FileType.JSON);
-    settings.updateExportTarget(true);
-  }
-
   @Test
   void testOutputToStdOut1() {
+    this.setSettingsForStdOutTests();
+
     var product0 = new Product(Integer.MAX_VALUE, ProductType.ZERO, new HashMap<>());
 
     var outputObjects = new ArrayList<MovableObject>();
@@ -48,7 +47,7 @@ class JsonOutputTest {
     outputObjects.add(Conveyor.createConveyor(5, 9, ConveyerSubType.SHORT_OUTPUT_EAST));
     outputObjects.add(Conveyor.createConveyor(6, 11, ConveyerSubType.LONG_OUTPUT_SOUTH));
     outputObjects.add(Conveyor.createConveyor(8, 13, ConveyerSubType.SHORT_OUTPUT_EAST));
-    outputObjects.add(Factory.createFactory(0, 0, product0));
+    outputObjects.add(Factory.createFactory(13, 12, product0));
 
     String expectedOutput = "["
         + "{\"type\":\"mine\",\"x\":3,\"y\":7,\"subtype\":1},"
@@ -74,16 +73,20 @@ class JsonOutputTest {
 
   @Test
   void testOutputToStdOut2() {
+    this.setSettingsForStdOutTests();
+
     var outputObjects = new ArrayList<MovableObject>();
 
     String outputString = InputOutputHandle.generateOutput(outputObjects);
 
-    String expectedOutput = "{}";
+    String expectedOutput = "[]";
     assertEquals(expectedOutput, outputString);
   }
 
   @Test
   void testOutputToStdOut3() {
+    this.setSettingsForStdOutTests();
+
     var product0 = new Product(Integer.MAX_VALUE, ProductType.ZERO, new HashMap<>());
     var product1 = new Product(Integer.MAX_VALUE, ProductType.ONE, new HashMap<>());
     var product2 = new Product(Integer.MAX_VALUE, ProductType.TWO, new HashMap<>());
@@ -144,7 +147,7 @@ class JsonOutputTest {
         + "{\"type\":\"combiner\",\"x\":52,\"y\":7,\"subtype\":2},"
         + "{\"type\":\"conveyor\",\"x\":13,\"y\":84,\"subtype\":7},"
         + "{\"type\":\"conveyor\",\"x\":14,\"y\":75,\"subtype\":5},"
-        + "{\"type\":\"conveyer\",\"x\":13,\"y\":42,\"subtype\":6},"
+        + "{\"type\":\"conveyor\",\"x\":13,\"y\":42,\"subtype\":6},"
         + "{\"type\":\"conveyor\",\"x\":91,\"y\":13,\"subtype\":2},"
         + "{\"type\":\"combiner\",\"x\":67,\"y\":34,\"subtype\":3},"
         + "{\"type\":\"combiner\",\"x\":14,\"y\":55,\"subtype\":3},"
@@ -163,5 +166,93 @@ class JsonOutputTest {
     String outputString = InputOutputHandle.generateOutput(outputObjects);
 
     assertEquals(expectedOutput, outputString);
+  }
+
+  @Test
+  void testOutputToFile1() {
+    this.setSettingsForFileOutTests();
+
+    String outputString = InputOutputHandle.generateOutput(new ArrayList<>());
+
+    assertEquals("", outputString);
+
+    String expectedInput = "[]";
+
+    checkFileInput(expectedInput);
+  }
+
+  @Test
+  void testOutputToFile2() {
+    this.setSettingsForFileOutTests();
+
+    var product0 = new Product(Integer.MAX_VALUE, ProductType.ZERO, new HashMap<>());
+
+    var outputObjects = new ArrayList<MovableObject>();
+    outputObjects.add(Mine.createMine(3, 7, MineSubType.OUTPUT_SOUTH));
+    outputObjects.add(Mine.createMine(7, 14, MineSubType.OUTPUT_EAST));
+    outputObjects.add(Mine.createMine(19, 4, MineSubType.OUTPUT_WEST));
+    outputObjects.add(Conveyor.createConveyor(18, 1, ConveyerSubType.LONG_OUTPUT_NORTH));
+    outputObjects.add(Conveyor.createConveyor(15, 0, ConveyerSubType.LONG_OUTPUT_WEST));
+    outputObjects.add(Conveyor.createConveyor(11, 0, ConveyerSubType.LONG_OUTPUT_WEST));
+    outputObjects.add(Conveyor.createConveyor(10, 2, ConveyerSubType.LONG_OUTPUT_SOUTH));
+    outputObjects.add(Conveyor.createConveyor(10, 6, ConveyerSubType.LONG_OUTPUT_SOUTH));
+    outputObjects.add(Conveyor.createConveyor(10, 10, ConveyerSubType.LONG_OUTPUT_SOUTH));
+    outputObjects.add(Combiner.createCombiner(11, 14, CombinerSubType.OUTPUT_EAST));
+    outputObjects.add(Conveyor.createConveyor(5, 9, ConveyerSubType.SHORT_OUTPUT_EAST));
+    outputObjects.add(Conveyor.createConveyor(6, 11, ConveyerSubType.LONG_OUTPUT_SOUTH));
+    outputObjects.add(Conveyor.createConveyor(8, 13, ConveyerSubType.SHORT_OUTPUT_EAST));
+    outputObjects.add(Factory.createFactory(13, 12, product0));
+
+    String expectedInput = "["
+        + "{\"type\":\"mine\",\"x\":3,\"y\":7,\"subtype\":1},"
+        + "{\"type\":\"mine\",\"x\":7,\"y\":14,\"subtype\":0},"
+        + "{\"type\":\"mine\",\"x\":19,\"y\":4,\"subtype\":2},"
+        + "{\"type\":\"conveyor\",\"x\":18,\"y\":1,\"subtype\":7},"
+        + "{\"type\":\"conveyor\",\"x\":15,\"y\":0,\"subtype\":6},"
+        + "{\"type\":\"conveyor\",\"x\":11,\"y\":0,\"subtype\":6},"
+        + "{\"type\":\"conveyor\",\"x\":10,\"y\":2,\"subtype\":5},"
+        + "{\"type\":\"conveyor\",\"x\":10,\"y\":6,\"subtype\":5},"
+        + "{\"type\":\"conveyor\",\"x\":10,\"y\":10,\"subtype\":5},"
+        + "{\"type\":\"combiner\",\"x\":11,\"y\":14,\"subtype\":0},"
+        + "{\"type\":\"conveyor\",\"x\":5,\"y\":9,\"subtype\":0},"
+        + "{\"type\":\"conveyor\",\"x\":6,\"y\":11,\"subtype\":5},"
+        + "{\"type\":\"conveyor\",\"x\":8,\"y\":13,\"subtype\":0},"
+        + "{\"type\":\"factory\",\"x\":13,\"y\":12,\"subtype\":0}"
+        + "]";
+
+    String outputString = InputOutputHandle.generateOutput(outputObjects);
+
+    assertEquals("", outputString);
+
+    checkFileInput(expectedInput);
+  }
+
+  private void checkFileInput(String expectedInput) {
+    var settings = Settings.getInstance();
+
+    try {
+      BufferedReader reader = new BufferedReader(new FileReader(settings.getExportFileName()));
+      assertEquals(expectedInput, reader.readLine());
+      assertNull(reader.readLine());
+      reader.close();
+    } catch (IOException e) {
+      System.err.println(e.getMessage());
+      System.err.println(Arrays.toString(e.getStackTrace()));
+    }
+
+    File outputFile = new File(settings.getExportFileName());
+    assertTrue(outputFile.delete());
+  }
+
+  private void setSettingsForStdOutTests() {
+    var settings = Settings.getInstance();
+    settings.updateExportFileType(FileType.JSON);
+    settings.updateExportTarget(true);
+  }
+
+  private void setSettingsForFileOutTests() {
+    var settings = Settings.getInstance();
+    settings.updateExportFileType(FileType.JSON);
+    settings.updateExportTarget(false);
   }
 }

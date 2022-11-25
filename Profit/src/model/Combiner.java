@@ -9,6 +9,7 @@ import java.util.Map;
  */
 public class Combiner extends MovableObject {
 
+  private CombinerSubType subType;
 
   /**
    * Constructor of {@link Combiner}.
@@ -17,8 +18,10 @@ public class Combiner extends MovableObject {
    * @param yCoord Y-Coordinate of the {@link Combiner}.
    * @param tiles  Tiles, that construct the {@link Combiner}.
    */
-  private Combiner(int xCoord, int yCoord, Tile[] tiles) {
-    super(xCoord, yCoord, tiles);
+  private Combiner(int xCoord, int yCoord, Tile[] tiles, MovableObjectType type,
+      CombinerSubType subType) {
+    super(xCoord, yCoord, tiles, type);
+    this.subType = subType;
   }
 
   /**
@@ -83,13 +86,17 @@ public class Combiner extends MovableObject {
       }
     }
 
-    return new Combiner(xCoord, yCoord, tiles);
+    return new Combiner(xCoord, yCoord, tiles, MovableObjectType.COMBINER, subtype);
   }
 
   @Override
   public Map<ResourceType, Integer> getResourcesToOutput(
       Map<ResourceType, Integer> storedResources) {
     return storedResources;
+  }
+
+  public CombinerSubType getSubType() {
+    return this.subType;
   }
 
   /**

@@ -9,6 +9,7 @@ import java.util.Map;
  */
 public class Mine extends MovableObject {
 
+  private MineSubType subType;
 
   /**
    * Constructor of {@link Mine}.
@@ -17,8 +18,9 @@ public class Mine extends MovableObject {
    * @param yCoord Y-Coordinate of the {@link Mine}.
    * @param tiles  Tiles, that constructs the {@link Mine}.
    */
-  private Mine(int xCoord, int yCoord, Tile[] tiles) {
-    super(xCoord, yCoord, tiles);
+  private Mine(int xCoord, int yCoord, Tile[] tiles, MovableObjectType type, MineSubType subType) {
+    super(xCoord, yCoord, tiles, type);
+    this.subType = subType;
   }
 
   /**
@@ -79,13 +81,17 @@ public class Mine extends MovableObject {
       }
     }
 
-    return new Mine(xCoord, yCoord, tiles);
+    return new Mine(xCoord, yCoord, tiles, MovableObjectType.MINE, type);
   }
 
   @Override
   public Map<ResourceType, Integer> getResourcesToOutput(
       Map<ResourceType, Integer> storedResources) {
     return storedResources;
+  }
+
+  public MineSubType getSubType() {
+    return this.subType;
   }
 
   /**

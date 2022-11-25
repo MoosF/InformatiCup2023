@@ -12,6 +12,7 @@ public class Settings {
 
   private FileType exportFileType = JSON;
   private boolean exportToStdOut = true;
+  private String exportFileName = "default.json";
   private FileType importFileType = JSON;
   private boolean importFromStdIn = false;
 
@@ -20,6 +21,10 @@ public class Settings {
 
   public boolean exportTargetIsStdOut() {
     return this.exportToStdOut;
+  }
+
+  public String getExportFileName() {
+    return this.exportFileName;
   }
 
   public FileType getExportFileType() {
@@ -39,6 +44,10 @@ public class Settings {
 
   public boolean importTargetIsStdIn() {
     return this.importFromStdIn;
+  }
+
+  public void updateExportFileName(String exportFileName) {
+    this.exportFileName = exportFileName;
   }
 
   public void updateExportFileType(FileType exportFileType) {

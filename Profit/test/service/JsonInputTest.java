@@ -11,6 +11,7 @@ import static service.InputOutputHandle.FileType;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
+ * TODO: Tests for reading from StdIn.
  * @author Fabian Moos
  */
 class JsonInputTest {

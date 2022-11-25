@@ -20,8 +20,8 @@ public class Factory extends MovableObject {
    * @param tiles   Tiles, that construct the {@link Factory}.
    * @param product {@link Product} that is produces by the {@link Factory}.
    */
-  private Factory(int xCoord, int yCoord, Tile[] tiles, Product product) {
-    super(xCoord, yCoord, tiles);
+  private Factory(int xCoord, int yCoord, Tile[] tiles, Product product, MovableObjectType type) {
+    super(xCoord, yCoord, tiles, type);
     this.product = product;
   }
 
@@ -63,7 +63,7 @@ public class Factory extends MovableObject {
         new Tile(2, 2, TileType.INPUT),
     };
 
-    return new Factory(xCoord, yCoord, tiles, product);
+    return new Factory(xCoord, yCoord, tiles, product, MovableObjectType.FACTORY);
   }
 
   @Override
@@ -110,5 +110,9 @@ public class Factory extends MovableObject {
     }
 
     return points;
+  }
+
+  public ProductType getSubType() {
+    return this.product.getType();
   }
 }
