@@ -98,9 +98,9 @@ public class Combiner extends MovableObject {
    * @author Yannick Kraml.
    */
   public enum CombinerSubType {
-    OUTPUT_NORTH,
     OUTPUT_EAST,
     OUTPUT_SOUTH,
-    OUTPUT_WEST
+    OUTPUT_WEST,
+    OUTPUT_NORTH,
   }
 }

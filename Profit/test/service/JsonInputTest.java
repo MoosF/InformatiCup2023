@@ -7,6 +7,7 @@ import model.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import static service.InputOutputHandle.FileType;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -350,7 +351,7 @@ class JsonInputTest {
     for (int i = 0; i < actualProducts.size(); ++i) {
       Product actualProduct = actualProducts.get(i);
       Product expectedProduct = expectedProducts[i];
-      assertTrue(expectedProduct.equals(actualProduct));
+      assertEquals(expectedProduct, actualProduct);
     }
   }
 

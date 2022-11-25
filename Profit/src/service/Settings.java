@@ -1,6 +1,7 @@
 package service;
 
-import static service.FileType.JSON;
+import static service.InputOutputHandle.FileType.JSON;
+import service.InputOutputHandle.FileType;
 
 /**
  * @author Fabian Moos

@@ -3,7 +3,7 @@ package main;
 import model.CouldNotPlaceObjectException;
 import model.Field;
 import model.FixedObject;
-import service.FileType;
+import service.InputOutputHandle.FileType;
 import service.Input;
 import service.InputOutputHandle;
 import service.Settings;

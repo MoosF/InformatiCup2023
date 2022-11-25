@@ -24,9 +24,9 @@ public class Mine extends MovableObject {
   /**
    * Creates a new instance of {@link Mine}.
    *
-   * @param xCoord      X-Coordinate of the {@link Mine}.
-   * @param yCoord      Y-Coordinate of the {@link Mine}.
-   * @param type Subtype of the {@link Mine}.
+   * @param xCoord X-Coordinate of the {@link Mine}.
+   * @param yCoord Y-Coordinate of the {@link Mine}.
+   * @param type   Subtype of the {@link Mine}.
    * @return New instance of {@link Mine}.
    */
   public static Mine createMine(int xCoord, int yCoord, MineSubType type) {
@@ -92,9 +92,9 @@ public class Mine extends MovableObject {
    * This enum represents the subtypes of {@link Mine}.
    */
   public enum MineSubType {
-      OUTPUT_NORTH,
-      OUTPUT_EAST,
-      OUTPUT_SOUTH,
-      OUTPUT_WEST
+    OUTPUT_EAST,
+    OUTPUT_SOUTH,
+    OUTPUT_WEST,
+    OUTPUT_NORTH,
   }
 }

@@ -5,13 +5,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-import model.Combiner;
-import model.Conveyor;
 import model.Deposit;
-import model.Factory;
 import model.Field;
 import model.FixedObject;
-import model.Mine;
 import model.MovableObject;
 import model.Obstacle;
 import model.Product;
@@ -46,11 +42,13 @@ final class Json extends InputOutputHandle {
    * TODO
    *
    * @param output A {@link List} of {@link MovableObject}s.
+   * @return the generated {@link String} containing the output in the format determined by
+   * {@link Settings}.
    * @throws InputOutputException TODO
    */
-  public static void writeOutput(List<MovableObject> output) throws InputOutputException {
+  public static String generateOutput(List<MovableObject> output) throws InputOutputException {
     // TODO
-    throw new InputOutputException("Method Json.writeOutput is not yet implemented!");
+    throw new InputOutputException("Method Json.generateOutput is not yet implemented!");
   }
 
   /**

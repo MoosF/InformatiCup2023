@@ -11,6 +11,8 @@ import model.MovableObject;
 import model.Product;
 import model.Tile;
 
+import static service.InputOutputHandle.FileType.*;
+
 /**
  * Class for handling input of {@link Field} parameters and output of calculated {@link Mine}-,
  * {@link Conveyor}-, {@link Combiner}- and {@link Factory}-objects.
@@ -18,7 +20,7 @@ import model.Tile;
  * @author Fabian Moos
  * @see Input
  * @see InputOutputHandle#getInputFrom(String)
- * @see InputOutputHandle#writeOutput(List)
+ * @see InputOutputHandle#generateOutput(List)
  */
 public abstract class InputOutputHandle implements Input {
 
@@ -66,16 +68,20 @@ public abstract class InputOutputHandle implements Input {
    * by the values set in the {@link Settings}-class.
    *
    * @param output A {@link List} of {@link MovableObject}s.
+   * @return the generated {@link String} containing the output in the format determined by
+   * {@link Settings}.
    * @throws InputOutputException when a {@link FileType} is set in the {@link Settings} that is not
    *                              yet implemented.
    */
-  public static void writeOutput(List<MovableObject> output) throws InputOutputException {
+  public static String generateOutput(List<MovableObject> output) throws InputOutputException {
+    String outputString;
     var settings = Settings.getInstance();
     switch (settings.getExportFileType()) {
-      case JSON -> Json.writeOutput(output);
+      case JSON -> outputString = Json.generateOutput(output);
       case XML -> throw new InputOutputException("Output file type XML is not yet implemented!");
       default -> throw new InputOutputException("Output file type is not yet implemented!");
     }
+    return outputString;
   }
 
   /**
@@ -124,5 +130,20 @@ public abstract class InputOutputHandle implements Input {
   @Override
   public int getTime() {
     return time;
+  }
+
+  /**
+   * This class defines supported file types for input and output files. The file type that is
+   * currently used can be set in the {@link Settings} of the program.
+   *
+   * @author Fabian Moos
+   * @see Input
+   * @see InputOutputHandle
+   * @see Settings
+   */
+  public enum FileType {
+    JSON,
+    XML,
+    TOML,
   }
 }
