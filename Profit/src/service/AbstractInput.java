@@ -8,6 +8,7 @@ import model.Product;
  * @author Fabian Moos
  */
 public abstract class AbstractInput implements InputFile {
+
   protected int width;
   protected int height;
   protected int turns;
@@ -15,7 +16,7 @@ public abstract class AbstractInput implements InputFile {
   protected final List<FixedObject> objects;
   protected final List<Product> products;
 
-  AbstractInput(List<FixedObject> objects, List <Product> products) {
+  AbstractInput(List<FixedObject> objects, List<Product> products) {
     this.objects = objects;
     this.products = products;
   }
