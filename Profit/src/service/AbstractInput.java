@@ -5,6 +5,8 @@ import model.FixedObject;
 import model.Product;
 
 /**
+ * This abstract class represents an input of a given profit game.
+ *
  * @author Fabian Moos
  */
 public abstract class AbstractInput {

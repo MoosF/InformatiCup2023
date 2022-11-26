@@ -13,26 +13,39 @@ public class Deposit extends FixedObject {
   private ResourceType resourceType;
 
   /**
-   * @param xCoord  X-Coordinate of the {@link Deposit}.
-   * @param yCoord  Y-Coordinate of the {@link Deposit}.
+   * Constructor of Deposit.
+   *
+   * @param horPos  X-Coordinate of the {@link Deposit}.
+   * @param verPos  Y-Coordinate of the {@link Deposit}.
    * @param tiles   Tiles, that construct the {@link Deposit}.
    * @param height  height of the {@link Deposit}.
    * @param width   width of the {@link Deposit}.
    * @param subtype is the type of resources of the {@link Deposit}.
    */
-  private Deposit(ResourceType subtype, int xCoord, int yCoord, int width, int height,
+  private Deposit(ResourceType subtype, int horPos, int verPos, int width, int height,
       Tile[] tiles) {
-    super(xCoord, yCoord, tiles, width, height);
+    super(horPos, verPos, tiles, width, height);
     resourceType = subtype;
 
 
   }
 
-  public static Deposit createDeposit(ResourceType subtype, int xCoord, int yCoord, int width,
+  /**
+   * Creates a new instance of {@link Deposit}.
+   *
+   * @param subtype Subtype of the {@link Deposit}.
+   * @param horPos  X-Position of the {@link Deposit}.
+   * @param verPos  Y-Position of the {@link Deposit}.
+   * @param width   Width of the {@link Deposit}.
+   * @param height  Height of the {@link Deposit}.
+   * @return New instance of {@link Deposit}.
+   */
+  public static Deposit createDeposit(ResourceType subtype, int horPos, int verPos, int width,
       int height) {
 
     Tile[] newTiles = new Tile[width * height];
-    int x = 0, y = 0; // relative Position (0, 0) ist linke obere Ecke
+    int x = 0; // relative Position (0, 0) ist linke obere Ecke
+    int y = 0;
     for (int i = 0; i < newTiles.length; i++) {
 
       if (x == 0 || y == 0 || x == width - 1 || y == height - 1) {
@@ -49,7 +62,7 @@ public class Deposit extends FixedObject {
       }
     }
 
-    return new Deposit(subtype, xCoord, yCoord, width, height, newTiles);
+    return new Deposit(subtype, horPos, verPos, width, height, newTiles);
   }
 
   public ResourceType getResourceType() {

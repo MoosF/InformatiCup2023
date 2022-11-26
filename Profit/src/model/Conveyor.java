@@ -14,25 +14,25 @@ public class Conveyor extends MovableObject {
   /**
    * Constructor of {@link Conveyor}.
    *
-   * @param xCoord X-Coordinate of the {@link Conveyor}.
-   * @param yCoord Y-Coordinate of the {@link Conveyor}.
+   * @param horPos X-Coordinate of the {@link Conveyor}.
+   * @param verPos Y-Coordinate of the {@link Conveyor}.
    * @param tiles  Tiles, that construct the {@link Conveyor}.
    */
-  private Conveyor(int xCoord, int yCoord, Tile[] tiles, MovableObjectType type,
+  private Conveyor(int horPos, int verPos, Tile[] tiles, MovableObjectType type,
       ConveyerSubType subType) {
-    super(xCoord, yCoord, tiles, type);
+    super(horPos, verPos, tiles, type);
     this.subType = subType;
   }
 
   /**
    * Creates an instance of a {@link Conveyor}.
    *
-   * @param xCoord  X-Coordinate of the {@link Conveyor}.
-   * @param yCoord  Y-Coordinate of the {@link Conveyor}.
+   * @param horPos  X-Coordinate of the {@link Conveyor}.
+   * @param verPos  Y-Coordinate of the {@link Conveyor}.
    * @param subType Subtype of the {@link Conveyor}.
    * @return New instance of a {@link Conveyor}.
    */
-  public static Conveyor createConveyor(int xCoord, int yCoord, ConveyerSubType subType) {
+  public static Conveyor createConveyor(int horPos, int verPos, ConveyerSubType subType) {
 
     Tile[] tiles = null;
     switch (subType) {
@@ -94,7 +94,7 @@ public class Conveyor extends MovableObject {
       }
     }
 
-    return new Conveyor(xCoord, yCoord, tiles, MovableObjectType.CONVEYER, subType);
+    return new Conveyor(horPos, verPos, tiles, MovableObjectType.CONVEYER, subType);
   }
 
 

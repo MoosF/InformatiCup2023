@@ -1,6 +1,7 @@
 package service;
 
 import static service.InputOutputHandle.FileType.JSON;
+
 import service.InputOutputHandle.FileType;
 
 /**

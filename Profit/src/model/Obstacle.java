@@ -8,19 +8,20 @@ package model;
 public class Obstacle extends FixedObject {
 
   /**
-   * @param xCoord X-Coordinate of the {@link Obstacle}.
-   * @param yCoord Y-Coordinate of the {@link Obstacle}.
+   * @param verPos X-Coordinate of the {@link Obstacle}.
+   * @param horPos Y-Coordinate of the {@link Obstacle}.
    * @param tiles  Tiles, that construct the {@link Obstacle}.
    * @param height height of the {@link Obstacle}.
    * @param width  width of the {@link Obstacle}.
    */
-  private Obstacle(int xCoord, int yCoord, int width, int height, Tile[] tiles) {
-    super(xCoord, yCoord, tiles, width, height);
+  private Obstacle(int verPos, int horPos, int width, int height, Tile[] tiles) {
+    super(verPos, horPos, tiles, width, height);
   }
 
-  public static Obstacle createObstacle(int xCoord, int yCoord, int width, int height) {
+  public static Obstacle createObstacle(int horPos, int verPos, int width, int height) {
     Tile[] newTiles = new Tile[width * height];
-    int x = 0, y = 0; // relative Position (0, 0) ist linke obere Ecke
+    int x = 0; // relative Position (0, 0) ist linke obere Ecke
+    int y = 0;
     for (int i = 0; i < newTiles.length; i++) {
 
       newTiles[i] = new Tile(x, y, TileType.SOLID);
@@ -33,6 +34,6 @@ public class Obstacle extends FixedObject {
       }
     }
 
-    return new Obstacle(xCoord, yCoord, width, height, newTiles);
+    return new Obstacle(horPos, verPos, width, height, newTiles);
   }
 }

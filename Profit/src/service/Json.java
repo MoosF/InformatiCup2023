@@ -1,12 +1,16 @@
 package service;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
-
+import java.util.stream.Collectors;
 import model.Combiner;
 import model.Conveyor;
 import model.Deposit;
@@ -15,15 +19,8 @@ import model.Field;
 import model.FixedObject;
 import model.Mine;
 import model.MovableObject;
-import model.MovableObject.MovableObjectType;
 import model.Obstacle;
 import model.Product;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.stream.Collectors;
 import model.ProductType;
 import model.ResourceType;
 
@@ -80,6 +77,7 @@ final class Json extends InputOutputHandle {
         case CONVEYER -> stringBuilder.append("\"conveyor\"");
         case FACTORY -> stringBuilder.append("\"factory\"");
         case MINE -> stringBuilder.append("\"mine\"");
+        default -> throw new IllegalStateException("Unexpected value: " + object.getType());
       }
 
       stringBuilder.append(",\"x\":");
@@ -94,6 +92,7 @@ final class Json extends InputOutputHandle {
         case CONVEYER -> stringBuilder.append(((Conveyor) object).getSubType().ordinal());
         case FACTORY -> stringBuilder.append(((Factory) object).getSubType().ordinal());
         case MINE -> stringBuilder.append(((Mine) object).getSubType().ordinal());
+        default -> throw new IllegalStateException("Unexpected value: " + object.getType());
       }
 
       stringBuilder.append("}");
@@ -298,8 +297,8 @@ final class Json extends InputOutputHandle {
         // Current object can't be null, IntelliJ is lying here. The input must always have
         // something in the JSON-file's object-array.
         case "type" -> currentObject.type = it.next();
-        case "x" -> currentObject.x = Integer.parseInt(it.next());
-        case "y" -> currentObject.y = Integer.parseInt(it.next());
+        case "x" -> currentObject.horPos = Integer.parseInt(it.next());
+        case "y" -> currentObject.verPos = Integer.parseInt(it.next());
         case "subtype" -> currentObject.subtype = getResourceTypeFor(Integer.parseInt(it.next()));
         case "width" -> currentObject.width = Integer.parseInt(it.next());
         case "height" -> currentObject.height = Integer.parseInt(it.next());
@@ -330,6 +329,7 @@ final class Json extends InputOutputHandle {
         case "subtype" -> currentProduct.subtype = getProductTypeFor(Integer.parseInt(it.next()));
         case "resources" -> parseResources(it, currentProduct);
         case "points" -> currentProduct.points = Integer.parseInt(it.next());
+        default -> throw new IllegalStateException("Unexpected value: " + token);
       }
 
       if (token.equals("}")) {
@@ -379,11 +379,11 @@ final class Json extends InputOutputHandle {
     if (token.equals("}")) {
       if (currentObject.type.equals("deposit")) {
         Deposit deposit = Deposit.createDeposit(currentObject.subtype,
-            currentObject.x, currentObject.y,
+            currentObject.horPos, currentObject.verPos,
             currentObject.width, currentObject.height);
         input.objects.add(deposit);
       } else {
-        Obstacle obstacle = Obstacle.createObstacle(currentObject.x, currentObject.y,
+        Obstacle obstacle = Obstacle.createObstacle(currentObject.horPos, currentObject.verPos,
             currentObject.width, currentObject.height);
         input.objects.add(obstacle);
       }
@@ -397,8 +397,8 @@ final class Json extends InputOutputHandle {
    */
   private static class TempFixedObject {
 
-    int x;
-    int y;
+    int horPos;
+    int verPos;
     int width;
     int height;
     String type;

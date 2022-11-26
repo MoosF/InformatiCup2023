@@ -4,14 +4,14 @@ import java.util.Optional;
 
 public class Tile {
 
-  private final int xCoord;
-  private final int yCoord;
+  private final int horPos;
+  private final int verPos;
   private final TileType type;
   private BaseObject object;
 
-  public Tile(int xCoord, int yCoord, TileType type) {
-    this.xCoord = xCoord;
-    this.yCoord = yCoord;
+  public Tile(int horPos, int verPos, TileType type) {
+    this.horPos = horPos;
+    this.verPos = verPos;
     this.type = type;
   }
 
@@ -19,14 +19,14 @@ public class Tile {
    * @return X-Coordinate of the {@link Tile}.
    */
   public int getX() {
-    return xCoord;
+    return horPos;
   }
 
   /**
    * @return Y-Coordinate of the {@link Tile}.
    */
   public int getY() {
-    return yCoord;
+    return verPos;
   }
 
   public TileType getType() {
@@ -45,8 +45,8 @@ public class Tile {
   public boolean equals(Object obj) {
     if (this.getClass().equals(obj.getClass())) {
       Tile rhs = (Tile) obj;
-      boolean result = this.xCoord == rhs.xCoord;
-      result = result && this.yCoord == rhs.yCoord;
+      boolean result = this.horPos == rhs.horPos;
+      result = result && this.verPos == rhs.verPos;
       return result && this.type == rhs.type;
     } else {
       return false;

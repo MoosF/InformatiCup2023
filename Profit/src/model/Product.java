@@ -51,7 +51,9 @@ public class Product {
     return points;
   }
 
-  public ProductType getType() { return type; }
+  public ProductType getType() {
+    return type;
+  }
 
   /**
    * Adds a single resource to the {@link Product}, that is needed to produce it. Each

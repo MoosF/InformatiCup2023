@@ -12,12 +12,12 @@ public abstract class MovableObject extends BaseObject {
   /**
    * Constructor of {@link MovableObject}.
    *
-   * @param xCoord X-Coordinate of the {@link MovableObject}.
-   * @param yCoord Y-Coordinate of the {@link MovableObject}.
+   * @param horPos X-Coordinate of the {@link MovableObject}.
+   * @param verPos Y-Coordinate of the {@link MovableObject}.
    * @param tiles  Tiles, that construct the {@link MovableObject}.
    */
-  public MovableObject(int xCoord, int yCoord, Tile[] tiles, MovableObjectType type) {
-    super(xCoord, yCoord, tiles);
+  public MovableObject(int horPos, int verPos, Tile[] tiles, MovableObjectType type) {
+    super(horPos, verPos, tiles);
     this.type = type;
   }
 

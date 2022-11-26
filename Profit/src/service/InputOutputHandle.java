@@ -11,8 +11,6 @@ import model.MovableObject;
 import model.Product;
 import model.Tile;
 
-import static service.InputOutputHandle.FileType.*;
-
 /**
  * Class for handling input of {@link Field} parameters and output of calculated {@link Mine}-,
  * {@link Conveyor}-, {@link Combiner}- and {@link Factory}-objects.
@@ -50,8 +48,8 @@ public abstract class InputOutputHandle implements Input {
    *
    * @param input A {@link String} containing a valid JSON-object or the relative or absolute path
    *              to a file containing the JSON-object.
-   * @return An class that implements the interface {@link Input} and holds all relevant information
-   * about the {@link Field} defined by the input file.
+   * @return A class that implements the interface {@link Input} and holds all relevant information
+   *         about the {@link Field} defined by the input file.
    * @throws InputOutputException when an error has occurred while parsing the input.
    */
   public static Input getInputFrom(String input) throws InputOutputException {
@@ -69,7 +67,7 @@ public abstract class InputOutputHandle implements Input {
    *
    * @param output A {@link List} of {@link MovableObject}s.
    * @return the generated {@link String} containing the output in the format determined by
-   * {@link Settings}.
+   *         {@link Settings}.
    * @throws InputOutputException when a {@link FileType} is set in the {@link Settings} that is not
    *                              yet implemented.
    */
