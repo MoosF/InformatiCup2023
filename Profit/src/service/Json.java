@@ -329,7 +329,6 @@ final class Json extends InputOutputHandle {
         case "subtype" -> currentProduct.subtype = getProductTypeFor(Integer.parseInt(it.next()));
         case "resources" -> parseResources(it, currentProduct);
         case "points" -> currentProduct.points = Integer.parseInt(it.next());
-        default -> throw new IllegalStateException("Unexpected value: " + token);
       }
 
       if (token.equals("}")) {

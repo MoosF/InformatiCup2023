@@ -36,6 +36,7 @@ public class FieldDrawPanel extends JPanel {
   protected void paintComponent(Graphics g) {
     super.paintComponent(g);
 
+    //Objects
     field.getObjects().forEach(baseObject -> drawBaseObject(baseObject, g));
 
     //Vertical Lines
