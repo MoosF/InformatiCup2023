@@ -7,7 +7,7 @@ import model.Product;
 /**
  * @author Fabian Moos
  */
-public abstract class AbstractInput implements InputFile {
+public abstract class AbstractInput {
 
   protected int width;
   protected int height;
@@ -21,32 +21,26 @@ public abstract class AbstractInput implements InputFile {
     this.products = products;
   }
 
-  @Override
   public int getWidth() {
     return width;
   }
 
-  @Override
   public int getHeight() {
     return height;
   }
 
-  @Override
   public List<FixedObject> getInputObjects() {
     return objects;
   }
 
-  @Override
   public List<Product> getProducts() {
     return products;
   }
 
-  @Override
   public int getTurns() {
     return turns;
   }
 
-  @Override
   public int getTime() {
     return time;
   }

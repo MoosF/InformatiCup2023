@@ -9,6 +9,7 @@ import java.util.Map;
  */
 public class Conveyor extends MovableObject {
 
+  private ConveyerSubType subType;
 
   /**
    * Constructor of {@link Conveyor}.
@@ -17,8 +18,10 @@ public class Conveyor extends MovableObject {
    * @param yCoord Y-Coordinate of the {@link Conveyor}.
    * @param tiles  Tiles, that construct the {@link Conveyor}.
    */
-  private Conveyor(int xCoord, int yCoord, Tile[] tiles) {
-    super(xCoord, yCoord, tiles);
+  private Conveyor(int xCoord, int yCoord, Tile[] tiles, MovableObjectType type,
+      ConveyerSubType subType) {
+    super(xCoord, yCoord, tiles, type);
+    this.subType = subType;
   }
 
   /**
@@ -91,7 +94,7 @@ public class Conveyor extends MovableObject {
       }
     }
 
-    return new Conveyor(xCoord, yCoord, tiles);
+    return new Conveyor(xCoord, yCoord, tiles, MovableObjectType.CONVEYER, subType);
   }
 
 
@@ -101,19 +104,23 @@ public class Conveyor extends MovableObject {
     return storedResources;
   }
 
+  public ConveyerSubType getSubType() {
+    return this.subType;
+  }
+
   /**
    * This enum represents the subtypes of {@link Conveyor}.
    *
    * @author Yannick Kraml
    */
   public enum ConveyerSubType {
-    SHORT_OUTPUT_SOUTH,
     SHORT_OUTPUT_EAST,
-    SHORT_OUTPUT_NORTH,
+    SHORT_OUTPUT_SOUTH,
     SHORT_OUTPUT_WEST,
+    SHORT_OUTPUT_NORTH,
+    LONG_OUTPUT_EAST,
     LONG_OUTPUT_SOUTH,
     LONG_OUTPUT_WEST,
     LONG_OUTPUT_NORTH,
-    LONG_OUTPUT_EAST
   }
 }

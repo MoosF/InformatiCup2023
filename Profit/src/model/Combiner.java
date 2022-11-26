@@ -9,6 +9,7 @@ import java.util.Map;
  */
 public class Combiner extends MovableObject {
 
+  private CombinerSubType subType;
 
   /**
    * Constructor of {@link Combiner}.
@@ -17,8 +18,10 @@ public class Combiner extends MovableObject {
    * @param yCoord Y-Coordinate of the {@link Combiner}.
    * @param tiles  Tiles, that construct the {@link Combiner}.
    */
-  private Combiner(int xCoord, int yCoord, Tile[] tiles) {
-    super(xCoord, yCoord, tiles);
+  private Combiner(int xCoord, int yCoord, Tile[] tiles, MovableObjectType type,
+      CombinerSubType subType) {
+    super(xCoord, yCoord, tiles, type);
+    this.subType = subType;
   }
 
   /**
@@ -83,7 +86,7 @@ public class Combiner extends MovableObject {
       }
     }
 
-    return new Combiner(xCoord, yCoord, tiles);
+    return new Combiner(xCoord, yCoord, tiles, MovableObjectType.COMBINER, subtype);
   }
 
   @Override
@@ -92,15 +95,19 @@ public class Combiner extends MovableObject {
     return storedResources;
   }
 
+  public CombinerSubType getSubType() {
+    return this.subType;
+  }
+
   /**
    * This enum represents the four subtypes of {@link Combiner}.
    *
    * @author Yannick Kraml.
    */
   public enum CombinerSubType {
-    OUTPUT_NORTH,
     OUTPUT_EAST,
     OUTPUT_SOUTH,
-    OUTPUT_WEST
+    OUTPUT_WEST,
+    OUTPUT_NORTH,
   }
 }

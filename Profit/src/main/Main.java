@@ -3,18 +3,26 @@ package main;
 import model.CouldNotPlaceObjectException;
 import model.Field;
 import model.FixedObject;
-import service.InputFile;
-import service.JsonInput;
-import simulation.SimulateException;
+import service.InputOutputHandle.FileType;
+import service.Input;
+import service.InputOutputHandle;
+import service.Settings;
 
 
 public class Main {
 
   public static void main(String[] args) throws CouldNotPlaceObjectException {
-    String[] inputFiles = {"001.task.json", "002.task.json", "003.task.json", "004.task.json"};
+    var settings = Settings.getInstance();
+    settings.updateImportTarget(false);
+    settings.updateImportFileType(FileType.JSON);
+
+    String[] inputFiles = {
+        "001.task-with-time.json", "002.task-with-time.json",
+        "003.task-with-time.json", "004.task-with-time.json"
+    };
 
     for (String file : inputFiles) {
-      InputFile input = JsonInput.createInputFromFile(file);
+      Input input = InputOutputHandle.getInputFrom(file);
 
       Field field = new Field(input.getWidth(), input.getHeight());
 

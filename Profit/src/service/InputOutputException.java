@@ -7,9 +7,9 @@ package service;
  *
  * @author Fabian Moos
  */
-public class InputException extends RuntimeException {
+public class InputOutputException extends RuntimeException {
 
-  public InputException(String eMessage) {
+  public InputOutputException(String eMessage) {
     super(eMessage);
   }
 }

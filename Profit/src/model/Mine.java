@@ -9,6 +9,7 @@ import java.util.Map;
  */
 public class Mine extends MovableObject {
 
+  private MineSubType subType;
 
   /**
    * Constructor of {@link Mine}.
@@ -17,16 +18,17 @@ public class Mine extends MovableObject {
    * @param yCoord Y-Coordinate of the {@link Mine}.
    * @param tiles  Tiles, that constructs the {@link Mine}.
    */
-  private Mine(int xCoord, int yCoord, Tile[] tiles) {
-    super(xCoord, yCoord, tiles);
+  private Mine(int xCoord, int yCoord, Tile[] tiles, MovableObjectType type, MineSubType subType) {
+    super(xCoord, yCoord, tiles, type);
+    this.subType = subType;
   }
 
   /**
    * Creates a new instance of {@link Mine}.
    *
-   * @param xCoord      X-Coordinate of the {@link Mine}.
-   * @param yCoord      Y-Coordinate of the {@link Mine}.
-   * @param type Subtype of the {@link Mine}.
+   * @param xCoord X-Coordinate of the {@link Mine}.
+   * @param yCoord Y-Coordinate of the {@link Mine}.
+   * @param type   Subtype of the {@link Mine}.
    * @return New instance of {@link Mine}.
    */
   public static Mine createMine(int xCoord, int yCoord, MineSubType type) {
@@ -79,7 +81,7 @@ public class Mine extends MovableObject {
       }
     }
 
-    return new Mine(xCoord, yCoord, tiles);
+    return new Mine(xCoord, yCoord, tiles, MovableObjectType.MINE, type);
   }
 
   @Override
@@ -88,13 +90,17 @@ public class Mine extends MovableObject {
     return storedResources;
   }
 
+  public MineSubType getSubType() {
+    return this.subType;
+  }
+
   /**
    * This enum represents the subtypes of {@link Mine}.
    */
   public enum MineSubType {
-      OUTPUT_NORTH,
-      OUTPUT_EAST,
-      OUTPUT_SOUTH,
-      OUTPUT_WEST
+    OUTPUT_EAST,
+    OUTPUT_SOUTH,
+    OUTPUT_WEST,
+    OUTPUT_NORTH,
   }
 }
