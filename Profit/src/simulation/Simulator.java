@@ -85,8 +85,8 @@ public class Simulator {
 
       for (Tile tile : simulatableObject.getWorker().getTiles()) {
 
-        int x = tile.getX() + simulatableObject.getWorker().getX();
-        int y = tile.getY() + simulatableObject.getWorker().getY();
+        int x = tile.getRelHorPos() + simulatableObject.getWorker().getX();
+        int y = tile.getRelVerPos() + simulatableObject.getWorker().getY();
 
         getNeighbors(field, x, y).stream().filter(neighbor -> areConnected(tile, neighbor))
             .map(neighbor -> getSimulatedObjectByTile(simulatableObjects, neighbor))

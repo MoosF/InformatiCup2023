@@ -1,5 +1,10 @@
 package model;
 
+/**
+ * This enums represents the types of a {@link Product}.
+ *
+ * @author Fabian Moos
+ */
 public enum ProductType {
-    ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN
+  ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN
 }

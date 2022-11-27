@@ -2,31 +2,38 @@ package model;
 
 import java.util.Optional;
 
+/**
+ * This class models a single {@link Tile} of a {@link BaseObject}. Each {@link BaseObject} is
+ * constructed of several {@link Tile}s.
+ *
+ * @author Yannick Kraml
+ */
 public class Tile {
 
-  private final int horPos;
-  private final int verPos;
+  private final int relHorPos;
+  private final int relVerPos;
   private final TileType type;
   private BaseObject object;
 
-  public Tile(int horPos, int verPos, TileType type) {
-    this.horPos = horPos;
-    this.verPos = verPos;
+  /**
+   * Constrcutor of {@link Tile}.
+   *
+   * @param relHorPos Relative horizontal position compared to the {@link BaseObject}.
+   * @param relVerPos Relative vertical position compared to the {@link BaseObject}.
+   * @param type      {@link TileType} of this {@link Tile}.
+   */
+  public Tile(int relHorPos, int relVerPos, TileType type) {
+    this.relHorPos = relHorPos;
+    this.relVerPos = relVerPos;
     this.type = type;
   }
 
-  /**
-   * @return X-Coordinate of the {@link Tile}.
-   */
-  public int getX() {
-    return horPos;
+  public int getRelHorPos() {
+    return relHorPos;
   }
 
-  /**
-   * @return Y-Coordinate of the {@link Tile}.
-   */
-  public int getY() {
-    return verPos;
+  public int getRelVerPos() {
+    return relVerPos;
   }
 
   public TileType getType() {
@@ -45,8 +52,8 @@ public class Tile {
   public boolean equals(Object obj) {
     if (this.getClass().equals(obj.getClass())) {
       Tile rhs = (Tile) obj;
-      boolean result = this.horPos == rhs.horPos;
-      result = result && this.verPos == rhs.verPos;
+      boolean result = this.relHorPos == rhs.relHorPos;
+      result = result && this.relVerPos == rhs.relVerPos;
       return result && this.type == rhs.type;
     } else {
       return false;

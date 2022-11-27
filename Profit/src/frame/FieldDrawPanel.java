@@ -64,18 +64,16 @@ public class FieldDrawPanel extends JPanel {
 
     char letter;
     switch (tile.getType()) {
-      case INPUT -> letter = '+';
-      case OUTPUT -> letter = '-';
+      case INPUT, MINE_INPUT -> letter = '+';
+      case OUTPUT, DEPOSIT_OUTPUT -> letter = '-';
       case EMPTY -> letter = ' ';
       case CROSSABLE -> letter = '#';
       case SOLID -> letter = '.';
-      case MINE_INPUT -> letter = '+';
-      case DEPOSIT_OUTPUT -> letter = '-';
       default -> throw new IllegalStateException("Unexpected value: " + tile.getType());
     }
 
-    int screenHorizontalCoordinate = (baseObject.getX() + tile.getX()) * TILE_SIZE;
-    int screenVerticalCoordinate = (baseObject.getY() + tile.getY()) * TILE_SIZE;
+    int screenHorizontalCoordinate = (baseObject.getX() + tile.getRelHorPos()) * TILE_SIZE;
+    int screenVerticalCoordinate = (baseObject.getY() + tile.getRelVerPos()) * TILE_SIZE;
 
     g.setColor(baseObjectColor);
     g.fillRect(screenHorizontalCoordinate, screenVerticalCoordinate, TILE_SIZE, TILE_SIZE);

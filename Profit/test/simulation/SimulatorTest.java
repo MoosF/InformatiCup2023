@@ -1,5 +1,6 @@
 package simulation;
 
+import java.util.Map;
 import model.Combiner;
 import model.Combiner.CombinerSubType;
 import model.Conveyor;
@@ -11,6 +12,7 @@ import model.Field;
 import model.Mine;
 import model.Mine.MineSubType;
 import model.Product;
+import model.ProductType;
 import model.ResourceType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -21,8 +23,7 @@ class SimulatorTest {
   @Test
   public void test1() throws CouldNotPlaceObjectException, SimulateException {
 
-    Product product = new Product(10);
-    product.addNeededRessource(ResourceType.ZERO, 1);
+    Product product = new Product(10, ProductType.ZERO, Map.of(ResourceType.ZERO, 1));
 
     Field field = new Field(20, 20);
 
@@ -40,9 +41,8 @@ class SimulatorTest {
   @Test
   public void test2() throws CouldNotPlaceObjectException, SimulateException {
 
-    Product product = new Product(10);
-    product.addNeededRessource(ResourceType.ZERO, 3);
-    product.addNeededRessource(ResourceType.ONE, 5);
+    Product product = new Product(10, ProductType.ZERO,
+        Map.of(ResourceType.ZERO, 3, ResourceType.ONE, 5));
 
     Field field = new Field(40, 20);
 
@@ -66,12 +66,10 @@ class SimulatorTest {
   @Test
   public void test3() throws CouldNotPlaceObjectException, SimulateException {
 
-    Product product0 = new Product(10);
-    Product product1 = new Product(24);
-    product0.addNeededRessource(ResourceType.ZERO, 3);
-    product0.addNeededRessource(ResourceType.ONE, 10);
-    product1.addNeededRessource(ResourceType.TWO, 4);
-    product1.addNeededRessource(ResourceType.THREE, 6);
+    Product product0 = new Product(10, ProductType.ZERO,
+        Map.of(ResourceType.ZERO, 3, ResourceType.ONE, 10));
+    Product product1 = new Product(24, ProductType.ONE,
+        Map.of(ResourceType.TWO, 4, ResourceType.THREE, 6));
 
     Field field = new Field(40, 20);
 
@@ -118,8 +116,7 @@ class SimulatorTest {
   @Test
   public void test4() throws SimulateException, CouldNotPlaceObjectException {
 
-    Product product = new Product(10);
-    product.addNeededRessource(ResourceType.ZERO, 3);
+    Product product = new Product(10, ProductType.ZERO, Map.of(ResourceType.ZERO, 3));
 
     Field field = new Field(25, 25);
 

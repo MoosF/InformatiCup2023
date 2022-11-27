@@ -7,7 +7,7 @@ package model;
  */
 public abstract class MovableObject extends BaseObject {
 
-  private MovableObjectType type;
+  private final MovableObjectType type;
 
   /**
    * Constructor of {@link MovableObject}.
@@ -25,6 +25,11 @@ public abstract class MovableObject extends BaseObject {
     return this.type;
   }
 
+  /**
+   * This enum represents all types of {@link MovableObject}.
+   *
+   * @author Fabian Moos
+   */
   public enum MovableObjectType {
     COMBINER,
     CONVEYER,

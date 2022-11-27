@@ -53,8 +53,8 @@ public class Field {
   public void addBaseObject(BaseObject o) throws CouldNotPlaceObjectException {
 
     for (Tile tile : o.getTiles()) {
-      int verticalLocation = o.getX() + tile.getX();
-      int horizontalLocation = o.getY() + tile.getY();
+      int verticalLocation = o.getX() + tile.getRelHorPos();
+      int horizontalLocation = o.getY() + tile.getRelVerPos();
 
       Tile targetTile = tiles[verticalLocation][horizontalLocation];
       boolean targetTileIsEmpty = targetTile.getType().equals(TileType.EMPTY);
@@ -83,8 +83,8 @@ public class Field {
 
     objects.remove(o);
     for (Tile tile : o.getTiles()) {
-      int verticalPostion = o.getX() + tile.getX();
-      int horizontalPosition = o.getY() + tile.getY();
+      int verticalPostion = o.getX() + tile.getRelHorPos();
+      int horizontalPosition = o.getY() + tile.getRelVerPos();
       tiles[verticalPostion][horizontalPosition] = new Tile(verticalPostion, horizontalPosition,
           TileType.EMPTY);
     }

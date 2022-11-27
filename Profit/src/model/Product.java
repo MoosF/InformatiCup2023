@@ -2,7 +2,6 @@ package model;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -19,15 +18,11 @@ public class Product {
   /**
    * Constructor of {@link Product}.
    *
-   * @param points Points, that the {@link Product} is worth.
+   * @param points            Points, that the {@link Product} is worth.
+   * @param type              Type of the {@link Product}.
+   * @param requiredResources Needed resources for the {@link Product}.
    */
-  public Product(int points) {
-    this.type = null;
-    this.points = points;
-    neededResourcesMap = new HashMap<>();
-  }
-
-  public Product(int points, ProductType type, HashMap<ResourceType, Integer> requiredResources) {
+  public Product(int points, ProductType type, Map<ResourceType, Integer> requiredResources) {
     this.type = type;
     this.points = points;
     this.neededResourcesMap = requiredResources;
