@@ -8,11 +8,7 @@ import java.util.Collection;
  *
  * @author Yannick Kraml
  */
-public class Coupled {
-
-  private final SimulatableObject receiver;
-  private final Collection<SimulatableObject> givers;
-
+public record Coupled(SimulatableObject receiver, Collection<SimulatableObject> givers) {
 
   /**
    * Constructor of this class.
@@ -20,16 +16,6 @@ public class Coupled {
    * @param receiver {@link SimulatableObject}, that receives the resources.
    * @param givers   {@link SimulatableObject}s, that gives the resources.
    */
-  public Coupled(SimulatableObject receiver, Collection<SimulatableObject> givers) {
-    this.receiver = receiver;
-    this.givers = givers;
-  }
-
-  public SimulatableObject getReceiver() {
-    return receiver;
-  }
-
-  public Collection<SimulatableObject> getGivers() {
-    return givers;
+  public Coupled {
   }
 }

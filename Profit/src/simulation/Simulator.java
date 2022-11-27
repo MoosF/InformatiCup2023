@@ -59,11 +59,11 @@ public class Simulator {
       throws SimulateException {
 
     for (Coupled coupledObject : couples) {
-      for (SimulatableObject giver : coupledObject.getGivers()) {
+      for (SimulatableObject giver : coupledObject.givers()) {
 
         Map<ResourceType, Integer> resourcesToBeMoved = giver.getResourcesToOutput();
         giver.removeResources(resourcesToBeMoved);
-        coupledObject.getReceiver().inputResources(resourcesToBeMoved);
+        coupledObject.receiver().inputResources(resourcesToBeMoved);
 
       }
     }
@@ -75,7 +75,7 @@ public class Simulator {
   }
 
   private Collection<Coupled> findCoupledObjects(Collection<SimulatableObject> simulatableObjects,
-      Field field) {
+      Field field) throws SimulateException {
 
     Collection<Coupled> coupledObjects = new ArrayList<>();
 
@@ -88,9 +88,11 @@ public class Simulator {
         int x = tile.getRelHorPos() + simulatableObject.getWorker().getX();
         int y = tile.getRelVerPos() + simulatableObject.getWorker().getY();
 
-        getNeighbors(field, x, y).stream().filter(neighbor -> areConnected(tile, neighbor))
-            .map(neighbor -> getSimulatedObjectByTile(simulatableObjects, neighbor))
-            .forEach(objectsToCouple::add);
+        for (Tile neighbor : getNeighbors(field, x, y)) {
+          if (areConnected(tile, neighbor)) {
+            objectsToCouple.add(getSimulatedObjectByTile(simulatableObjects, neighbor));
+          }
+        }
 
       }
 
@@ -127,7 +129,7 @@ public class Simulator {
 
 
   private SimulatableObject getSimulatedObjectByTile(
-      Collection<SimulatableObject> simulatableObjects, Tile tile) {
+      Collection<SimulatableObject> simulatableObjects, Tile tile) throws SimulateException {
 
     for (SimulatableObject simulatableObject : simulatableObjects) {
       if (tile.getObject().isPresent() && simulatableObject.getWorker()
@@ -136,6 +138,6 @@ public class Simulator {
       }
     }
 
-    throw new RuntimeException("Simulatable object not found.");
+    throw new SimulateException("Simulatable object not found.");
   }
 }
