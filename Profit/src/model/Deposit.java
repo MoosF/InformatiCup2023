@@ -28,8 +28,6 @@ public class Deposit extends FixedObject {
       Tile[] tiles) {
     super(horPos, verPos, tiles, width, height);
     resourceType = subtype;
-
-
   }
 
   /**

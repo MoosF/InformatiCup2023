@@ -9,7 +9,7 @@ import model.enums.ResourceType;
  *
  * @author Yevheniia Makara
  */
-public abstract class BaseObject {
+public abstract class BaseObject implements Works {
 
   private final int horPos;
   private final int verPos;
@@ -58,17 +58,5 @@ public abstract class BaseObject {
     return verPos;
   }
 
-  public int doWorkForPoints(Map<ResourceType, Integer> storedResources) {
-    return 0;
-  }
-
-  public Map<ResourceType, Integer> getStartResources() {
-    return new HashMap<>();
-  }
-
-  public Map<ResourceType, Integer> getResourcesToOutput(
-      Map<ResourceType, Integer> storedResources) {
-    return new HashMap<>();
-  }
 
 }

@@ -19,7 +19,7 @@ public abstract class FixedObject extends BaseObject {
    * @param height height of the {@link FixedObject}
    * @param width  width of the {@link FixedObject}
    */
-  public FixedObject(int horPos, int verPos, Tile[] tiles, int width, int height) {
+  protected FixedObject(int horPos, int verPos, Tile[] tiles, int width, int height) {
     super(horPos, verPos, tiles);
     this.height = height;
     this.width = width;
