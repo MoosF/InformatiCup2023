@@ -10,12 +10,4 @@ import java.util.Collection;
  */
 public record Coupled(SimulatableObject receiver, Collection<SimulatableObject> givers) {
 
-  /**
-   * Constructor of this class.
-   *
-   * @param receiver {@link SimulatableObject}, that receives the resources.
-   * @param givers   {@link SimulatableObject}s, that gives the resources.
-   */
-  public Coupled {
-  }
 }
