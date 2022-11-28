@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.stream.Collectors;
 import model.Combiner;
-import model.Conveyor;
+import model.Conveyer;
 import model.Deposit;
 import model.Factory;
 import model.Field;
@@ -21,8 +21,8 @@ import model.Mine;
 import model.MovableObject;
 import model.Obstacle;
 import model.Product;
-import model.ProductType;
-import model.ResourceType;
+import model.enums.ProductType;
+import model.enums.ResourceType;
 
 /**
  * Class for handling inputs of {@link FileType} JSON.
@@ -89,7 +89,7 @@ final class Json extends InputOutputHandle {
       stringBuilder.append("\"subtype\":");
       switch (object.getType()) {
         case COMBINER -> stringBuilder.append(((Combiner) object).getSubType().ordinal());
-        case CONVEYER -> stringBuilder.append(((Conveyor) object).getSubType().ordinal());
+        case CONVEYER -> stringBuilder.append(((Conveyer) object).getSubType().ordinal());
         case FACTORY -> stringBuilder.append(((Factory) object).getSubType().ordinal());
         case MINE -> stringBuilder.append(((Mine) object).getSubType().ordinal());
         default -> throw new IllegalStateException("Unexpected value: " + object.getType());

@@ -1,4 +1,6 @@
-package model;
+package model.enums;
+
+import model.Tile;
 
 /**
  * Represents all types of a {@link Tile}.

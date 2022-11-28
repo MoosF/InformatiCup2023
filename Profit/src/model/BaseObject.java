@@ -2,6 +2,7 @@ package model;
 
 import java.util.HashMap;
 import java.util.Map;
+import model.enums.ResourceType;
 
 /**
  * This class models {@link BaseObject}.

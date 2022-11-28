@@ -2,6 +2,8 @@ package model;
 
 import java.util.HashMap;
 import java.util.Map;
+import model.enums.ResourceType;
+import model.enums.TileType;
 
 /**
  * This class models {@link Deposit}.

@@ -1,5 +1,7 @@
 package model;
 
+import model.enums.TileType;
+
 /**
  * This class models {@link Obstacle}.
  *

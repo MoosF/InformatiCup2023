@@ -3,6 +3,9 @@ package model;
 import frame.FieldFrame;
 import java.util.Collection;
 import java.util.LinkedList;
+import model.enums.TileType;
+import model.exceptions.CouldNotPlaceObjectException;
+import model.exceptions.CouldNotRemoveObjectException;
 
 /**
  * This class models {@link Field}.

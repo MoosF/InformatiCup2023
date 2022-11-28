@@ -1,4 +1,6 @@
-package model;
+package model.enums;
+
+import model.Product;
 
 /**
  * This enums represents the types of a {@link Product}.

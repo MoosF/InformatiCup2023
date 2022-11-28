@@ -1,4 +1,7 @@
-package model;
+package model.exceptions;
+
+import model.BaseObject;
+import model.Field;
 
 /**
  * This Exception will be thrown if a {@link BaseObject} could not be placed on a {@link Field}.

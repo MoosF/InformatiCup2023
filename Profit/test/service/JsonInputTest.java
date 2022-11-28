@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import model.*;
+import model.enums.ProductType;
+import model.enums.ResourceType;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 

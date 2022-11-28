@@ -2,7 +2,7 @@ package service;
 
 import java.util.List;
 import model.Combiner;
-import model.Conveyor;
+import model.Conveyer;
 import model.Factory;
 import model.Field;
 import model.FixedObject;
@@ -13,7 +13,7 @@ import model.Tile;
 
 /**
  * Class for handling input of {@link Field} parameters and output of calculated {@link Mine}-,
- * {@link Conveyor}-, {@link Combiner}- and {@link Factory}-objects.
+ * {@link Conveyer}-, {@link Combiner}- and {@link Factory}-objects.
  *
  * @author Fabian Moos
  * @see Input

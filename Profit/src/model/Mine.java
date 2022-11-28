@@ -1,6 +1,9 @@
 package model;
 
 import java.util.Map;
+import model.enums.MineSubType;
+import model.enums.ResourceType;
+import model.enums.TileType;
 
 /**
  * This class models a {@link Mine}.
@@ -94,13 +97,4 @@ public class Mine extends MovableObject {
     return this.subType;
   }
 
-  /**
-   * This enum represents the subtypes of {@link Mine}.
-   */
-  public enum MineSubType {
-    OUTPUT_EAST,
-    OUTPUT_SOUTH,
-    OUTPUT_WEST,
-    OUTPUT_NORTH,
-  }
 }

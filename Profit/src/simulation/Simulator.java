@@ -5,9 +5,9 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map;
 import model.Field;
-import model.ResourceType;
+import model.enums.ResourceType;
 import model.Tile;
-import model.TileType;
+import model.enums.TileType;
 
 /**
  * This class is responsible for simulating a given {@link Field}. {@link Simulator} is a

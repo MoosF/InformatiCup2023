@@ -1,8 +1,9 @@
 package model;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
+import model.enums.ProductType;
+import model.enums.ResourceType;
 
 /**
  * This class models a {@link Product}.

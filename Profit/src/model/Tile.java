@@ -1,6 +1,7 @@
 package model;
 
 import java.util.Optional;
+import model.enums.TileType;
 
 /**
  * This class models a single {@link Tile} of a {@link BaseObject}. Each {@link BaseObject} is

@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import model.BaseObject;
-import model.ResourceType;
+import model.enums.ResourceType;
 
 /**
  * {@link SimulatableObject} contains a {@link BaseObject} and enables its simulation.

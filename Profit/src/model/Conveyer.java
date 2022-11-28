@@ -1,38 +1,41 @@
 package model;
 
 import java.util.Map;
+import model.enums.ConveyerSubType;
+import model.enums.ResourceType;
+import model.enums.TileType;
 
 /**
- * This class models a {@link Conveyor}.
+ * This class models a {@link Conveyer}.
  *
  * @author Yannick Kraml
  */
-public class Conveyor extends MovableObject {
+public class Conveyer extends MovableObject {
 
-  private ConveyerSubType subType;
+  private final ConveyerSubType subType;
 
   /**
-   * Constructor of {@link Conveyor}.
+   * Constructor of {@link Conveyer}.
    *
-   * @param horPos X-Coordinate of the {@link Conveyor}.
-   * @param verPos Y-Coordinate of the {@link Conveyor}.
-   * @param tiles  Tiles, that construct the {@link Conveyor}.
+   * @param horPos X-Coordinate of the {@link Conveyer}.
+   * @param verPos Y-Coordinate of the {@link Conveyer}.
+   * @param tiles  Tiles, that construct the {@link Conveyer}.
    */
-  private Conveyor(int horPos, int verPos, Tile[] tiles, MovableObjectType type,
+  private Conveyer(int horPos, int verPos, Tile[] tiles, MovableObjectType type,
       ConveyerSubType subType) {
     super(horPos, verPos, tiles, type);
     this.subType = subType;
   }
 
   /**
-   * Creates an instance of a {@link Conveyor}.
+   * Creates an instance of a {@link Conveyer}.
    *
-   * @param horPos  X-Coordinate of the {@link Conveyor}.
-   * @param verPos  Y-Coordinate of the {@link Conveyor}.
-   * @param subType Subtype of the {@link Conveyor}.
-   * @return New instance of a {@link Conveyor}.
+   * @param horPos  X-Coordinate of the {@link Conveyer}.
+   * @param verPos  Y-Coordinate of the {@link Conveyer}.
+   * @param subType Subtype of the {@link Conveyer}.
+   * @return New instance of a {@link Conveyer}.
    */
-  public static Conveyor createConveyor(int horPos, int verPos, ConveyerSubType subType) {
+  public static Conveyer createConveyor(int horPos, int verPos, ConveyerSubType subType) {
 
     Tile[] tiles = null;
     switch (subType) {
@@ -94,7 +97,7 @@ public class Conveyor extends MovableObject {
       }
     }
 
-    return new Conveyor(horPos, verPos, tiles, MovableObjectType.CONVEYER, subType);
+    return new Conveyer(horPos, verPos, tiles, MovableObjectType.CONVEYER, subType);
   }
 
 
@@ -108,19 +111,4 @@ public class Conveyor extends MovableObject {
     return this.subType;
   }
 
-  /**
-   * This enum represents the subtypes of {@link Conveyor}.
-   *
-   * @author Yannick Kraml
-   */
-  public enum ConveyerSubType {
-    SHORT_OUTPUT_EAST,
-    SHORT_OUTPUT_SOUTH,
-    SHORT_OUTPUT_WEST,
-    SHORT_OUTPUT_NORTH,
-    LONG_OUTPUT_EAST,
-    LONG_OUTPUT_SOUTH,
-    LONG_OUTPUT_WEST,
-    LONG_OUTPUT_NORTH,
-  }
 }

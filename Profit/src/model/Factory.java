@@ -2,6 +2,9 @@ package model;
 
 import java.util.Map;
 import java.util.Map.Entry;
+import model.enums.ProductType;
+import model.enums.ResourceType;
+import model.enums.TileType;
 
 /**
  * This class models a {@link Factory}.

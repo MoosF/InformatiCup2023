@@ -1,6 +1,6 @@
 package main;
 
-import model.CouldNotPlaceObjectException;
+import model.exceptions.CouldNotPlaceObjectException;
 import model.Field;
 import model.FixedObject;
 import service.Input;
