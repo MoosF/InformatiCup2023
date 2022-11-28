@@ -37,7 +37,7 @@ public class FieldDrawPanel extends JPanel {
     super.paintComponent(g);
 
     //Objects
-    field.getObjects().forEach(baseObject -> drawBaseObject(baseObject, g));
+    field.getAllObjects().forEach(baseObject -> drawBaseObject(baseObject, g));
 
     //Vertical Lines
     g.setColor(Color.BLACK);

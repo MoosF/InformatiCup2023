@@ -1,7 +1,8 @@
-package model;
+package simulation;
 
 import java.util.HashMap;
 import java.util.Map;
+import model.Tile;
 import model.enums.ResourceType;
 
 /**
@@ -9,7 +10,7 @@ import model.enums.ResourceType;
  *
  * @author Yannick Kraml
  */
-public interface Works {
+public interface Worker {
 
 
   /**
@@ -43,4 +44,25 @@ public interface Works {
       Map<ResourceType, Integer> storedResources) {
     return new HashMap<>();
   }
+
+  /**
+   * Returns all {@link Tile} from this {@link Worker}.
+   *
+   * @return Tiles, that construct the {@link Worker}.
+   */
+  public Tile[] getTiles();
+
+  /**
+   * Returns the horizontal position of this {@link Worker}.
+   *
+   * @return X-Coordinate of the {@link Worker}.
+   */
+  public int getX();
+
+  /**
+   * Returns the vertical position of this {@link Worker}.
+   *
+   * @return Y-Coordinate of the {@link Worker}.
+   */
+  public int getY();
 }

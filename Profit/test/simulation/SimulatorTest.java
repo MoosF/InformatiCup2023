@@ -1,5 +1,6 @@
 package simulation;
 
+import java.util.Collection;
 import java.util.Map;
 import model.Combiner;
 import model.enums.CombinerSubType;

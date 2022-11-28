@@ -1,15 +1,13 @@
 package model;
 
-import java.util.HashMap;
-import java.util.Map;
-import model.enums.ResourceType;
+import simulation.Worker;
 
 /**
  * This class models {@link BaseObject}.
  *
  * @author Yevheniia Makara
  */
-public abstract class BaseObject implements Works {
+public abstract class BaseObject implements Worker {
 
   private final int horPos;
   private final int verPos;
@@ -36,6 +34,7 @@ public abstract class BaseObject implements Works {
    *
    * @return Tiles, that construct the {@link BaseObject}.
    */
+  @Override
   public Tile[] getTiles() {
     return tiles;
   }
@@ -45,6 +44,7 @@ public abstract class BaseObject implements Works {
    *
    * @return X-Coordinate of the {@link BaseObject}.
    */
+  @Override
   public int getX() {
     return horPos;
   }
@@ -54,6 +54,7 @@ public abstract class BaseObject implements Works {
    *
    * @return Y-Coordinate of the {@link BaseObject}.
    */
+  @Override
   public int getY() {
     return verPos;
   }

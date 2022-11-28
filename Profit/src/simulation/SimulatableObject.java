@@ -16,7 +16,7 @@ import model.enums.ResourceType;
  */
 public class SimulatableObject {
 
-  private final BaseObject worker;
+  private final Worker worker;
   private final Map<ResourceType, Integer> storedResources;
   private final Map<ResourceType, Integer> inputtedResources;
 
@@ -77,7 +77,7 @@ public class SimulatableObject {
    *
    * @return BaseObject, that is wrapped inside this {@link SimulatableObject}.
    */
-  public BaseObject getWorker() {
+  public Worker getWorker() {
     return worker;
   }
 

@@ -1,8 +1,10 @@
 package model;
 
 import frame.FieldFrame;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
+import java.util.HashMap;
+import java.util.Map;
 import model.enums.TileType;
 import model.exceptions.CouldNotPlaceObjectException;
 import model.exceptions.CouldNotRemoveObjectException;
@@ -14,7 +16,7 @@ import model.exceptions.CouldNotRemoveObjectException;
  */
 public class Field {
 
-  private final Collection<BaseObject> objects;
+  private final Map<Class<? extends BaseObject>, Collection<BaseObject>> objects;
   private final int width;
   private final int height;
   private final Tile[][] tiles;
@@ -28,7 +30,7 @@ public class Field {
   public Field(int width, int height) {
     this.width = width;
     this.height = height;
-    objects = new LinkedList<>();
+    objects = new HashMap<>();
 
     tiles = new Tile[width][height];
     for (int i = 0; i < width; i++) {
@@ -71,7 +73,10 @@ public class Field {
       }
     }
 
-    objects.add(o);
+    if (!objects.containsKey(o.getClass())) {
+      objects.put(o.getClass(), new ArrayList<>());
+    }
+    objects.get(o.getClass()).add(o);
   }
 
   /**
@@ -80,11 +85,11 @@ public class Field {
    * @param o model.BaseObject on the {@link Field}, that will be removed.
    */
   public void removeBaseObject(BaseObject o) throws CouldNotRemoveObjectException {
-    if (!this.getObjects().contains(o)) {
+    if (!this.getAllObjects().contains(o)) {
       throw new CouldNotRemoveObjectException(o);
     }
 
-    objects.remove(o);
+    objects.get(o.getClass()).remove(o);
     for (Tile tile : o.getTiles()) {
       int verticalPostion = o.getX() + tile.getRelHorPos();
       int horizontalPosition = o.getY() + tile.getRelVerPos();
@@ -106,8 +111,24 @@ public class Field {
    *
    * @return Collection of all placed {@link BaseObject}.
    */
-  public Collection<BaseObject> getObjects() {
-    return objects;
+  public Collection<BaseObject> getAllObjects() {
+    Collection<BaseObject> allObjects = new ArrayList<>();
+    objects.forEach((clazz, object) -> allObjects.addAll(object));
+    return allObjects;
+  }
+
+  /**
+   * Returns all {@link BaseObject}s of the field, that belong to a given class.
+   *
+   * @param clazz Class which all searched {@link BaseObject} should have.
+   * @param <K>   ignore
+   * @return A collection of all {@link BaseObject}s, that belong to the given class.
+   */
+  public <K extends BaseObject> Collection<K> getObjectsOfClass(Class<K> clazz) {
+    if (!objects.containsKey(clazz)) {
+      objects.put(clazz, new ArrayList<>());
+    }
+    return (Collection<K>) objects.get(clazz);
   }
 
 }
