@@ -56,7 +56,6 @@ public class Field {
    * @param o new model.BaseObject on the {@link Field}.
    */
   public void addBaseObject(BaseObject o) throws CouldNotPlaceObjectException {
-
     for (Tile tile : o.getTiles()) {
       int verticalLocation = o.getX() + tile.getRelHorPos();
       int horizontalLocation = o.getY() + tile.getRelVerPos();
@@ -66,17 +65,83 @@ public class Field {
       boolean targetTileIsCrossable = targetTile.getType().equals(TileType.CROSSABLE);
       boolean tileIsCrossable = tile.getType().equals(TileType.CROSSABLE);
 
-      if (targetTileIsEmpty || targetTileIsCrossable && tileIsCrossable) {
+      if ((targetTileIsEmpty || targetTileIsCrossable && tileIsCrossable) && canBePlaced(tile, verticalLocation, horizontalLocation)) {
         tiles[verticalLocation][horizontalLocation] = tile;
       } else {
         throw new CouldNotPlaceObjectException(verticalLocation, horizontalLocation);
       }
     }
 
+
     if (!objects.containsKey(o.getClass())) {
       objects.put(o.getClass(), new ArrayList<>());
     }
     objects.get(o.getClass()).add(o);
+  }
+
+  private boolean canBePlaced(Tile tile, int horizontalLocation, int verticalLocation) {
+    // jeder Ausgang nur neben maximal einem Eingang liegen darf.
+    if (tile.getType() == TileType.OUTPUT || tile.getType() == TileType.DEPOSIT_OUTPUT) {
+      if (countOfInputsOnOutput(horizontalLocation, verticalLocation) > 1) {
+        return false;
+      }
+    }
+
+    if (tile.getType() == TileType.INPUT || tile.getType() == TileType.MINE_INPUT) {
+      for (int i = horizontalLocation - 1; i <= horizontalLocation + 1; i += 2)
+        for (int j = verticalLocation - 1; j <= verticalLocation + 1; j += 2) {
+          if (i >= 0 && i < width && j >= 0 && j < height && (tiles[i][j].getType() == TileType.OUTPUT || tiles[i][j].getType() == TileType.DEPOSIT_OUTPUT)) {
+            if (countOfInputsOnOutput(i, j) > 0)
+              return false;
+          }
+        }
+    }
+
+    // Nur Eingänge von Minen dürfen an den Ausgängen von Lagerstätten liegen
+    if (!(tile.getObject().get() instanceof Mine)) {
+      if (tile.getType() == TileType.INPUT) {
+        for (int i = horizontalLocation - 1; i <= horizontalLocation + 1; i += 2)
+          for (int j = verticalLocation - 1; j <= verticalLocation + 1; j += 2) {
+            if (i >= 0 && i < width && j >= 0 && j < height && tiles[i][j].getType() == TileType.DEPOSIT_OUTPUT) {
+              return false;
+            }
+          }
+      }
+    }
+
+    // Nur Eingänge von Förderbändern, Verbindern und Fabriken dürfen an den
+    //Ausgängen von Minen liegen. (Also nur Eingänge von anderen Minen dürfen da nicht anliegen, weil Lagerstätte keine Eingänge haben)
+    if (tile.getObject().get() instanceof Mine) {
+      if (tile.getType() == TileType.OUTPUT) {
+        for (int i = horizontalLocation - 1; i <= horizontalLocation + 1; i += 2)
+          for (int j = verticalLocation - 1; j <= verticalLocation + 1; j += 2) {
+            if (i >= 0 && i < width && j >= 0 && j < height && tiles[i][j].getType() == TileType.MINE_INPUT) {
+              return false;
+            }
+          }
+      }
+
+      if (tile.getType() == TileType.MINE_INPUT) {
+        for (int i = horizontalLocation - 1; i <= horizontalLocation + 1; i += 2)
+          for (int j = verticalLocation - 1; j <= verticalLocation + 1; j += 2) {
+            if (i >= 0 && i < width && j >= 0 && j < height && tiles[i][j].getType() == TileType.OUTPUT && tile.getObject().get() instanceof Mine) {
+              return false;
+            }
+          }
+      }
+    }
+    return true;
+  }
+
+  private int countOfInputsOnOutput(int horizontalLocation, int verticalLocation) {
+    int inputCount = 0;
+    for (int i = horizontalLocation - 1; i <= horizontalLocation + 1; i += 2)
+      for (int j = verticalLocation - 1; j <= verticalLocation + 1; j += 2) {
+        if (i >= 0 && i < width && j >= 0 && j < height && (tiles[i][j].getType() == TileType.INPUT || tiles[i][j].getType() == TileType.MINE_INPUT)) {
+          inputCount++;
+        }
+      }
+    return inputCount;
   }
 
   /**
