@@ -88,24 +88,35 @@ public class Field {
     }
 
     if (tile.getType() == TileType.INPUT || tile.getType() == TileType.MINE_INPUT) {
-      for (int i = horizontalLocation - 1; i <= horizontalLocation + 1; i += 2)
-        for (int j = verticalLocation - 1; j <= verticalLocation + 1; j += 2) {
-          if (i >= 0 && i < width && j >= 0 && j < height && (tiles[i][j].getType() == TileType.OUTPUT || tiles[i][j].getType() == TileType.DEPOSIT_OUTPUT)) {
-            if (countOfInputsOnOutput(i, j) > 0)
-              return false;
-          }
+      for (int i = horizontalLocation - 1; i <= horizontalLocation + 1; i += 2) {
+        if (i >= 0 && i < width && (tiles[i][verticalLocation].getType() == TileType.OUTPUT ||
+            tiles[i][verticalLocation].getType() == TileType.DEPOSIT_OUTPUT)) {
+          if (countOfInputsOnOutput(i, horizontalLocation) > 0)
+            return false;
         }
+      }
+      for (int i = verticalLocation - 1; i <= verticalLocation + 1; i += 2) {
+        if (i >= 0 && i < height && (tiles[horizontalLocation][i].getType() == TileType.OUTPUT ||
+            tiles[horizontalLocation][i].getType() == TileType.DEPOSIT_OUTPUT)) {
+          if (countOfInputsOnOutput(horizontalLocation, i) > 0)
+            return false;
+        }
+      }
     }
 
     // Nur Eingänge von Minen dürfen an den Ausgängen von Lagerstätten liegen
     if (!(tile.getObject().get() instanceof Mine)) {
       if (tile.getType() == TileType.INPUT) {
-        for (int i = horizontalLocation - 1; i <= horizontalLocation + 1; i += 2)
-          for (int j = verticalLocation - 1; j <= verticalLocation + 1; j += 2) {
-            if (i >= 0 && i < width && j >= 0 && j < height && tiles[i][j].getType() == TileType.DEPOSIT_OUTPUT) {
-              return false;
-            }
+        for (int i = horizontalLocation - 1; i <= horizontalLocation + 1; i += 2) {
+          if (i >= 0 && i < width && tiles[i][verticalLocation].getType() == TileType.DEPOSIT_OUTPUT) {
+            return false;
           }
+        }
+        for (int i = verticalLocation - 1; i <= verticalLocation + 1; i += 2) {
+          if (i >= 0 && i < height && tiles[horizontalLocation][i].getType() == TileType.DEPOSIT_OUTPUT) {
+            return false;
+          }
+        }
       }
     }
 
@@ -113,21 +124,29 @@ public class Field {
     //Ausgängen von Minen liegen. (Also nur Eingänge von anderen Minen dürfen da nicht anliegen, weil Lagerstätte keine Eingänge haben)
     if (tile.getObject().get() instanceof Mine) {
       if (tile.getType() == TileType.OUTPUT) {
-        for (int i = horizontalLocation - 1; i <= horizontalLocation + 1; i += 2)
-          for (int j = verticalLocation - 1; j <= verticalLocation + 1; j += 2) {
-            if (i >= 0 && i < width && j >= 0 && j < height && tiles[i][j].getType() == TileType.MINE_INPUT) {
-              return false;
-            }
+        for (int i = horizontalLocation - 1; i <= horizontalLocation + 1; i += 2) {
+          if (i >= 0 && i < width && tiles[i][verticalLocation].getType() == TileType.MINE_INPUT) {
+            return false;
           }
+        }
+        for (int i = verticalLocation - 1; i <= verticalLocation + 1; i += 2) {
+          if (i >= 0 && i < height && tiles[horizontalLocation][i].getType() == TileType.MINE_INPUT) {
+            return false;
+          }
+        }
       }
 
       if (tile.getType() == TileType.MINE_INPUT) {
-        for (int i = horizontalLocation - 1; i <= horizontalLocation + 1; i += 2)
-          for (int j = verticalLocation - 1; j <= verticalLocation + 1; j += 2) {
-            if (i >= 0 && i < width && j >= 0 && j < height && tiles[i][j].getType() == TileType.OUTPUT && tile.getObject().get() instanceof Mine) {
-              return false;
-            }
+        for (int i = horizontalLocation - 1; i <= horizontalLocation + 1; i += 2) {
+          if (i >= 0 && i < width && tiles[i][verticalLocation].getType() == TileType.OUTPUT && tile.getObject().get() instanceof Mine) {
+            return false;
           }
+        }
+        for (int i = verticalLocation - 1; i <= verticalLocation + 1; i += 2) {
+          if (i >= 0 && i < height && tiles[horizontalLocation][i].getType() == TileType.OUTPUT && tile.getObject().get() instanceof Mine) {
+            return false;
+          }
+        }
       }
     }
     return true;
@@ -135,12 +154,14 @@ public class Field {
 
   private int countOfInputsOnOutput(int horizontalLocation, int verticalLocation) {
     int inputCount = 0;
-    for (int i = horizontalLocation - 1; i <= horizontalLocation + 1; i += 2)
-      for (int j = verticalLocation - 1; j <= verticalLocation + 1; j += 2) {
-        if (i >= 0 && i < width && j >= 0 && j < height && (tiles[i][j].getType() == TileType.INPUT || tiles[i][j].getType() == TileType.MINE_INPUT)) {
-          inputCount++;
-        }
-      }
+    for (int i = horizontalLocation - 1; i <= horizontalLocation + 1; i += 2) {
+      inputCount += (i >= 0 && i < width && (tiles[i][verticalLocation].getType() == TileType.INPUT ||
+          tiles[i][verticalLocation].getType() == TileType.MINE_INPUT)) ? 1 : 0;
+    }
+    for (int i = verticalLocation - 1; i <= verticalLocation + 1; i += 2) {
+      inputCount += (i >= 0 && i < height && (tiles[horizontalLocation][i].getType() == TileType.INPUT ||
+          tiles[horizontalLocation][i].getType() == TileType.MINE_INPUT)) ? 1 : 0;
+    }
     return inputCount;
   }
 

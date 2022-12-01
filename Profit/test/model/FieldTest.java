@@ -8,9 +8,10 @@ import model.enums.ConveyerSubType;
 import model.enums.MineSubType;
 import model.enums.ProductType;
 import model.enums.ResourceType;
+import model.enums.TileType;
 import model.exceptions.CouldNotPlaceObjectException;
 import model.exceptions.CouldNotRemoveObjectException;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.*;
 
@@ -19,22 +20,33 @@ public class FieldTest extends TestCase {
   Field field = new Field(100, 100);
 
   public void testAddBaseObject() throws CouldNotPlaceObjectException {
-    BaseObject o1 = Mine.createMine(0, 0, MineSubType.OUTPUT_EAST);
+    BaseObject o1 = Deposit.createDeposit(ResourceType.ZERO, 0, 0, 3, 2),
+        o2 = Mine.createMine(4, 0, MineSubType.OUTPUT_EAST);
     field.addBaseObject(o1);
+    assertTrue(field.getAllObjects().contains(o1));
+    field.addBaseObject(o2);
+    assertTrue(field.getAllObjects().contains(o2));
 
     assertThrows(
-        CouldNotRemoveObjectException.class,
-        () -> field.addBaseObject(Mine.createMine(0, 0, MineSubType.OUTPUT_EAST)));
-
-    assertTrue(field.getAllObjects().contains(o1));
+        CouldNotPlaceObjectException.class,
+        () -> field.addBaseObject(Conveyer.createConveyor(1, 2, ConveyerSubType.SHORT_OUTPUT_EAST)));
+    assertThrows(
+        CouldNotPlaceObjectException.class,
+        () -> field.addBaseObject(Mine.createMine(1, 0, MineSubType.OUTPUT_EAST)));
+    assertThrows(
+        CouldNotPlaceObjectException.class,
+        () -> field.addBaseObject(Mine.createMine(2, 3, MineSubType.OUTPUT_NORTH)));
+    assertThrows(
+        CouldNotPlaceObjectException.class,
+        () -> field.addBaseObject(Mine.createMine(8, 0, MineSubType.OUTPUT_EAST)));
   }
 
   public void testRemoveBaseObject()
       throws CouldNotPlaceObjectException, CouldNotRemoveObjectException {
     assertThrows(CouldNotRemoveObjectException.class,
-        () -> field.removeBaseObject(Mine.createMine(0, 0, MineSubType.OUTPUT_EAST)));
+        () -> field.removeBaseObject(Mine.createMine(5, 5, MineSubType.OUTPUT_EAST)));
 
-    BaseObject o1 = Mine.createMine(0, 0, MineSubType.OUTPUT_EAST);
+    BaseObject o1 = Mine.createMine(5, 5, MineSubType.OUTPUT_EAST);
     field.addBaseObject(o1);
     field.removeBaseObject(o1);
 
