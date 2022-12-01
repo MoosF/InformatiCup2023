@@ -16,10 +16,14 @@ public abstract class MinePlacer {
 
   public abstract boolean removeRandomMine() throws CouldNotRemoveObjectException;
 
-  public final void fillWithMines() throws CouldNotPlaceObjectException {
+  public final void fillWithMines() {
     boolean added = true;
     while (added) {
-      added = placeRandomMine();
+      try {
+        added = placeRandomMine();
+      } catch (CouldNotPlaceObjectException e) {
+        added = false;
+      }
     }
   }
 

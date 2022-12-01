@@ -25,11 +25,11 @@ public abstract class FixedObject extends BaseObject {
     this.width = width;
   }
 
-  protected int getHeight() {
+  public int getHeight() {
     return height;
   }
 
-  protected int getWidth() {
+  public int getWidth() {
     return width;
   }
 }

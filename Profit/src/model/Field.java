@@ -172,6 +172,10 @@ public class Field {
 
   private boolean tileCanBePlaced(int horPos, int verPos, Tile tile) {
 
+    if (verPos < 0 || horPos < 0 || verPos >= height || horPos >= width) {
+      return false;
+    }
+
     Tile targetTile = tiles[horPos][verPos];
     boolean targetTileIsEmpty = targetTile.getType().equals(TileType.EMPTY);
     boolean targetTileIsCrossable = targetTile.getType().equals(TileType.CROSSABLE);
