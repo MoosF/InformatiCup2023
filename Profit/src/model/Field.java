@@ -2,8 +2,10 @@ package model;
 
 import frame.FieldFrame;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import model.enums.TileType;
 import model.exceptions.CouldNotPlaceObjectException;
@@ -35,7 +37,7 @@ public class Field {
     tiles = new Tile[width][height];
     for (int i = 0; i < width; i++) {
       for (int j = 0; j < height; j++) {
-        tiles[i][j] = new Tile(i, j, TileType.EMPTY);
+        tiles[i][j] = new Tile(0, 0, TileType.EMPTY);
       }
     }
 
@@ -56,22 +58,26 @@ public class Field {
    * @param o new model.BaseObject on the {@link Field}.
    */
   public void addBaseObject(BaseObject o) throws CouldNotPlaceObjectException {
-    for (Tile tile : o.getTiles()) {
-      int verticalLocation = o.getX() + tile.getRelHorPos();
-      int horizontalLocation = o.getY() + tile.getRelVerPos();
 
-      Tile targetTile = tiles[verticalLocation][horizontalLocation];
+    if (!baseObjectCanBePlaced(o)) {
+      throw new CouldNotPlaceObjectException(o.getX(), o.getY());
+    }
+
+    for (Tile tile : o.getTiles()) {
+      int verPos = o.getX() + tile.getRelHorPos();
+      int horPos = o.getY() + tile.getRelVerPos();
+
+      Tile targetTile = tiles[verPos][horPos];
       boolean targetTileIsEmpty = targetTile.getType().equals(TileType.EMPTY);
       boolean targetTileIsCrossable = targetTile.getType().equals(TileType.CROSSABLE);
       boolean tileIsCrossable = tile.getType().equals(TileType.CROSSABLE);
 
-      if ((targetTileIsEmpty || targetTileIsCrossable && tileIsCrossable) && canBePlaced(tile, verticalLocation, horizontalLocation)) {
-        tiles[verticalLocation][horizontalLocation] = tile;
+      if ((targetTileIsEmpty || targetTileIsCrossable && tileIsCrossable)) {
+        tiles[verPos][horPos] = tile;
       } else {
-        throw new CouldNotPlaceObjectException(verticalLocation, horizontalLocation);
+        throw new CouldNotPlaceObjectException(verPos, horPos);
       }
     }
-
 
     if (!objects.containsKey(o.getClass())) {
       objects.put(o.getClass(), new ArrayList<>());
@@ -79,91 +85,103 @@ public class Field {
     objects.get(o.getClass()).add(o);
   }
 
-  private boolean canBePlaced(Tile tile, int horizontalLocation, int verticalLocation) {
-    // jeder Ausgang nur neben maximal einem Eingang liegen darf.
-    if (tile.getType() == TileType.OUTPUT || tile.getType() == TileType.DEPOSIT_OUTPUT) {
-      if (countOfInputsOnOutput(horizontalLocation, verticalLocation) > 1) {
+  public boolean baseObjectCanBePlaced(BaseObject baseObject) {
+
+    Collection<Tile> tiles = Arrays.stream(baseObject.getTiles()).toList();
+
+    for (Tile tile : tiles) {
+      int horPos = baseObject.getX() + tile.getRelHorPos();
+      int verPos = baseObject.getY() + tile.getRelVerPos();
+      if (!tileCanBePlace(horPos, verPos, tile.getType())) {
         return false;
       }
     }
 
-    if (tile.getType() == TileType.INPUT || tile.getType() == TileType.MINE_INPUT) {
-      for (int i = horizontalLocation - 1; i <= horizontalLocation + 1; i += 2) {
-        if (i >= 0 && i < width && (tiles[i][verticalLocation].getType() == TileType.OUTPUT ||
-            tiles[i][verticalLocation].getType() == TileType.DEPOSIT_OUTPUT)) {
-          if (countOfInputsOnOutput(i, horizontalLocation) > 0)
-            return false;
-        }
-      }
-      for (int i = verticalLocation - 1; i <= verticalLocation + 1; i += 2) {
-        if (i >= 0 && i < height && (tiles[horizontalLocation][i].getType() == TileType.OUTPUT ||
-            tiles[horizontalLocation][i].getType() == TileType.DEPOSIT_OUTPUT)) {
-          if (countOfInputsOnOutput(horizontalLocation, i) > 0)
-            return false;
-        }
-      }
-    }
-
-    // Nur Eingänge von Minen dürfen an den Ausgängen von Lagerstätten liegen
-    if (!(tile.getObject().get() instanceof Mine)) {
-      if (tile.getType() == TileType.INPUT) {
-        for (int i = horizontalLocation - 1; i <= horizontalLocation + 1; i += 2) {
-          if (i >= 0 && i < width && tiles[i][verticalLocation].getType() == TileType.DEPOSIT_OUTPUT) {
-            return false;
-          }
-        }
-        for (int i = verticalLocation - 1; i <= verticalLocation + 1; i += 2) {
-          if (i >= 0 && i < height && tiles[horizontalLocation][i].getType() == TileType.DEPOSIT_OUTPUT) {
-            return false;
-          }
-        }
-      }
-    }
-
-    // Nur Eingänge von Förderbändern, Verbindern und Fabriken dürfen an den
-    //Ausgängen von Minen liegen. (Also nur Eingänge von anderen Minen dürfen da nicht anliegen, weil Lagerstätte keine Eingänge haben)
-    if (tile.getObject().get() instanceof Mine) {
-      if (tile.getType() == TileType.OUTPUT) {
-        for (int i = horizontalLocation - 1; i <= horizontalLocation + 1; i += 2) {
-          if (i >= 0 && i < width && tiles[i][verticalLocation].getType() == TileType.MINE_INPUT) {
-            return false;
-          }
-        }
-        for (int i = verticalLocation - 1; i <= verticalLocation + 1; i += 2) {
-          if (i >= 0 && i < height && tiles[horizontalLocation][i].getType() == TileType.MINE_INPUT) {
-            return false;
-          }
-        }
-      }
-
-      if (tile.getType() == TileType.MINE_INPUT) {
-        for (int i = horizontalLocation - 1; i <= horizontalLocation + 1; i += 2) {
-          if (i >= 0 && i < width && tiles[i][verticalLocation].getType() == TileType.OUTPUT && tile.getObject().get() instanceof Mine) {
-            return false;
-          }
-        }
-        for (int i = verticalLocation - 1; i <= verticalLocation + 1; i += 2) {
-          if (i >= 0 && i < height && tiles[horizontalLocation][i].getType() == TileType.OUTPUT && tile.getObject().get() instanceof Mine) {
-            return false;
-          }
-        }
-      }
-    }
     return true;
   }
 
-  private int countOfInputsOnOutput(int horizontalLocation, int verticalLocation) {
-    int inputCount = 0;
-    for (int i = horizontalLocation - 1; i <= horizontalLocation + 1; i += 2) {
-      inputCount += (i >= 0 && i < width && (tiles[i][verticalLocation].getType() == TileType.INPUT ||
-          tiles[i][verticalLocation].getType() == TileType.MINE_INPUT)) ? 1 : 0;
+
+  private boolean tileCanBePlace(int horPos, int verPos, TileType type) {
+
+    Collection<Tile> neighbors = getNeighbors(horPos, verPos);
+
+    if (type.equals(TileType.INPUT)) {
+      for (Tile neighbor : neighbors) {
+        if (neighbor.getType().equals(TileType.DEPOSIT_OUTPUT)) {
+          return false;
+        }
+      }
     }
-    for (int i = verticalLocation - 1; i <= verticalLocation + 1; i += 2) {
-      inputCount += (i >= 0 && i < height && (tiles[horizontalLocation][i].getType() == TileType.INPUT ||
-          tiles[horizontalLocation][i].getType() == TileType.MINE_INPUT)) ? 1 : 0;
+
+    if(type.equals(TileType.OUTPUT)){
+      for (Tile neighbor : neighbors) {
+        if(neighbor.getType().equals(TileType.MINE_INPUT)){
+          return false;
+        }
+      }
     }
-    return inputCount;
+
+    if(type.equals(TileType.MINE_INPUT)){
+      for (Tile neighbor : neighbors) {
+        if(neighbor.getType().equals(TileType.OUTPUT)){
+          return false;
+        }
+      }
+    }
+
+    if (type.equals(TileType.DEPOSIT_OUTPUT) || type.equals(TileType.OUTPUT)) {
+
+      for (Tile neighbor : neighbors) {
+
+        boolean neighborIsRegularOutput = neighbor.getType().equals(TileType.OUTPUT);
+        boolean neighborIsDepositOutput = neighbor.getType().equals(TileType.DEPOSIT_OUTPUT);
+        boolean neighborIsOutput = neighborIsRegularOutput || neighborIsDepositOutput;
+        boolean neighborHasInput = hasInputAsNeighbor(neighbor);
+
+        if (neighborIsOutput && neighborHasInput) {
+          return false;
+        }
+      }
+    }
+
+    return true;
   }
+
+  private boolean hasInputAsNeighbor(Tile tile) {
+
+    if (tile.getObject().isPresent()) {
+      BaseObject object = tile.getObject().get();
+      int verPos = object.getX() + tile.getRelHorPos();
+      int horPos = object.getY() + tile.getRelVerPos();
+
+      Collection<Tile> neighbors = getNeighbors(horPos, verPos);
+      for (Tile neighbor : neighbors) {
+        if (neighbor.getType().equals(TileType.INPUT) || neighbor.getType()
+            .equals(TileType.MINE_INPUT)) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    return false;
+  }
+
+  private Collection<Tile> getNeighbors(int horPos, int verPos) {
+    Collection<Tile> neighbors = new LinkedList<>();
+    addNeighbor(neighbors, horPos, verPos-1);
+    addNeighbor(neighbors, horPos+1, verPos);
+    addNeighbor(neighbors, horPos, verPos+1);
+    addNeighbor(neighbors, horPos-1, verPos);
+    return neighbors;
+  }
+
+  private void addNeighbor(Collection<Tile> neighbors, int horPos, int verPos) {
+    if (horPos >= 0 && verPos >= 0 && horPos < tiles.length && verPos < tiles[horPos].length) {
+      neighbors.add(tiles[horPos][verPos]);
+    }
+  }
+
 
   /**
    * Removes a {@link BaseObject} of this {@link Field}.

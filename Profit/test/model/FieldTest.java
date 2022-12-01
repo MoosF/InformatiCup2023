@@ -21,24 +21,20 @@ public class FieldTest extends TestCase {
   Field field = new Field(100, 100);
 
   public void testAddBaseObject() throws CouldNotPlaceObjectException {
-    BaseObject o1 = Deposit.createDeposit(ResourceType.ZERO, 0, 0, 3, 2),
-        o2 = Mine.createMine(4, 0, MineSubType.OUTPUT_EAST);
-    field.addBaseObject(o1);
-    assertTrue(field.getAllObjects().contains(o1));
-    field.addBaseObject(o2);
-    assertTrue(field.getAllObjects().contains(o2));
+    BaseObject deposit = Deposit.createDeposit(ResourceType.ZERO, 0, 0, 3, 2);
+    BaseObject mine = Mine.createMine(4, 0, MineSubType.OUTPUT_EAST);
+    field.addBaseObject(deposit);
+    assertTrue(field.getAllObjects().contains(deposit));
+    field.addBaseObject(mine);
+    assertTrue(field.getAllObjects().contains(mine));
 
-    assertThrows(
-        CouldNotPlaceObjectException.class,
-        () -> field.addBaseObject(Conveyer.createConveyor(1, 2, ConveyerSubType.SHORT_OUTPUT_EAST)));
-    assertThrows(
-        CouldNotPlaceObjectException.class,
+    assertThrows(CouldNotPlaceObjectException.class, () -> field.addBaseObject(
+        Conveyer.createConveyor(1, 2, ConveyerSubType.SHORT_OUTPUT_EAST)));
+    assertThrows(CouldNotPlaceObjectException.class,
         () -> field.addBaseObject(Mine.createMine(1, 0, MineSubType.OUTPUT_EAST)));
-    assertThrows(
-        CouldNotPlaceObjectException.class,
+    assertThrows(CouldNotPlaceObjectException.class,
         () -> field.addBaseObject(Mine.createMine(2, 3, MineSubType.OUTPUT_NORTH)));
-    assertThrows(
-        CouldNotPlaceObjectException.class,
+    assertThrows(CouldNotPlaceObjectException.class,
         () -> field.addBaseObject(Mine.createMine(8, 0, MineSubType.OUTPUT_EAST)));
   }
 
@@ -143,9 +139,8 @@ public class FieldTest extends TestCase {
     Assertions.assertTrue(field.getAllObjects().containsAll(
         List.of(deposit, deposit1, deposit2, deposit3, mine, mine1, mine2, mine3, mine4, mine5,
             mine6, mine7, conveyor, conveyor1, conveyor2, conveyor3, conveyor4, conveyor5,
-            conveyor6,
-            conveyor7, conveyor8, conveyor9, conveyor10, conveyor11, combiner, combiner1, combiner2,
-            combiner3, factory, factory1)));
+            conveyor6, conveyor7, conveyor8, conveyor9, conveyor10, conveyor11, combiner, combiner1,
+            combiner2, combiner3, factory, factory1)));
 
   }
 }

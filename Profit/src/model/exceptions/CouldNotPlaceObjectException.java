@@ -18,7 +18,7 @@ public class CouldNotPlaceObjectException extends Exception {
    * @param horizontalLocation Y-Coordinate of the {@link BaseObject}, that could not be placed.
    */
   public CouldNotPlaceObjectException(int verticalLocation, int horizontalLocation) {
-    super(String.format("Could not place BaseObject. Tile at (%d|%d) was not empty.",
+    super(String.format("Could not place BaseObject at (%d|%d).",
         verticalLocation,
         horizontalLocation));
   }
