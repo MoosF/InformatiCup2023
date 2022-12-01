@@ -11,6 +11,7 @@ import model.enums.ResourceType;
 import model.enums.TileType;
 import model.exceptions.CouldNotPlaceObjectException;
 import model.exceptions.CouldNotRemoveObjectException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.*;

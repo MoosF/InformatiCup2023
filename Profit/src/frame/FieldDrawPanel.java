@@ -54,7 +54,17 @@ public class FieldDrawPanel extends JPanel {
   }
 
   private void drawBaseObject(BaseObject baseObject, Graphics g) {
-    Color color = new Color((int) (Math.random() * 0x1000000));
+    Color color;
+    switch (baseObject.getClass().getSimpleName()) {
+      case "Obstacle" -> color = Color.BLACK;
+      case "Deposit" -> color = Color.LIGHT_GRAY;
+      case "Conveyer" -> color = Color.GRAY;
+      case "Mine" -> color = Color.GREEN;
+      case "Factory" -> color = Color.BLUE;
+      case "Combiner" -> color = Color.GRAY;
+      default -> color = new Color((int) (Math.random() * 0x1000000));
+    }
+
     for (Tile tile : baseObject.getTiles()) {
       drawTile(baseObject, tile, g, color);
     }
