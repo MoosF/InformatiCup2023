@@ -92,7 +92,7 @@ public class Field {
     for (Tile tile : tilesCollection) {
       int horPos = o.getX() + tile.getRelHorPos();
       int verPos = o.getY() + tile.getRelVerPos();
-      if (!tileCanBePlace(horPos, verPos, tile.getType())) {
+      if (!tileCanBePlaced(horPos, verPos, tile)) {
         return false;
       }
     }
@@ -101,16 +101,7 @@ public class Field {
       int verPos = o.getX() + tile.getRelHorPos();
       int horPos = o.getY() + tile.getRelVerPos();
 
-      Tile targetTile = tiles[verPos][horPos];
-      boolean targetTileIsEmpty = targetTile.getType().equals(TileType.EMPTY);
-      boolean targetTileIsCrossable = targetTile.getType().equals(TileType.CROSSABLE);
-      boolean tileIsCrossable = tile.getType().equals(TileType.CROSSABLE);
 
-      if ((targetTileIsEmpty || targetTileIsCrossable && tileIsCrossable)) {
-        tiles[verPos][horPos] = tile;
-      } else {
-        return false;
-      }
     }
 
     return true;
@@ -179,8 +170,17 @@ public class Field {
     return height;
   }
 
-  private boolean tileCanBePlace(int horPos, int verPos, TileType type) {
+  private boolean tileCanBePlaced(int horPos, int verPos, Tile tile) {
 
+    Tile targetTile = tiles[horPos][verPos];
+    boolean targetTileIsEmpty = targetTile.getType().equals(TileType.EMPTY);
+    boolean targetTileIsCrossable = targetTile.getType().equals(TileType.CROSSABLE);
+    boolean tileIsCrossable = tile.getType().equals(TileType.CROSSABLE);
+    if (!(targetTileIsEmpty || targetTileIsCrossable && tileIsCrossable)) {
+      return false;
+    }
+
+    TileType type = tile.getType();
     Collection<Tile> neighbors = getNeighbors(horPos, verPos);
 
     if (type.equals(TileType.INPUT)) {
