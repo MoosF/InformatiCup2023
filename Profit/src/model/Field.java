@@ -59,8 +59,42 @@ public class Field {
    */
   public void addBaseObject(BaseObject o) throws CouldNotPlaceObjectException {
 
-    if (!baseObjectCanBePlaced(o)) {
+    if (baseObjectCanBePlaced(o)) {
+
+      for (Tile tile : o.getTiles()) {
+        int verPos = o.getX() + tile.getRelHorPos();
+        int horPos = o.getY() + tile.getRelVerPos();
+        tiles[verPos][horPos] = tile;
+      }
+
+      if (!objects.containsKey(o.getClass())) {
+        objects.put(o.getClass(), new ArrayList<>());
+      }
+      objects.get(o.getClass()).add(o);
+
+
+    } else {
       throw new CouldNotPlaceObjectException(o.getX(), o.getY());
+    }
+
+  }
+
+  /**
+   * Checks if a {@link BaseObject} can be placed.
+   *
+   * @param o {@link BaseObject} to be placed.
+   * @return True if the {@link BaseObject} can be placed. False otherwise.
+   */
+  public boolean baseObjectCanBePlaced(BaseObject o) {
+
+    Collection<Tile> tilesCollection = Arrays.stream(o.getTiles()).toList();
+
+    for (Tile tile : tilesCollection) {
+      int horPos = o.getX() + tile.getRelHorPos();
+      int verPos = o.getY() + tile.getRelVerPos();
+      if (!tileCanBePlace(horPos, verPos, tile.getType())) {
+        return false;
+      }
     }
 
     for (Tile tile : o.getTiles()) {
@@ -75,30 +109,6 @@ public class Field {
       if ((targetTileIsEmpty || targetTileIsCrossable && tileIsCrossable)) {
         tiles[verPos][horPos] = tile;
       } else {
-        throw new CouldNotPlaceObjectException(verPos, horPos);
-      }
-    }
-
-    if (!objects.containsKey(o.getClass())) {
-      objects.put(o.getClass(), new ArrayList<>());
-    }
-    objects.get(o.getClass()).add(o);
-  }
-
-  /**
-   * Checks if a {@link BaseObject} can be placed.
-   *
-   * @param baseObject {@link BaseObject} to be placed.
-   * @return True if the {@link BaseObject} can be placed. False otherwise.
-   */
-  public boolean baseObjectCanBePlaced(BaseObject baseObject) {
-
-    Collection<Tile> tiles = Arrays.stream(baseObject.getTiles()).toList();
-
-    for (Tile tile : tiles) {
-      int horPos = baseObject.getX() + tile.getRelHorPos();
-      int verPos = baseObject.getY() + tile.getRelVerPos();
-      if (!tileCanBePlace(horPos, verPos, tile.getType())) {
         return false;
       }
     }
@@ -106,6 +116,68 @@ public class Field {
     return true;
   }
 
+
+  /**
+   * Removes a {@link BaseObject} of this {@link Field}.
+   *
+   * @param o model.BaseObject on the {@link Field}, that will be removed.
+   */
+  public void removeBaseObject(BaseObject o) throws CouldNotRemoveObjectException {
+    if (!this.getAllObjects().contains(o)) {
+      throw new CouldNotRemoveObjectException(o);
+    }
+
+    objects.get(o.getClass()).remove(o);
+    for (Tile tile : o.getTiles()) {
+      int verticalPostion = o.getX() + tile.getRelHorPos();
+      int horizontalPosition = o.getY() + tile.getRelVerPos();
+      tiles[verticalPostion][horizontalPosition] = new Tile(verticalPostion, horizontalPosition,
+          TileType.EMPTY);
+    }
+
+  }
+
+  /**
+   * Shows the {@link Field} in a {@link javax.swing.JFrame}.
+   */
+  public void show() {
+    FieldFrame.createFieldFrame(this);
+  }
+
+  /**
+   * Returns all {@link BaseObject}, that are placed on this {@link Field}.
+   *
+   * @return Collection of all placed {@link BaseObject}.
+   */
+  public Collection<BaseObject> getAllObjects() {
+    Collection<BaseObject> allObjects = new ArrayList<>();
+    objects.forEach((clazz, object) -> allObjects.addAll(object));
+    return allObjects;
+  }
+
+  /**
+   * Returns all {@link BaseObject}s of the field, that belong to a given class.
+   *
+   * @param clazz Class which all searched {@link BaseObject} should have.
+   * @param <K>   ignore
+   * @return A collection of all {@link BaseObject}s, that belong to the given class.
+   */
+  @SuppressWarnings("unchecked")
+  public <K extends BaseObject> Collection<K> getObjectsOfClass(Class<K> clazz) {
+    if (!objects.containsKey(clazz)) {
+      objects.put(clazz, new ArrayList<>());
+    }
+    return (Collection<K>) objects.get(clazz);
+  }
+
+
+  public int getWidth() {
+    return width;
+  }
+
+  public int getHeight() {
+    return height;
+  }
 
   private boolean tileCanBePlace(int horPos, int verPos, TileType type) {
 
@@ -187,58 +259,4 @@ public class Field {
       neighbors.add(tiles[horPos][verPos]);
     }
   }
-
-
-  /**
-   * Removes a {@link BaseObject} of this {@link Field}.
-   *
-   * @param o model.BaseObject on the {@link Field}, that will be removed.
-   */
-  public void removeBaseObject(BaseObject o) throws CouldNotRemoveObjectException {
-    if (!this.getAllObjects().contains(o)) {
-      throw new CouldNotRemoveObjectException(o);
-    }
-
-    objects.get(o.getClass()).remove(o);
-    for (Tile tile : o.getTiles()) {
-      int verticalPostion = o.getX() + tile.getRelHorPos();
-      int horizontalPosition = o.getY() + tile.getRelVerPos();
-      tiles[verticalPostion][horizontalPosition] = new Tile(verticalPostion, horizontalPosition,
-          TileType.EMPTY);
-    }
-
-  }
-
-  /**
-   * Shows the {@link Field} in a {@link javax.swing.JFrame}.
-   */
-  public void show() {
-    FieldFrame.createFieldFrame(this);
-  }
-
-  /**
-   * Returns all {@link BaseObject}, that are placed on this {@link Field}.
-   *
-   * @return Collection of all placed {@link BaseObject}.
-   */
-  public Collection<BaseObject> getAllObjects() {
-    Collection<BaseObject> allObjects = new ArrayList<>();
-    objects.forEach((clazz, object) -> allObjects.addAll(object));
-    return allObjects;
-  }
-
-  /**
-   * Returns all {@link BaseObject}s of the field, that belong to a given class.
-   *
-   * @param clazz Class which all searched {@link BaseObject} should have.
-   * @param <K>   ignore
-   * @return A collection of all {@link BaseObject}s, that belong to the given class.
-   */
-  public <K extends BaseObject> Collection<K> getObjectsOfClass(Class<K> clazz) {
-    if (!objects.containsKey(clazz)) {
-      objects.put(clazz, new ArrayList<>());
-    }
-    return (Collection<K>) objects.get(clazz);
-  }
-
 }
