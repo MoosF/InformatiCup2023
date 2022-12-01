@@ -85,6 +85,12 @@ public class Field {
     objects.get(o.getClass()).add(o);
   }
 
+  /**
+   * Checks if a {@link BaseObject} can be placed.
+   *
+   * @param baseObject {@link BaseObject} to be placed.
+   * @return True if the {@link BaseObject} can be placed. False otherwise.
+   */
   public boolean baseObjectCanBePlaced(BaseObject baseObject) {
 
     Collection<Tile> tiles = Arrays.stream(baseObject.getTiles()).toList();
@@ -113,17 +119,17 @@ public class Field {
       }
     }
 
-    if(type.equals(TileType.OUTPUT)){
+    if (type.equals(TileType.OUTPUT)) {
       for (Tile neighbor : neighbors) {
-        if(neighbor.getType().equals(TileType.MINE_INPUT)){
+        if (neighbor.getType().equals(TileType.MINE_INPUT)) {
           return false;
         }
       }
     }
 
-    if(type.equals(TileType.MINE_INPUT)){
+    if (type.equals(TileType.MINE_INPUT)) {
       for (Tile neighbor : neighbors) {
-        if(neighbor.getType().equals(TileType.OUTPUT)){
+        if (neighbor.getType().equals(TileType.OUTPUT)) {
           return false;
         }
       }
@@ -151,8 +157,8 @@ public class Field {
 
     if (tile.getObject().isPresent()) {
       BaseObject object = tile.getObject().get();
-      int verPos = object.getX() + tile.getRelHorPos();
-      int horPos = object.getY() + tile.getRelVerPos();
+      int horPos = object.getX() + tile.getRelHorPos();
+      int verPos = object.getY() + tile.getRelVerPos();
 
       Collection<Tile> neighbors = getNeighbors(horPos, verPos);
       for (Tile neighbor : neighbors) {
@@ -169,10 +175,10 @@ public class Field {
 
   private Collection<Tile> getNeighbors(int horPos, int verPos) {
     Collection<Tile> neighbors = new LinkedList<>();
-    addNeighbor(neighbors, horPos, verPos-1);
-    addNeighbor(neighbors, horPos+1, verPos);
-    addNeighbor(neighbors, horPos, verPos+1);
-    addNeighbor(neighbors, horPos-1, verPos);
+    addNeighbor(neighbors, horPos, verPos - 1);
+    addNeighbor(neighbors, horPos + 1, verPos);
+    addNeighbor(neighbors, horPos, verPos + 1);
+    addNeighbor(neighbors, horPos - 1, verPos);
     return neighbors;
   }
 
