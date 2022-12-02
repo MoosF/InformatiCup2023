@@ -30,4 +30,6 @@ public abstract class MinePlacer {
   protected final Field getField() {
     return field;
   }
+
+
 }

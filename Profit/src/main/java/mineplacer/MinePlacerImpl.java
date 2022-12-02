@@ -13,12 +13,12 @@ import model.exceptions.CouldNotRemoveObjectException;
 
 public final class MinePlacerImpl extends MinePlacer {
 
-  private final List<Placement> allPossibilities;
+  private final Placement[] allPossibilities;
 
 
   public MinePlacerImpl(Field field) {
     super(field);
-    allPossibilities = new ArrayList<>();
+    List<Placement> allPossibilities = new ArrayList<>();
 
     Collection<Deposit> deposits = field.getObjectsOfClass(Deposit.class);
     for (Deposit deposit : deposits) {
@@ -45,6 +45,8 @@ public final class MinePlacerImpl extends MinePlacer {
       }
 
     }
+
+    this.allPossibilities = allPossibilities.toArray(new Placement[0]);
 
 
   }
@@ -94,5 +96,7 @@ public final class MinePlacerImpl extends MinePlacer {
     return true;
   }
 
-
+  public Placement[] getAllPossibilities() {
+    return allPossibilities;
+  }
 }
