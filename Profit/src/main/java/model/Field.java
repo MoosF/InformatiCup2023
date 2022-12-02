@@ -162,6 +162,25 @@ public class Field {
   }
 
 
+  /**
+   * Makes a copy of this {@link Field}. Beware, that the same {@link BaseObject}s are used for the
+   * copy.
+   *
+   * @return Copy of this {@link Field}
+   */
+  public Field copy() {
+    Field copy = new Field(getWidth(), getHeight());
+    for (BaseObject object : getAllObjects()) {
+      try {
+        copy.addBaseObject(object);
+      } catch (CouldNotPlaceObjectException e) {
+        throw new RuntimeException(e);
+      }
+    }
+
+    return copy;
+  }
+
   public int getWidth() {
     return width;
   }
@@ -263,4 +282,5 @@ public class Field {
       neighbors.add(tiles[horPos][verPos]);
     }
   }
+
 }

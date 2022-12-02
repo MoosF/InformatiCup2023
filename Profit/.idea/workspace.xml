@@ -5,14 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6cde8572-90d7-405d-baab-1cf3c321b995" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/mineplacer/MinePlacingProblem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/checkstyleidea-libs/readme.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/mineplacer/MinePlacer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/mineplacer/MinePlacer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/mineplacer/MinePlacerImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/mineplacer/MinePlacerImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/mineplacer/MinePlacer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/mineplacer/MinePlacerImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/mineplacer/MinePlaceFinder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/mineplacer/MinePlacerMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/mineplacer/MinePlacerMain.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/mineplacer/MinePlacerImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/mineplacer/MinePlacerImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/mineplacer/MinePlacingProblem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/mineplacer/MinePlacingProblem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/Field.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Field.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/mineplacer/MinePlacer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/mineplacer/MinePlacerImpl.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/mineplacer/MinePlacerMain.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/mineplacer/MinePlacerMain.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/mineplacer/MinePlacingProblem.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/mineplacer/MinePlacingProblem.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/model/Field.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/model/Field.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,14 +43,15 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false"
   }
-}</component>
-  <component name="RunManager" selected="Application.MinePlacerMain">
+}]]></component>
+  <component name="RunManager" selected="Application.mineplacer.MinePlacerMain">
     <configuration name="MinePlacerMain" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="mineplacer.MinePlacerMain" />
       <module name="Profit" />
@@ -69,7 +75,7 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.MinePlacerMain" />
+        <item itemvalue="Application.mineplacer.MinePlacerMain" />
         <item itemvalue="JUnit.All in Profit" />
       </list>
     </recent_temporary>
@@ -84,7 +90,7 @@
       <updated>1670015815358</updated>
       <workItem from="1670015816702" duration="136000" />
       <workItem from="1670015962880" duration="90000" />
-      <workItem from="1670016062003" duration="1432000" />
+      <workItem from="1670016062003" duration="3694000" />
     </task>
     <servers />
   </component>
@@ -107,8 +113,8 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/mineplacer/MinePlacerMain.java</url>
-          <line>48</line>
-          <option name="timeStamp" value="2" />
+          <line>67</line>
+          <option name="timeStamp" value="5" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

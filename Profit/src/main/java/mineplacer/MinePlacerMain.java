@@ -23,20 +23,19 @@ public class MinePlacerMain {
     settings.updateImportTarget(false);
     settings.updateImportFileType(FileType.JSON);
 
-    String[] inputFiles = {"001.task-with-time.json", "002.task-with-time.json",
-        "003.task-with-time.json", "004.task-with-time.json"};
+    String[] inputFiles = {
+        "001.task-with-time.json",
+        "002.task-with-time.json",
+        "003.task-with-time.json",
+        "004.task-with-time.json"
+    };
 
     for (String file : inputFiles) {
-      Input input = InputOutputHandle.getInputFrom(file);
 
-      Field field = new Field(input.getWidth(), input.getHeight());
+      Field field = createFieldFromJson(file);
 
-      for (FixedObject obj : input.getInputObjects()) {
-        field.addBaseObject(obj);
-      }
-
-      MinePlacerImpl minePlacer = new MinePlacerImpl(field);
-      Placement[] possiblePlacements = minePlacer.getAllPossibilities();
+      MinePlaceFinder minePlaceFinder = new MinePlaceFinder(field);
+      Placement[] possiblePlacements = minePlaceFinder.getAllPlacements();
 
       NondominatedPopulation population = new Executor()
           .withProblemClass(MinePlacingProblem.class, field, possiblePlacements)
@@ -44,33 +43,42 @@ public class MinePlacerMain {
           .withMaxEvaluations(1000)
           .run();
 
-      placeMines(field, possiblePlacements, population);
+      placeMines(field, possiblePlacements, population.iterator().next());
 
       field.show();
     }
 
   }
 
-  private static void placeMines(Field field, Placement[] possiblePlacements,
-      NondominatedPopulation population) throws CouldNotPlaceObjectException {
-    for (Solution solution : population) {
-      boolean[] binary = EncodingUtils.getBinary(solution.getVariable(0));
-      for (int i = 0; i < binary.length; i++) {
+  private static Field createFieldFromJson(String file) throws CouldNotPlaceObjectException {
+    Input input = InputOutputHandle.getInputFrom(file);
 
-        boolean shouldBePlaced = binary[i];
-        Placement possiblePlacement = possiblePlacements[i];
+    Field field = new Field(input.getWidth(), input.getHeight());
 
-        int horPos = possiblePlacement.getHorPos();
-        int verPos = possiblePlacement.getVerPos();
-        MineSubType mineSubType = possiblePlacement.getMineSubType();
-        Mine mine = Mine.createMine(horPos, verPos, mineSubType);
-        if (shouldBePlaced && field.baseObjectCanBePlaced(mine)) {
-          field.addBaseObject(mine);
-        }
+    for (FixedObject obj : input.getInputObjects()) {
+      field.addBaseObject(obj);
+    }
+    return field;
+  }
 
+  private static void placeMines(Field field, Placement[] possiblePlacements, Solution solution)
+      throws CouldNotPlaceObjectException {
+
+    boolean[] binary = EncodingUtils.getBinary(solution.getVariable(0));
+    for (int i = 0; i < binary.length; i++) {
+
+      boolean shouldBePlaced = binary[i];
+      Placement possiblePlacement = possiblePlacements[i];
+
+      int horPos = possiblePlacement.getHorPos();
+      int verPos = possiblePlacement.getVerPos();
+      MineSubType mineSubType = possiblePlacement.getMineSubType();
+      Mine mine = Mine.createMine(horPos, verPos, mineSubType);
+      if (shouldBePlaced && field.baseObjectCanBePlaced(mine)) {
+        field.addBaseObject(mine);
       }
 
-      break;
+
     }
   }
 
