@@ -6,8 +6,17 @@
   <component name="ChangeListManager">
     <list default="true" id="6cde8572-90d7-405d-baab-1cf3c321b995" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/frame/FieldDrawPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frame/FieldDrawPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/main/TestMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/main/TestMain.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/mineplacer/MinePlacerMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/mineplacer/MinePlacerMain.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/mineplacer/MinePlacingProblem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/mineplacer/MinePlacingProblem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/Field.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Field.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/simulation/Simulator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/simulation/Simulator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/frame/FieldDrawPanel$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/frame/FieldDrawPanel$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/frame/FieldDrawPanel.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/frame/FieldDrawPanel.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/mineplacer/MinePlacerMain.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/mineplacer/MinePlacerMain.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/mineplacer/MinePlacingProblem.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/mineplacer/MinePlacingProblem.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/test-classes/simulation/SimulatorTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/test-classes/simulation/SimulatorTest.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,7 +50,7 @@
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;
   }
 }</component>
-  <component name="RunManager" selected="Application.TestMain">
+  <component name="RunManager" selected="Application.MinePlacerMain">
     <configuration name="MinePlacerMain" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="mineplacer.MinePlacerMain" />
       <module name="Profit" />
@@ -76,10 +85,27 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="SimulatorTest.test3" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Profit" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="simulation.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="simulation" />
+      <option name="MAIN_CLASS_NAME" value="simulation.SimulatorTest" />
+      <option name="METHOD_NAME" value="test3" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.TestMain" />
         <item itemvalue="Application.MinePlacerMain" />
+        <item itemvalue="JUnit.SimulatorTest.test3" />
+        <item itemvalue="Application.TestMain" />
         <item itemvalue="JUnit.All in Profit" />
       </list>
     </recent_temporary>
@@ -96,7 +122,8 @@
       <workItem from="1670015962880" duration="90000" />
       <workItem from="1670016062003" duration="3694000" />
       <workItem from="1670028589973" duration="2172000" />
-      <workItem from="1670078003510" duration="4031000" />
+      <workItem from="1670078003510" duration="7638000" />
+      <workItem from="1670094933125" duration="5236000" />
     </task>
     <servers />
   </component>
@@ -119,7 +146,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/mineplacer/MinePlacerMain.java</url>
-          <line>67</line>
+          <line>111</line>
           <option name="timeStamp" value="8" />
         </line-breakpoint>
       </breakpoints>

@@ -48,7 +48,7 @@ public class Field {
    *
    * @return Tiles, that construct the {@link Field}.
    */
-  public Tile[][] getArray() {
+  public Tile[][] getTiles() {
     return tiles;
   }
 

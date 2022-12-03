@@ -115,7 +115,7 @@ public class Simulator {
   }
 
   private void addNeighbor(Collection<Tile> neighbors, Field field, int x, int y) {
-    Tile[][] array = field.getArray();
+    Tile[][] array = field.getTiles();
     if (x >= 0 && y >= 0 && x < array.length && y < array[x].length) {
       neighbors.add(array[x][y]);
     }

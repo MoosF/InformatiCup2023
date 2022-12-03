@@ -19,7 +19,6 @@ public class FieldDrawPanel extends JPanel {
   private static final int TILE_SIZE = 20;
   private static final int BORDER_WITH = 2;
   private static final Color LINE_COLOR = Color.GRAY;
-  private static final Color BORDER_COLOR = Color.BLACK;
   private final Field field;
 
   /**
@@ -31,7 +30,7 @@ public class FieldDrawPanel extends JPanel {
     this.field = field;
     setBackground(Color.WHITE);
 
-    Tile[][] array = field.getArray();
+    Tile[][] array = field.getTiles();
     setPreferredSize(new Dimension(array.length * TILE_SIZE, array[0].length * TILE_SIZE));
   }
 
@@ -62,9 +61,9 @@ public class FieldDrawPanel extends JPanel {
       case "Obstacle" -> color = Color.DARK_GRAY;
       case "Deposit" -> color = Color.LIGHT_GRAY;
       case "Conveyer" -> color = Color.ORANGE;
-      case "Mine" -> color = Color.GREEN;
-      case "Factory" -> color = new Color(100,0,255);
-      case "Combiner" -> color = Color.ORANGE;
+      case "Mine" -> color = new Color(0, 200, 40);
+      case "Factory" -> color = new Color(64, 93, 239);
+      case "Combiner" -> color = new Color(255, 150, 0);
       default -> color = new Color((int) (Math.random() * 0x1000000));
     }
 
@@ -152,9 +151,8 @@ public class FieldDrawPanel extends JPanel {
     switch (tile.getType()) {
       case INPUT, MINE_INPUT -> letter = '+';
       case OUTPUT, DEPOSIT_OUTPUT -> letter = '-';
-      case EMPTY -> letter = ' ';
+      case EMPTY, SOLID -> letter = ' ';
       case CROSSABLE -> letter = '#';
-      case SOLID -> letter = '.';
       default -> throw new IllegalStateException("Unexpected value: " + tile.getType());
     }
 
