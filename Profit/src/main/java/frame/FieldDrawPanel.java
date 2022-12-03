@@ -16,7 +16,10 @@ import model.Tile;
 public class FieldDrawPanel extends JPanel {
 
 
-  public static final int TILE_SIZE = 20;
+  private static final int TILE_SIZE = 20;
+  private static final int BORDER_WITH = 2;
+  private static final Color LINE_COLOR = Color.GRAY;
+  private static final Color BORDER_COLOR = Color.BLACK;
   private final Field field;
 
   /**
@@ -39,13 +42,13 @@ public class FieldDrawPanel extends JPanel {
     //Objects
     field.getAllObjects().forEach(baseObject -> drawBaseObject(baseObject, g));
 
-    //Vertical Lines
-    g.setColor(Color.BLACK);
+    //Horizontal Lines
+    g.setColor(LINE_COLOR);
     for (int i = 0; i < getHeight() / TILE_SIZE + 1; i++) {
       g.drawLine(0, i * TILE_SIZE, getWidth(), i * TILE_SIZE);
     }
 
-    //Horizontal Lines
+    //Vertical Lines
     for (int i = 0; i < getWidth() / TILE_SIZE + 1; i++) {
       g.drawLine(i * TILE_SIZE, 0, i * TILE_SIZE, getHeight());
     }
@@ -56,17 +59,90 @@ public class FieldDrawPanel extends JPanel {
   private void drawBaseObject(BaseObject baseObject, Graphics g) {
     Color color;
     switch (baseObject.getClass().getSimpleName()) {
-      case "Obstacle" -> color = Color.BLACK;
+      case "Obstacle" -> color = Color.DARK_GRAY;
       case "Deposit" -> color = Color.LIGHT_GRAY;
-      case "Conveyer" -> color = Color.GRAY;
+      case "Conveyer" -> color = Color.ORANGE;
       case "Mine" -> color = Color.GREEN;
-      case "Factory" -> color = Color.BLUE;
-      case "Combiner" -> color = Color.GRAY;
+      case "Factory" -> color = new Color(100,0,255);
+      case "Combiner" -> color = Color.ORANGE;
       default -> color = new Color((int) (Math.random() * 0x1000000));
     }
 
-    for (Tile tile : baseObject.getTiles()) {
+    Tile[] tiles = baseObject.getTiles();
+    for (Tile tile : tiles) {
       drawTile(baseObject, tile, g, color);
+      drawBorder(baseObject, tile, g, color);
+    }
+
+  }
+
+  private void drawBorder(BaseObject baseObject, Tile tile, Graphics g, Color color) {
+    int relHorPos = tile.getRelHorPos();
+    int relVerPos = tile.getRelVerPos();
+    boolean hasTopNeighbor = false;
+    boolean hasRightNeighbor = false;
+    boolean hasBottomNeighbor = false;
+    boolean hasLeftNeighbor = false;
+
+    for (Tile neighbor : baseObject.getTiles()) {
+      int relHorPosNeighbor = neighbor.getRelHorPos();
+      int relVerPosNeighbor = neighbor.getRelVerPos();
+
+      if (relVerPos - 1 == relVerPosNeighbor && relHorPos == relHorPosNeighbor) {
+        hasTopNeighbor = true;
+      }
+
+      if (relHorPos + 1 == relHorPosNeighbor && relVerPos == relVerPosNeighbor) {
+        hasRightNeighbor = true;
+      }
+
+      if (relVerPos + 1 == relVerPosNeighbor && relHorPos == relHorPosNeighbor) {
+        hasBottomNeighbor = true;
+      }
+
+      if (relHorPos - 1 == relHorPosNeighbor && relVerPos == relVerPosNeighbor) {
+        hasLeftNeighbor = true;
+      }
+    }
+
+    int screenHorizontalCoordinate = (baseObject.getX() + tile.getRelHorPos()) * TILE_SIZE;
+    int screenVerticalCoordinate = (baseObject.getY() + tile.getRelVerPos()) * TILE_SIZE;
+
+    g.setColor(color.darker().darker());
+
+    if (!hasTopNeighbor) {
+      g.fillRect(
+          screenHorizontalCoordinate,
+          screenVerticalCoordinate,
+          TILE_SIZE,
+          BORDER_WITH
+      );
+    }
+
+    if (!hasRightNeighbor) {
+      g.fillRect(
+          screenHorizontalCoordinate + TILE_SIZE - BORDER_WITH,
+          screenVerticalCoordinate,
+          BORDER_WITH,
+          TILE_SIZE);
+    }
+
+    if (!hasBottomNeighbor) {
+      g.fillRect(
+          screenHorizontalCoordinate,
+          screenVerticalCoordinate + TILE_SIZE - BORDER_WITH,
+          TILE_SIZE,
+          BORDER_WITH
+      );
+    }
+
+    if (!hasLeftNeighbor) {
+      g.fillRect(
+          screenHorizontalCoordinate,
+          screenVerticalCoordinate,
+          BORDER_WITH,
+          TILE_SIZE
+      );
     }
   }
 
