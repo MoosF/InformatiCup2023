@@ -9,13 +9,25 @@ import model.Field;
 import model.Mine;
 import model.enums.MineSubType;
 
+/**
+ * This class is able to find all possible {@link Mine}s, that can be placed on a given Field.
+ * Attention: it will not be possible to place all {@link Mine}s at the same time, because there
+ * will almost always be overlapping between two ore more {@link Mine}s.
+ *
+ * @author Yannick Kraml
+ */
 public class MinePlaceFinder {
 
-  private final Placement[] allPlacements;
+  private final Mine[] allPlacements;
 
+  /**
+   * Constructor of this class.
+   *
+   * @param field {@link Field}, where to find all possible {@link Mine}s.
+   */
   public MinePlaceFinder(Field field) {
 
-    List<Placement> placements = new ArrayList<>();
+    List<Mine> placements = new ArrayList<>();
     Collection<Deposit> deposits = field.getObjectsOfClass(Deposit.class);
     for (Deposit deposit : deposits) {
 
@@ -26,37 +38,28 @@ public class MinePlaceFinder {
 
       //From left to right.
       for (int i = horPos; i < horPos + width; i++) {
-        placements.add(new Placement(i - 1, verPos - 3, MineSubType.OUTPUT_NORTH));
-        placements.add(new Placement(i + 1, verPos - 2, MineSubType.OUTPUT_EAST));
-        placements.add(new Placement(i, verPos + height + 1, MineSubType.OUTPUT_SOUTH));
-        placements.add(new Placement(i - 2, verPos + height, MineSubType.OUTPUT_WEST));
+        placements.add(Mine.createMine(i - 1, verPos - 3, MineSubType.OUTPUT_NORTH));
+        placements.add(Mine.createMine(i + 1, verPos - 2, MineSubType.OUTPUT_EAST));
+        placements.add(Mine.createMine(i, verPos + height + 1, MineSubType.OUTPUT_SOUTH));
+        placements.add(Mine.createMine(i - 2, verPos + height, MineSubType.OUTPUT_WEST));
       }
 
       //From top to bottom
       for (int i = verPos; i < verPos + height; i++) {
-        placements.add(new Placement(horPos - 2, i - 2, MineSubType.OUTPUT_NORTH));
-        placements.add(new Placement(horPos + width + 1, i - 1, MineSubType.OUTPUT_EAST));
-        placements.add(new Placement(horPos + width, i + 1, MineSubType.OUTPUT_SOUTH));
-        placements.add(new Placement(horPos - 3, i, MineSubType.OUTPUT_WEST));
+        placements.add(Mine.createMine(horPos - 2, i - 2, MineSubType.OUTPUT_NORTH));
+        placements.add(Mine.createMine(horPos + width + 1, i - 1, MineSubType.OUTPUT_EAST));
+        placements.add(Mine.createMine(horPos + width, i + 1, MineSubType.OUTPUT_SOUTH));
+        placements.add(Mine.createMine(horPos - 3, i, MineSubType.OUTPUT_WEST));
       }
 
     }
 
-    Predicate<Placement> filter = placement -> {
-      int horPos = placement.getHorPos();
-      int verPos = placement.getVerPos();
-      MineSubType mineSubType = placement.getMineSubType();
-      Mine mine = Mine.createMine(horPos, verPos, mineSubType);
-      return field.baseObjectCanBePlaced(mine);
-    };
-
-    this.allPlacements = placements.stream().filter(filter).toArray(Placement[]::new);
-
-
+    Predicate<Mine> filter = field::baseObjectCanBePlaced;
+    this.allPlacements = placements.stream().filter(filter).toArray(Mine[]::new);
   }
 
 
-  public Placement[] getAllPlacements() {
+  public Mine[] getAllPossibleMines() {
     return allPlacements;
   }
 }

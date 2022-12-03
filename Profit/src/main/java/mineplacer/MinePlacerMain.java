@@ -3,7 +3,6 @@ package mineplacer;
 import model.Field;
 import model.FixedObject;
 import model.Mine;
-import model.enums.MineSubType;
 import model.exceptions.CouldNotPlaceObjectException;
 import org.moeaframework.Executor;
 import org.moeaframework.core.NondominatedPopulation;
@@ -35,15 +34,16 @@ public class MinePlacerMain {
       Field field = createFieldFromJson(file);
 
       MinePlaceFinder minePlaceFinder = new MinePlaceFinder(field);
-      Placement[] possiblePlacements = minePlaceFinder.getAllPlacements();
+      Mine[] possibleMines = minePlaceFinder.getAllPossibleMines();
 
       NondominatedPopulation population = new Executor()
-          .withProblemClass(MinePlacingProblem.class, field, possiblePlacements)
+          .withProblemClass(MinePlacingProblem.class, field, possibleMines)
           .withAlgorithm("NSGAII")
           .withMaxEvaluations(1000)
           .run();
 
-      placeMines(field, possiblePlacements, population.iterator().next());
+      Solution solution = population.iterator().next();
+      placeMines(field, possibleMines, solution);
 
       field.show();
     }
@@ -61,25 +61,24 @@ public class MinePlacerMain {
     return field;
   }
 
-  private static void placeMines(Field field, Placement[] possiblePlacements, Solution solution)
-      throws CouldNotPlaceObjectException {
+  private static void placeMines(Field field, Mine[] possibleMines, Solution solution) {
 
     boolean[] binary = EncodingUtils.getBinary(solution.getVariable(0));
+
     for (int i = 0; i < binary.length; i++) {
-
       boolean shouldBePlaced = binary[i];
-      Placement possiblePlacement = possiblePlacements[i];
+      Mine mine = possibleMines[i];
 
-      int horPos = possiblePlacement.getHorPos();
-      int verPos = possiblePlacement.getVerPos();
-      MineSubType mineSubType = possiblePlacement.getMineSubType();
-      Mine mine = Mine.createMine(horPos, verPos, mineSubType);
-      if (shouldBePlaced && field.baseObjectCanBePlaced(mine)) {
-        field.addBaseObject(mine);
+      if (shouldBePlaced) {
+        try {
+          field.addBaseObject(mine);
+        } catch (CouldNotPlaceObjectException ignored) {
+
+        }
       }
-
-
     }
+
+
   }
 
 }

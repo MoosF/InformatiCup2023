@@ -31,7 +31,7 @@ public class Mine extends MovableObject {
    *
    * @param horPos X-Coordinate of the {@link Mine}.
    * @param verPos Y-Coordinate of the {@link Mine}.
-   * @param type   Subtype of the {@link Mine}.
+   * @param type   {@link MineSubType} of the {@link Mine}.
    * @return New instance of {@link Mine}.
    */
   public static Mine createMine(int horPos, int verPos, MineSubType type) {

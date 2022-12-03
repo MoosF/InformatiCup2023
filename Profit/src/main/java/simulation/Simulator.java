@@ -42,8 +42,8 @@ public class Simulator {
    */
   public int simulate(Field field, int turns) throws SimulateException {
 
-    Collection<SimulatableObject> objects = field.getAllObjects().stream().map(SimulatableObject::new)
-        .toList();
+    Collection<SimulatableObject> objects = field.getAllObjects().stream()
+        .map(SimulatableObject::new).toList();
 
     Collection<Coupled> coupledObjects = findCoupledObjects(objects, field);
 
