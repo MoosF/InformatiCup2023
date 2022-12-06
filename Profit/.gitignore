@@ -8,3 +8,6 @@
 
 # Ignore Gradle build output directory
 build
+
+# Old output files from previous version of the project.
+out
