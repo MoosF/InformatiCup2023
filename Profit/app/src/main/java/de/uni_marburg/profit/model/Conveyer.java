@@ -32,72 +32,52 @@ public class Conveyer extends MovableObject {
    *
    * @param horPos  X-Coordinate of the {@link Conveyer}.
    * @param verPos  Y-Coordinate of the {@link Conveyer}.
-   * @param subType Subtype of the {@link Conveyer}.
+   * @param subtype Subtype of the {@link Conveyer}.
    * @return New instance of a {@link Conveyer}.
    */
-  public static Conveyer createConveyor(int horPos, int verPos, ConveyerSubType subType) {
+  public static Conveyer createConveyor(int horPos, int verPos, ConveyerSubType subtype) {
 
     Tile[] tiles = null;
-    switch (subType) {
+    switch (subtype) {
 
       case SHORT_OUTPUT_SOUTH -> {
-        tiles = new Tile[]{
-            new Tile(0, -1, TileType.INPUT),
-            new Tile(0, 0, TileType.CROSSABLE),
+        tiles = new Tile[]{new Tile(0, -1, TileType.INPUT), new Tile(0, 0, TileType.CROSSABLE),
             new Tile(0, 1, TileType.OUTPUT)};
       }
       case SHORT_OUTPUT_EAST -> {
-        tiles = new Tile[]{
-            new Tile(-1, 0, TileType.INPUT),
-            new Tile(0, 0, TileType.CROSSABLE),
+        tiles = new Tile[]{new Tile(-1, 0, TileType.INPUT), new Tile(0, 0, TileType.CROSSABLE),
             new Tile(1, 0, TileType.OUTPUT)};
       }
       case SHORT_OUTPUT_NORTH -> {
-        tiles = new Tile[]{
-            new Tile(0, 1, TileType.INPUT),
-            new Tile(0, 0, TileType.CROSSABLE),
+        tiles = new Tile[]{new Tile(0, 1, TileType.INPUT), new Tile(0, 0, TileType.CROSSABLE),
             new Tile(0, -1, TileType.OUTPUT)};
       }
       case SHORT_OUTPUT_WEST -> {
-        tiles = new Tile[]{
-            new Tile(1, 0, TileType.INPUT),
-            new Tile(0, 0, TileType.CROSSABLE),
+        tiles = new Tile[]{new Tile(1, 0, TileType.INPUT), new Tile(0, 0, TileType.CROSSABLE),
             new Tile(-1, 0, TileType.OUTPUT)};
       }
       case LONG_OUTPUT_SOUTH -> {
-        tiles = new Tile[]{
-            new Tile(0, -1, TileType.INPUT),
-            new Tile(0, 0, TileType.CROSSABLE),
-            new Tile(0, 1, TileType.CROSSABLE),
-            new Tile(0, 2, TileType.OUTPUT)};
+        tiles = new Tile[]{new Tile(0, -1, TileType.INPUT), new Tile(0, 0, TileType.CROSSABLE),
+            new Tile(0, 1, TileType.CROSSABLE), new Tile(0, 2, TileType.OUTPUT)};
       }
       case LONG_OUTPUT_WEST -> {
-        tiles = new Tile[]{
-            new Tile(2, 0, TileType.INPUT),
-            new Tile(1, 0, TileType.CROSSABLE),
-            new Tile(0, 0, TileType.CROSSABLE),
-            new Tile(-1, 0, TileType.OUTPUT)};
+        tiles = new Tile[]{new Tile(2, 0, TileType.INPUT), new Tile(1, 0, TileType.CROSSABLE),
+            new Tile(0, 0, TileType.CROSSABLE), new Tile(-1, 0, TileType.OUTPUT)};
       }
       case LONG_OUTPUT_NORTH -> {
-        tiles = new Tile[]{
-            new Tile(0, 2, TileType.INPUT),
-            new Tile(0, 1, TileType.CROSSABLE),
-            new Tile(0, 0, TileType.CROSSABLE),
-            new Tile(0, -1, TileType.OUTPUT)};
+        tiles = new Tile[]{new Tile(0, 2, TileType.INPUT), new Tile(0, 1, TileType.CROSSABLE),
+            new Tile(0, 0, TileType.CROSSABLE), new Tile(0, -1, TileType.OUTPUT)};
       }
       case LONG_OUTPUT_EAST -> {
-        tiles = new Tile[]{
-            new Tile(-1, 0, TileType.INPUT),
-            new Tile(0, 0, TileType.CROSSABLE),
-            new Tile(1, 0, TileType.CROSSABLE),
-            new Tile(2, 0, TileType.OUTPUT)};
+        tiles = new Tile[]{new Tile(-1, 0, TileType.INPUT), new Tile(0, 0, TileType.CROSSABLE),
+            new Tile(1, 0, TileType.CROSSABLE), new Tile(2, 0, TileType.OUTPUT)};
       }
       default -> {
         throw new RuntimeException("Unknown branch.");
       }
     }
 
-    return new Conveyer(horPos, verPos, tiles, MovableObjectType.CONVEYER, subType);
+    return new Conveyer(horPos, verPos, tiles, MovableObjectType.CONVEYER, subtype);
   }
 
 

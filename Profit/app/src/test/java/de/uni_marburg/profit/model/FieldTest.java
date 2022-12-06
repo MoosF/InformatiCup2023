@@ -11,6 +11,7 @@ import de.uni_marburg.profit.model.enums.ResourceType;
 import de.uni_marburg.profit.model.exceptions.CouldNotPlaceObjectException;
 import de.uni_marburg.profit.model.exceptions.CouldNotRemoveObjectException;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -141,4 +142,5 @@ public class FieldTest extends TestCase {
             combiner2, combiner3, factory, factory1)));
 
   }
+
 }
