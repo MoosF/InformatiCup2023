@@ -2,8 +2,8 @@ package de.uni.marburg.profit.service;
 
 import de.uni.marburg.profit.model.Field;
 import de.uni.marburg.profit.model.FixedObject;
-import de.uni.marburg.profit.model.Tile;
 import de.uni.marburg.profit.model.Product;
+import de.uni.marburg.profit.model.Tile;
 import java.util.List;
 
 /**
