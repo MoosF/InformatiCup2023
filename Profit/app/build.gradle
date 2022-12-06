@@ -15,7 +15,7 @@ dependencies {
 }
 
 application {
-    mainClass = 'de.uni_marburg.profit.Main'
+    mainClass = 'de.unimarburg.profit.Main'
 
     ArrayList<String> inputFiles = new ArrayList<String>();
     inputFiles.addAll(new String[]{"001.task-with-time.json", "002.task-with-time.json",

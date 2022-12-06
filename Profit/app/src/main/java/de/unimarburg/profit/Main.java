@@ -16,7 +16,6 @@ import org.moeaframework.core.NondominatedPopulation;
 import org.moeaframework.core.Solution;
 import org.moeaframework.core.variable.EncodingUtils;
 
-
 /**
  * This class only contains the main method.
  *
@@ -55,13 +54,13 @@ public class Main {
           .withAlgorithm("NSGAII").withMaxTime(3 * 1000).distributeOnAllCores().run();
 
       Solution solution = population.iterator().next();
-      placeMines(field, possibleMines, solution);
 
+      Field copy = field.copy();
+      placeMines(copy, possibleMines, solution);
       System.out.println("Violates contraint: " + solution.violatesConstraints());
       System.out.println("Objective: " + solution.getObjective(1));
       System.out.println();
-
-      field.show();
+      copy.show();
 
     }
 
@@ -79,6 +78,7 @@ public class Main {
         try {
           field.addBaseObject(mine);
         } catch (CouldNotPlaceObjectException ignore) {
+          //Ignore
         }
       }
     }

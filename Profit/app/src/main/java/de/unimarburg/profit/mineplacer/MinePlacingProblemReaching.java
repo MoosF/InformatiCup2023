@@ -56,6 +56,7 @@ public class MinePlacingProblemReaching extends AbstractProblem {
         try {
           copy.addBaseObject(possibleMines[i]);
         } catch (CouldNotPlaceObjectException ignored) {
+          //Ignore
         }
       }
     }
