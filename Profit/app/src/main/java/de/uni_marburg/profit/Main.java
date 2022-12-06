@@ -26,12 +26,7 @@ public class Main {
     settings.updateImportTarget(false);
     settings.updateImportFileType(FileType.JSON);
 
-    String[] inputFiles = {
-            "001.task-with-time.json", "002.task-with-time.json",
-            "003.task-with-time.json", "004.task-with-time.json"
-    };
-
-    for (String file : inputFiles) {
+    for (String file : args) {
       Input input = InputOutputHandle.getInputFrom(file);
 
       Field field = new Field(input.getWidth(), input.getHeight());

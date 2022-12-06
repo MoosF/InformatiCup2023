@@ -1,6 +1,6 @@
-out/
-
 # Ignore local IDE configuration.
+.idea/.gitignore
+.idea/shelf
 .idea/workspace.xml
 
 # Ignore Gradle project-specific cache directory

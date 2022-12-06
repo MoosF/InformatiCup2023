@@ -16,7 +16,13 @@ dependencies {
 
 application {
     mainClass = 'de.uni_marburg.profit.Main'
+
+    ArrayList<String> inputFiles = new ArrayList<String>();
+    inputFiles.addAll(new String[]{"001.task-with-time.json", "002.task-with-time.json",
+            "003.task-with-time.json", "004.task-with-time.json"})
+
     tasks.run.workingDir = new File('../input')
+    tasks.run.args = inputFiles
 }
 
 tasks.named('test') {
