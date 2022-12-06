@@ -1,18 +1,16 @@
 package de.uni_marburg.profit;
 
 import de.uni_marburg.profit.mineplacer.MinePlaceFinder;
-import de.uni_marburg.profit.mineplacer.MinePlacingProblem;
 import de.uni_marburg.profit.mineplacer.MinePlacingProblemReaching;
-import de.uni_marburg.profit.model.Mine;
-import de.uni_marburg.profit.model.exceptions.CouldNotPlaceObjectException;
 import de.uni_marburg.profit.model.Field;
 import de.uni_marburg.profit.model.FixedObject;
+import de.uni_marburg.profit.model.Mine;
+import de.uni_marburg.profit.model.exceptions.CouldNotPlaceObjectException;
 import de.uni_marburg.profit.service.Input;
 import de.uni_marburg.profit.service.InputOutputHandle;
 import de.uni_marburg.profit.service.InputOutputHandle.FileType;
 import de.uni_marburg.profit.service.Settings;
 import de.uni_marburg.profit.simulation.SimulateException;
-import de.uni_marburg.profit.simulation.Simulator;
 import org.moeaframework.Executor;
 import org.moeaframework.core.NondominatedPopulation;
 import org.moeaframework.core.Solution;
@@ -49,16 +47,14 @@ public class Main {
         }
       }
 
+      field.copy().show();
+
       MinePlaceFinder minePlaceFinder = new MinePlaceFinder(field);
       Mine[] possibleMines = minePlaceFinder.getAllPossibleMines();
 
-      NondominatedPopulation population = new Executor()
-          .withProblemClass(MinePlacingProblemReaching.class, field, possibleMines,
-              input.getTurns())
-          .withAlgorithm("NSGAII")
-          .withMaxTime(10 * 1000)
-          .distributeOnAllCores()
-          .run();
+      NondominatedPopulation population = new Executor().withProblemClass(
+              MinePlacingProblemReaching.class, field, possibleMines, input.getTurns())
+          .withAlgorithm("NSGAII").withMaxTime(10 * 1000).distributeOnAllCores().run();
 
       Solution solution = population.iterator().next();
       placeMines(field, possibleMines, solution);
@@ -84,8 +80,8 @@ public class Main {
       if (shouldBePlaced) {
         try {
           field.addBaseObject(mine);
-        } catch (CouldNotPlaceObjectException ignored) {
-
+        } catch (CouldNotPlaceObjectException e) {
+          throw new RuntimeException(e);
         }
       }
     }

@@ -7,7 +7,6 @@ import de.uni_marburg.profit.model.Mine;
 import de.uni_marburg.profit.model.MovableObject;
 import de.uni_marburg.profit.model.Tile;
 import de.uni_marburg.profit.model.enums.ConveyerSubType;
-import de.uni_marburg.profit.model.enums.MineSubType;
 import de.uni_marburg.profit.model.enums.TileType;
 import de.uni_marburg.profit.model.exceptions.CouldNotPlaceObjectException;
 import java.util.Arrays;
@@ -16,48 +15,40 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Predicate;
 import org.moeaframework.core.Solution;
 import org.moeaframework.core.variable.EncodingUtils;
 import org.moeaframework.problem.AbstractProblem;
 
 public class MinePlacingProblemReaching extends AbstractProblem {
 
-  private final Mine[] possiblePlacements;
+  private final Mine[] possibleMines;
   private final Field field;
   private final int turns;
 
   public MinePlacingProblemReaching(Field field, Mine[] possibleMines, int turns) {
     super(1, 2, 0);
-    this.possiblePlacements = possibleMines;
+    this.possibleMines = possibleMines;
     this.field = field;
     this.turns = turns;
   }
 
   @Override
   public void evaluate(Solution solution) {
-    boolean[] binary = EncodingUtils.getBinary(solution.getVariable(0));
+    boolean[] shouldBePlaced = EncodingUtils.getBinary(solution.getVariable(0));
 
     Field copy = field.copy();
-
-    for (int i = 0; i < binary.length; i++) {
-      boolean shouldBePlaced = binary[i];
-      Mine mine = possiblePlacements[i];
-
-      if (shouldBePlaced) {
+    for (int i = 0; i < shouldBePlaced.length; i++) {
+      if (shouldBePlaced[i]) {
         try {
-          copy.addBaseObject(mine);
+          copy.addBaseObject(possibleMines[i]);
         } catch (CouldNotPlaceObjectException ignored) {
-
         }
       }
     }
 
     int reachingScore = 0;
-
     for (Mine mine : copy.getObjectsOfClass(Mine.class)) {
-      HashSet<Position> reachablePositions = new HashSet<>();
-      reachingScore += calcReachScore(copy.copy(), mine, reachablePositions);
+      reachingScore += calcReachScore(copy.copy(), mine, new HashSet<>());
     }
 
     solution.setObjective(1, -reachingScore);
@@ -90,17 +81,13 @@ public class MinePlacingProblemReaching extends AbstractProblem {
     }
     reachablePositions.add(position);
 
-    Collection<Position> neighbors = getNeighbors(object, position);
-
     int reachScore = 1;
-    for (Position neighborPosition : neighbors) {
+    for (Position neighborPosition : getValidNeighboringPositions(object, position)) {
       for (ConveyerSubType subtype : ConveyerSubType.values()) {
 
-        Conveyer conveyer = createConveyerFromPosition(neighborPosition, subtype);
+        Conveyer conveyer = createConveyerFromInputPosition(neighborPosition, subtype);
         if (field.baseObjectCanBePlaced(conveyer)) {
-          //field.addBaseObject(conveyer);
           reachScore += calcReachScore(field, conveyer, reachablePositions);
-
         }
 
       }
@@ -109,7 +96,7 @@ public class MinePlacingProblemReaching extends AbstractProblem {
     return reachScore;
   }
 
-  private Collection<Position> getNeighbors(BaseObject object, Position position) {
+  private Collection<Position> getValidNeighboringPositions(BaseObject object, Position position) {
     Collection<Position> neighbors = new LinkedList<>();
     neighbors.add(new Position(position.getHorPos() + 1, position.getVerPos()));
     neighbors.add(new Position(position.getHorPos(), position.getVerPos() + 1));
@@ -129,7 +116,8 @@ public class MinePlacingProblemReaching extends AbstractProblem {
     return neighbors;
   }
 
-  private Conveyer createConveyerFromPosition(Position neighborPosition, ConveyerSubType subtype) {
+  private Conveyer createConveyerFromInputPosition(Position neighborPosition,
+      ConveyerSubType subtype) {
     int horPos = neighborPosition.getHorPos();
     int verPos = neighborPosition.getVerPos();
 
@@ -152,7 +140,7 @@ public class MinePlacingProblemReaching extends AbstractProblem {
   @Override
   public Solution newSolution() {
     Solution solution = new Solution(numberOfVariables, numberOfObjectives, numberOfConstraints);
-    solution.setVariable(0, EncodingUtils.newBinary(possiblePlacements.length));
+    solution.setVariable(0, EncodingUtils.newBinary(possibleMines.length));
     return solution;
   }
 }
