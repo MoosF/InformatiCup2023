@@ -19,9 +19,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import de.uni_marburg.profit.model.*;
-import de.uni_marburg.profit.model.enums.*;
-
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

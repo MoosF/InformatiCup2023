@@ -11,8 +11,6 @@ import de.uni.marburg.profit.model.Product;
 import de.uni.marburg.profit.model.Tile;
 import java.util.List;
 
-import de.uni_marburg.profit.model.*;
-
 /**
  * Class for handling input of {@link Field} parameters and output of calculated {@link Mine}-,
  * {@link Conveyer}-, {@link Combiner}- and {@link Factory}-objects.

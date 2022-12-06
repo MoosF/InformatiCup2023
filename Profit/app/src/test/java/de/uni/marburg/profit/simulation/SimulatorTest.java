@@ -15,9 +15,6 @@ import de.uni.marburg.profit.model.enums.ResourceType;
 import de.uni.marburg.profit.model.exceptions.CouldNotPlaceObjectException;
 import java.util.Map;
 
-import de.uni_marburg.profit.model.*;
-import de.uni_marburg.profit.model.enums.*;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

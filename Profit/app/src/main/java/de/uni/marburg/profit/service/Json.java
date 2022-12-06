@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.Vector;
 import java.util.stream.Collectors;
 
-import de.uni_marburg.profit.model.*;
-
 /**
  * Class for handling inputs of {@link FileType} JSON.
  *

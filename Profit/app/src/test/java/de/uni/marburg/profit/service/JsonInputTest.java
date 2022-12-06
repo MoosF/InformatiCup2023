@@ -11,7 +11,6 @@ import de.uni.marburg.profit.service.InputOutputHandle.FileType;
 import java.util.HashMap;
 import java.util.List;
 
-import de.uni_marburg.profit.model.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
