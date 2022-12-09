@@ -1,7 +1,9 @@
-package de.unimarburg.profit.frame;
+package de.unimarburg.profit.view;
 
 
 import de.unimarburg.profit.model.Field;
+import java.util.Timer;
+import java.util.TimerTask;
 import javax.swing.JFrame;
 
 /**
@@ -25,6 +27,15 @@ public class FieldFrame extends JFrame {
   public static void createFieldFrame(Field field) {
     FieldFrame fieldFrame = new FieldFrame();
     FieldDrawPanel fieldDrawPanel = new FieldDrawPanel(field);
+
+    new Timer().scheduleAtFixedRate(new TimerTask() {
+      @Override
+      public void run() {
+        fieldDrawPanel.repaint();
+      }
+    }, 0, 1000 / 24);
+
+    fieldDrawPanel.requestFocus();
     fieldFrame.add(fieldDrawPanel);
     fieldFrame.setVisible(true);
     fieldFrame.pack();

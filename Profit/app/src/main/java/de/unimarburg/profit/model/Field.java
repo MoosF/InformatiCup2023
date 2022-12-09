@@ -1,6 +1,6 @@
 package de.unimarburg.profit.model;
 
-import de.unimarburg.profit.frame.FieldFrame;
+import de.unimarburg.profit.view.FieldFrame;
 import de.unimarburg.profit.model.enums.TileType;
 import de.unimarburg.profit.model.exceptions.CouldNotPlaceObjectException;
 import de.unimarburg.profit.model.exceptions.CouldNotRemoveObjectException;

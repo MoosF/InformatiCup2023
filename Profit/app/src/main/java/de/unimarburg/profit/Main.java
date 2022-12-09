@@ -29,6 +29,8 @@ public class Main {
    * @param args Arguments. Should be an empty array.
    */
   public static void main(String[] args) throws SimulateException {
+
+
     var settings = Settings.getInstance();
     settings.updateImportTarget(false);
     settings.updateImportFileType(FileType.JSON);
@@ -57,11 +59,10 @@ public class Main {
 
       Field copy = field.copy();
       placeMines(copy, possibleMines, solution);
-      System.out.println("Violates contraint: " + solution.violatesConstraints());
+      System.out.println("Violates constraint: " + solution.violatesConstraints());
       System.out.println("Objective: " + solution.getObjective(1));
       System.out.println();
       copy.show();
-
     }
 
   }

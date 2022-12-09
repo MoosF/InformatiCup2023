@@ -17,21 +17,21 @@ import org.moeaframework.problem.AbstractProblem;
  *
  * @author Yannick Kraml
  */
-public class MinePlacingProblem extends AbstractProblem {
+public class MinePlacingProblemPoints extends AbstractProblem {
 
   private final Mine[] possiblePlacements;
   private final Field field;
   private final int turns;
 
   /**
-   * Constructor of {@link MinePlacingProblem}.
+   * Constructor of {@link MinePlacingProblemPoints}.
    *
    * @param field         {@link Field}, where the {@link Mine}s should be placed.
    * @param possibleMines An array of {@link Mine}s, containing all possible {@link Mine}s, that can
    *                      be placed.
    * @param turns         The amount of turns, that the field will be simulated in the future.
    */
-  public MinePlacingProblem(Field field, Mine[] possibleMines, int turns) {
+  public MinePlacingProblemPoints(Field field, Mine[] possibleMines, int turns) {
     super(1, 2, 0);
     this.possiblePlacements = possibleMines;
     this.field = field;

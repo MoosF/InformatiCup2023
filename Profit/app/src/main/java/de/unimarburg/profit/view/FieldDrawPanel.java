@@ -1,4 +1,4 @@
-package de.unimarburg.profit.frame;
+package de.unimarburg.profit.view;
 
 import de.unimarburg.profit.model.BaseObject;
 import de.unimarburg.profit.model.Field;
@@ -17,9 +17,11 @@ public class FieldDrawPanel extends JPanel {
 
 
   private static final int TILE_SIZE = 20;
-  private static final int BORDER_WITH = 2;
+  private static final int BORDER_WIDTH = 2;
   private static final Color LINE_COLOR = Color.GRAY;
+
   private final Field field;
+  private final Environment env;
 
   /**
    * Constructor of this Class.
@@ -27,11 +29,16 @@ public class FieldDrawPanel extends JPanel {
    * @param field {@link Field}, that this {@link JPanel} should draw.
    */
   public FieldDrawPanel(Field field) {
+    this.env = new Environment(700, 500);
     this.field = field;
-    setBackground(Color.WHITE);
 
-    Tile[][] array = field.getTiles();
-    setPreferredSize(new Dimension(array.length * TILE_SIZE, array[0].length * TILE_SIZE));
+    setBackground(Color.WHITE);
+    setPreferredSize(new Dimension(env.getWidth(), env.getHeight()));
+
+    MyMouseAdapter myMouseAdapter = new MyMouseAdapter(env);
+    addMouseMotionListener(myMouseAdapter);
+    addMouseListener(myMouseAdapter);
+    addMouseWheelListener(myMouseAdapter);
   }
 
   @Override
@@ -43,15 +50,14 @@ public class FieldDrawPanel extends JPanel {
 
     //Horizontal Lines
     g.setColor(LINE_COLOR);
-    for (int i = 0; i < getHeight() / TILE_SIZE + 1; i++) {
-      g.drawLine(0, i * TILE_SIZE, getWidth(), i * TILE_SIZE);
+    for (int i = 0; i < field.getHeight() + 1; i++) {
+      drawLine(g, 0, i * TILE_SIZE, field.getWidth() * TILE_SIZE, i * TILE_SIZE);
     }
 
     //Vertical Lines
-    for (int i = 0; i < getWidth() / TILE_SIZE + 1; i++) {
-      g.drawLine(i * TILE_SIZE, 0, i * TILE_SIZE, getHeight());
+    for (int i = 0; i < field.getWidth() + 1; i++) {
+      drawLine(g, i * TILE_SIZE, 0, i * TILE_SIZE, field.getHeight() * TILE_SIZE);
     }
-
 
   }
 
@@ -104,44 +110,25 @@ public class FieldDrawPanel extends JPanel {
       }
     }
 
-    int screenHorizontalCoordinate = (baseObject.getX() + tile.getRelHorPos()) * TILE_SIZE;
-    int screenVerticalCoordinate = (baseObject.getY() + tile.getRelVerPos()) * TILE_SIZE;
+    int horPos = (baseObject.getX() + tile.getRelHorPos()) * TILE_SIZE;
+    int verPos = (baseObject.getY() + tile.getRelVerPos()) * TILE_SIZE;
 
     g.setColor(color.darker().darker());
 
     if (!hasTopNeighbor) {
-      g.fillRect(
-          screenHorizontalCoordinate,
-          screenVerticalCoordinate,
-          TILE_SIZE,
-          BORDER_WITH
-      );
+      fillRectangle(g, horPos, verPos, TILE_SIZE, BORDER_WIDTH);
     }
 
     if (!hasRightNeighbor) {
-      g.fillRect(
-          screenHorizontalCoordinate + TILE_SIZE - BORDER_WITH,
-          screenVerticalCoordinate,
-          BORDER_WITH,
-          TILE_SIZE);
+      fillRectangle(g, horPos + TILE_SIZE - BORDER_WIDTH, verPos, BORDER_WIDTH, TILE_SIZE);
     }
 
     if (!hasBottomNeighbor) {
-      g.fillRect(
-          screenHorizontalCoordinate,
-          screenVerticalCoordinate + TILE_SIZE - BORDER_WITH,
-          TILE_SIZE,
-          BORDER_WITH
-      );
+      fillRectangle(g, horPos, verPos + TILE_SIZE - BORDER_WIDTH, TILE_SIZE, BORDER_WIDTH);
     }
 
     if (!hasLeftNeighbor) {
-      g.fillRect(
-          screenHorizontalCoordinate,
-          screenVerticalCoordinate,
-          BORDER_WITH,
-          TILE_SIZE
-      );
+      fillRectangle(g, horPos, verPos, BORDER_WIDTH, TILE_SIZE);
     }
   }
 
@@ -156,19 +143,60 @@ public class FieldDrawPanel extends JPanel {
       default -> throw new IllegalStateException("Unexpected value: " + tile.getType());
     }
 
-    int screenHorizontalCoordinate = (baseObject.getX() + tile.getRelHorPos()) * TILE_SIZE;
-    int screenVerticalCoordinate = (baseObject.getY() + tile.getRelVerPos()) * TILE_SIZE;
+    int horPos = (baseObject.getX() + tile.getRelHorPos()) * TILE_SIZE;
+    int verPos = (baseObject.getY() + tile.getRelVerPos()) * TILE_SIZE;
 
     g.setColor(baseObjectColor);
-    g.fillRect(screenHorizontalCoordinate, screenVerticalCoordinate, TILE_SIZE, TILE_SIZE);
+    fillRectangle(g, horPos, verPos, TILE_SIZE, TILE_SIZE);
 
     int offsetVertical = TILE_SIZE / 2 + 4;
     int offsetHorizontal = TILE_SIZE / 2 - 4;
 
     g.setColor(Color.WHITE);
-    g.drawString(String.valueOf(letter), screenHorizontalCoordinate + offsetHorizontal,
-        screenVerticalCoordinate + offsetVertical);
+    drawLetter(g, letter, horPos + offsetHorizontal, verPos + offsetVertical);
   }
 
 
+  protected void fillRectangle(Graphics g, int horPos, int verPos, int width, int height) {
+
+    MyPoint topLeftWorldPoint = new MyPoint(horPos, verPos);
+    MyPoint bottomRightWorldPoint = new MyPoint(horPos + width, verPos + height);
+
+    MyPoint topLeftScreenPoint = PointCalculator.calcWorldToScreen(env, topLeftWorldPoint);
+    MyPoint bottomRightScreenPoint = PointCalculator.calcWorldToScreen(env, bottomRightWorldPoint);
+
+    double screenWidth = bottomRightScreenPoint.getX() - topLeftScreenPoint.getX();
+    double screenHeight = bottomRightScreenPoint.getY() - topLeftScreenPoint.getY();
+
+    g.fillRect(
+        (int) Math.floor(topLeftScreenPoint.getX()),
+        (int) Math.floor(topLeftScreenPoint.getY()),
+        (int) Math.ceil(screenWidth),
+        (int) Math.ceil(screenHeight)
+    );
+  }
+
+  protected void drawLetter(Graphics g, char letter, int horPos, int verPos) {
+
+    MyPoint worldPoint = new MyPoint(horPos, verPos);
+    MyPoint screenPoint = PointCalculator.calcWorldToScreen(env, worldPoint);
+
+    g.drawString(String.valueOf(letter), (int) screenPoint.getX(), (int) screenPoint.getY());
+  }
+
+  protected void drawLine(Graphics g, int fromX, int fromY, int toX, int toY) {
+
+    MyPoint fromWorldPoint = new MyPoint(fromX, fromY);
+    MyPoint toWorldPoint = new MyPoint(toX, toY);
+
+    MyPoint fromScreenPoint = PointCalculator.calcWorldToScreen(env, fromWorldPoint);
+    MyPoint toScreenPoint = PointCalculator.calcWorldToScreen(env, toWorldPoint);
+
+    g.drawLine(
+        (int) fromScreenPoint.getX(),
+        (int) fromScreenPoint.getY(),
+        (int) toScreenPoint.getX(),
+        (int) toScreenPoint.getY()
+    );
+  }
 }
