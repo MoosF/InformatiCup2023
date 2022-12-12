@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * This class models {@link Field}.
@@ -95,13 +96,6 @@ public class Field {
       if (!tileCanBePlaced(horPos, verPos, tile)) {
         return false;
       }
-    }
-
-    for (Tile tile : o.getTiles()) {
-      int verPos = o.getX() + tile.getRelHorPos();
-      int horPos = o.getY() + tile.getRelVerPos();
-
-
     }
 
     return true;
@@ -191,10 +185,12 @@ public class Field {
 
   private boolean tileCanBePlaced(int horPos, int verPos, Tile tile) {
 
+    //Check if Tile inside borders.
     if (verPos < 0 || horPos < 0 || verPos >= height || horPos >= width) {
       return false;
     }
 
+    //Check if Tile is placed on top of another tile.
     Tile targetTile = tiles[horPos][verPos];
     boolean targetTileIsEmpty = targetTile.getType().equals(TileType.EMPTY);
     boolean targetTileIsCrossable = targetTile.getType().equals(TileType.CROSSABLE);
@@ -206,31 +202,35 @@ public class Field {
     TileType type = tile.getType();
     Collection<Tile> neighbors = getNeighbors(horPos, verPos);
 
-    if (type.equals(TileType.INPUT)) {
-      for (Tile neighbor : neighbors) {
-        if (neighbor.getType().equals(TileType.DEPOSIT_OUTPUT)) {
-          return false;
-        }
+    for (Tile neighbor : neighbors) {
+
+      //DEPOSIT_OUTPUT can not be placed next to a INPUT
+      if (Objects.equals(neighbor.getType(), TileType.INPUT) && Objects.equals(type,
+          TileType.DEPOSIT_OUTPUT)) {
+        return false;
       }
+
+      //INPUT can not be placed next to a DEPOSIT_OUTPUT
+      if (Objects.equals(neighbor.getType(), TileType.DEPOSIT_OUTPUT) && Objects.equals(type,
+          TileType.INPUT)) {
+        return false;
+      }
+
+      //Output can not be placed next to a MINE_INPUT
+      if (Objects.equals(neighbor.getType(), TileType.MINE_INPUT) && Objects.equals(type,
+          TileType.OUTPUT)) {
+        return false;
+      }
+
+      //MINE_INPUT can not be placed next to a OUTPUT
+      if (Objects.equals(neighbor.getType(), TileType.OUTPUT) && Objects.equals(type,
+          TileType.MINE_INPUT)) {
+        return false;
+      }
+
     }
 
-    if (type.equals(TileType.OUTPUT)) {
-      for (Tile neighbor : neighbors) {
-        if (neighbor.getType().equals(TileType.MINE_INPUT)) {
-          return false;
-        }
-      }
-    }
-
-    if (type.equals(TileType.MINE_INPUT)) {
-      for (Tile neighbor : neighbors) {
-        if (neighbor.getType().equals(TileType.OUTPUT)) {
-          return false;
-        }
-      }
-    }
-
-    if (type.equals(TileType.DEPOSIT_OUTPUT) || type.equals(TileType.OUTPUT)) {
+    if (type.equals(TileType.INPUT) || type.equals(TileType.MINE_INPUT)) {
 
       for (Tile neighbor : neighbors) {
 

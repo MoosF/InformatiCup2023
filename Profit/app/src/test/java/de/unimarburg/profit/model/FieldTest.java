@@ -1,5 +1,7 @@
 package de.unimarburg.profit.model;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import de.unimarburg.profit.model.enums.CombinerSubType;
 import de.unimarburg.profit.model.enums.ConveyerSubType;
 import de.unimarburg.profit.model.enums.MineSubType;
@@ -9,22 +11,23 @@ import de.unimarburg.profit.model.exceptions.CouldNotPlaceObjectException;
 import de.unimarburg.profit.model.exceptions.CouldNotRemoveObjectException;
 import java.util.List;
 import java.util.Map;
-import junit.framework.TestCase;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-public class FieldTest extends TestCase {
+public class FieldTest {
 
   Field field = new Field(100, 100);
 
+
+  @Test
   public void testAddBaseObject() throws CouldNotPlaceObjectException {
     BaseObject deposit = Deposit.createDeposit(ResourceType.ZERO, 0, 0, 3, 2);
     BaseObject mine = Mine.createMine(4, 0, MineSubType.OUTPUT_EAST);
     field.addBaseObject(deposit);
-    assertTrue(field.getAllObjects().contains(deposit));
+    Assertions.assertTrue(field.getAllObjects().contains(deposit));
     field.addBaseObject(mine);
-    assertTrue(field.getAllObjects().contains(mine));
+    Assertions.assertTrue(field.getAllObjects().contains(mine));
 
     assertThrows(CouldNotPlaceObjectException.class, () -> field.addBaseObject(
         Conveyer.createConveyor(1, 2, ConveyerSubType.SHORT_OUTPUT_EAST)));
@@ -36,6 +39,7 @@ public class FieldTest extends TestCase {
         () -> field.addBaseObject(Mine.createMine(8, 0, MineSubType.OUTPUT_EAST)));
   }
 
+  @Test
   public void testRemoveBaseObject()
       throws CouldNotPlaceObjectException, CouldNotRemoveObjectException {
     assertThrows(CouldNotRemoveObjectException.class,
@@ -45,9 +49,10 @@ public class FieldTest extends TestCase {
     field.addBaseObject(o1);
     field.removeBaseObject(o1);
 
-    assertFalse(field.getAllObjects().contains(o1));
+    Assertions.assertFalse(field.getAllObjects().contains(o1));
   }
 
+  @Test
   public void testGetObjectsByClass() throws CouldNotPlaceObjectException {
 
     Product product0 = new Product(10, ProductType.ZERO,
@@ -139,6 +144,32 @@ public class FieldTest extends TestCase {
             mine6, mine7, conveyor, conveyor1, conveyor2, conveyor3, conveyor4, conveyor5,
             conveyor6, conveyor7, conveyor8, conveyor9, conveyor10, conveyor11, combiner, combiner1,
             combiner2, combiner3, factory, factory1)));
+
+  }
+
+  @Test
+  public void testIllegalConveyerPlacements() throws CouldNotPlaceObjectException {
+
+    Field field = new Field(20, 20);
+
+    field.addBaseObject(Conveyer.createConveyor(4, 4, ConveyerSubType.LONG_OUTPUT_EAST));
+    field.addBaseObject(Conveyer.createConveyor(4, 5, ConveyerSubType.LONG_OUTPUT_WEST));
+    field.addBaseObject(Conveyer.createConveyor(4, 4, ConveyerSubType.LONG_OUTPUT_NORTH));
+    field.addBaseObject(Conveyer.createConveyor(5, 4, ConveyerSubType.LONG_OUTPUT_SOUTH));
+
+    field.addBaseObject(Conveyer.createConveyor(4, 1, ConveyerSubType.SHORT_OUTPUT_SOUTH));
+    field.addBaseObject(Conveyer.createConveyor(5, 1, ConveyerSubType.SHORT_OUTPUT_SOUTH));
+    field.addBaseObject(Conveyer.createConveyor(7, 3, ConveyerSubType.SHORT_OUTPUT_WEST));
+    field.addBaseObject(Conveyer.createConveyor(8, 5, ConveyerSubType.SHORT_OUTPUT_WEST));
+
+    Assertions.assertThrows(CouldNotPlaceObjectException.class, () -> field.addBaseObject(
+        Conveyer.createConveyor(4, 1, ConveyerSubType.SHORT_OUTPUT_NORTH)));
+    Assertions.assertThrows(CouldNotPlaceObjectException.class, () -> field.addBaseObject(
+        Conveyer.createConveyor(7, 3, ConveyerSubType.SHORT_OUTPUT_EAST)));
+
+    Assertions.assertThrows(CouldNotPlaceObjectException.class,
+        () -> field.addBaseObject(Conveyer.createConveyor(4, 4, ConveyerSubType.LONG_OUTPUT_EAST)));
+
 
   }
 

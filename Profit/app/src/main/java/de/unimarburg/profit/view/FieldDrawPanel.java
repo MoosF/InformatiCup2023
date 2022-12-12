@@ -18,6 +18,8 @@ public class FieldDrawPanel extends JPanel {
 
   private static final int TILE_SIZE = 20;
   private static final int BORDER_WIDTH = 2;
+  private static final double LINE_WIDTH = TILE_SIZE * 0.1;
+  private static final double LINE_LENGTH = TILE_SIZE * 0.4;
   private static final Color LINE_COLOR = Color.GRAY;
 
   private final Field field;
@@ -134,26 +136,89 @@ public class FieldDrawPanel extends JPanel {
 
   private void drawTile(BaseObject baseObject, Tile tile, Graphics g, Color baseObjectColor) {
 
-    char letter;
-    switch (tile.getType()) {
-      case INPUT, MINE_INPUT -> letter = '+';
-      case OUTPUT, DEPOSIT_OUTPUT -> letter = '-';
-      case EMPTY, SOLID -> letter = ' ';
-      case CROSSABLE -> letter = '#';
-      default -> throw new IllegalStateException("Unexpected value: " + tile.getType());
-    }
-
     int horPos = (baseObject.getX() + tile.getRelHorPos()) * TILE_SIZE;
     int verPos = (baseObject.getY() + tile.getRelVerPos()) * TILE_SIZE;
 
     g.setColor(baseObjectColor);
     fillRectangle(g, horPos, verPos, TILE_SIZE, TILE_SIZE);
 
-    int offsetVertical = TILE_SIZE / 2 + 4;
-    int offsetHorizontal = TILE_SIZE / 2 - 4;
-
     g.setColor(Color.WHITE);
-    drawLetter(g, letter, horPos + offsetHorizontal, verPos + offsetVertical);
+    switch (tile.getType()) {
+      case INPUT, MINE_INPUT -> drawInput(g, horPos, verPos);
+      case OUTPUT, DEPOSIT_OUTPUT -> drawOutput(g, horPos, verPos);
+      case EMPTY, SOLID -> {
+      }
+      case CROSSABLE -> drawCrossable(g, horPos, verPos);
+      default -> throw new IllegalStateException("Unexpected value: " + tile.getType());
+    }
+
+  }
+
+  private void drawCrossable(Graphics g, int horPos, int verPos) {
+
+    fillRectangle(
+        g,
+        (int) (horPos + TILE_SIZE / 5 * 2 - LINE_WIDTH / 2),
+        (int) (verPos + TILE_SIZE / 2 - LINE_LENGTH / 2),
+        (int) LINE_WIDTH,
+        (int) LINE_LENGTH
+    );
+
+    fillRectangle(
+        g,
+        (int) (horPos + TILE_SIZE / 5 * 3 - LINE_WIDTH / 2),
+        (int) (verPos + TILE_SIZE / 2 - LINE_LENGTH / 2),
+        (int) LINE_WIDTH,
+        (int) LINE_LENGTH
+    );
+
+    fillRectangle(
+        g,
+        (int) (horPos + TILE_SIZE / 2 - LINE_LENGTH / 2),
+        (int) (verPos + TILE_SIZE / 5 * 2 - LINE_WIDTH / 2),
+        (int) LINE_LENGTH,
+        (int) LINE_WIDTH
+    );
+
+    fillRectangle(
+        g,
+        (int) (horPos + TILE_SIZE / 2 - LINE_LENGTH / 2),
+        (int) (verPos + TILE_SIZE / 5 * 3 - LINE_WIDTH / 2),
+        (int) LINE_LENGTH,
+        (int) LINE_WIDTH
+    );
+
+  }
+
+  private void drawOutput(Graphics g, int horPos, int verPos) {
+    fillRectangle(
+        g,
+        (int) (horPos + (TILE_SIZE - LINE_LENGTH) / 2),
+        (int) (verPos + TILE_SIZE / 2 - LINE_WIDTH / 2),
+        (int) LINE_LENGTH,
+        (int) LINE_WIDTH
+    );
+
+  }
+
+  private void drawInput(Graphics g, int horPos, int verPos) {
+
+    fillRectangle(
+        g,
+        (int) (horPos + TILE_SIZE / 2 - LINE_LENGTH / 2),
+        (int) (verPos + TILE_SIZE / 2 - LINE_WIDTH / 2),
+        (int) LINE_LENGTH,
+        (int) LINE_WIDTH
+    );
+
+    fillRectangle(
+        g,
+        (int) (horPos + TILE_SIZE / 2 - LINE_WIDTH / 2),
+        (int) (verPos + TILE_SIZE / 2 - LINE_LENGTH / 2),
+        (int) LINE_WIDTH,
+        (int) LINE_LENGTH
+    );
+
   }
 
 
