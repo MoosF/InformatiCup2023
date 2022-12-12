@@ -1,8 +1,8 @@
 package de.unimarburg.profit.model;
 
+import de.unimarburg.profit.model.enums.CombinerSubType;
 import de.unimarburg.profit.model.enums.ResourceType;
 import de.unimarburg.profit.model.enums.TileType;
-import de.unimarburg.profit.model.enums.CombinerSubType;
 import java.util.Map;
 
 /**

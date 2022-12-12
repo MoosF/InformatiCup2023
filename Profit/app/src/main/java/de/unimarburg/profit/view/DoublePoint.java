@@ -1,11 +1,16 @@
 package de.unimarburg.profit.view;
 
-public class MyPoint {
+/**
+ * Models a single point in 2D with double precision.
+ *
+ * @author Yannick Kraml
+ */
+public class DoublePoint {
 
   private final double posX;
   private final double posY;
 
-  public MyPoint(double x, double y) {
+  public DoublePoint(double x, double y) {
     this.posX = x;
     this.posY = y;
   }

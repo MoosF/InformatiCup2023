@@ -1,5 +1,10 @@
 package de.unimarburg.profit.view;
 
+/**
+ * This class saves all needed information to convert points between screen space and world space.
+ *
+ * @author Yannick Kraml
+ */
 public class Environment {
 
   protected final int width;

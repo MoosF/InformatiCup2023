@@ -5,7 +5,14 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import javax.swing.SwingUtilities;
 
-public class MyMouseAdapter extends MouseAdapter {
+/**
+ * This class extends {@link MouseAdapter} and should always be paired with a
+ * {@link FieldDrawPanel}. The {@link PanningAndZoomMouseAdapter} enables the panning of zooming of
+ * world space with the mouse.
+ *
+ * @author Yannick Kraml
+ */
+public class PanningAndZoomMouseAdapter extends MouseAdapter {
 
 
   private boolean cameraIsMoving;
@@ -15,7 +22,7 @@ public class MyMouseAdapter extends MouseAdapter {
   private final Environment env;
 
 
-  public MyMouseAdapter(Environment env) {
+  public PanningAndZoomMouseAdapter(Environment env) {
     this.env = env;
   }
 
@@ -30,15 +37,16 @@ public class MyMouseAdapter extends MouseAdapter {
       double newOffsetY =
           env.getWorldVerOffset() + (e.getY() - originalMousePositionY) / env.getZoomVer();
 
+      this.env.setWorldHorOffset(newOffsetX);
+      this.env.setWorldVerOffset(newOffsetY);
+
       originalMousePositionX = e.getX();
       originalMousePositionY = e.getY();
 
-      this.env.setWorldHorOffset(newOffsetX);
-      this.env.setWorldVerOffset(newOffsetY);
       return;
     }
 
-    MyPoint point = PointCalculator.calcScreenToWorld(env, e.getPoint());
+    DoublePoint point = PointCalculator.calcScreenToWorld(env, e.getPoint());
     env.setMouseWorldHorPos(point.getX());
     env.setMouseWorldVerPos(point.getY());
 
@@ -47,14 +55,14 @@ public class MyMouseAdapter extends MouseAdapter {
 
   @Override
   public void mouseMoved(MouseEvent e) {
-    MyPoint point = PointCalculator.calcScreenToWorld(env, e.getPoint());
+    DoublePoint point = PointCalculator.calcScreenToWorld(env, e.getPoint());
     env.setMouseWorldHorPos(point.getX());
     env.setMouseWorldVerPos(point.getY());
   }
 
   @Override
   public void mouseClicked(MouseEvent e) {
-    MyPoint point = PointCalculator.calcScreenToWorld(env, e.getPoint());
+    DoublePoint point = PointCalculator.calcScreenToWorld(env, e.getPoint());
     env.setMouseWorldHorPos(point.getX());
     env.setMouseWorldVerPos(point.getY());
   }
@@ -81,7 +89,7 @@ public class MyMouseAdapter extends MouseAdapter {
   public void mouseWheelMoved(MouseWheelEvent e) {
     super.mouseWheelMoved(e);
 
-    MyPoint mousePosBefore = PointCalculator.calcScreenToWorld(env, e.getPoint());
+    DoublePoint mousePosBefore = PointCalculator.calcScreenToWorld(env, e.getPoint());
 
     int rotation = e.getWheelRotation();
     if (rotation < 0) {
@@ -91,7 +99,7 @@ public class MyMouseAdapter extends MouseAdapter {
       env.setZoomHor(env.getZoomHor() * 0.95);
       env.setZoomVer(env.getZoomVer() * 0.95);
     }
-    MyPoint mousePosAfter = PointCalculator.calcScreenToWorld(env, e.getPoint());
+    DoublePoint mousePosAfter = PointCalculator.calcScreenToWorld(env, e.getPoint());
 
     double horVector = mousePosBefore.getX() - mousePosAfter.getX();
     double verVector = mousePosBefore.getY() - mousePosAfter.getY();
@@ -99,7 +107,7 @@ public class MyMouseAdapter extends MouseAdapter {
     env.setWorldHorOffset(env.getWorldHorOffset() - horVector);
     env.setWorldVerOffset(env.getWorldVerOffset() - verVector);
 
-    MyPoint point = PointCalculator.calcScreenToWorld(env, e.getPoint());
+    DoublePoint point = PointCalculator.calcScreenToWorld(env, e.getPoint());
     env.setMouseWorldHorPos(point.getX());
     env.setMouseWorldVerPos(point.getY());
   }

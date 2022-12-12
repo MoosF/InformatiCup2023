@@ -1,10 +1,20 @@
 package de.unimarburg.profit.view;
 
-import java.awt.Point;
-
+/**
+ * Helper class for the conversion between world points and screen points. All Methods are static.
+ *
+ * @author Yannick Kraml
+ */
 public final class PointCalculator {
 
-  public static MyPoint calcWorldToScreen(Environment environment, MyPoint worldPoint) {
+  /**
+   * Converts a world point to a screen point in the given {@link Environment}.
+   *
+   * @param environment {@link Environment} in which the conversion takes place.
+   * @param worldPoint  World point to be converted.
+   * @return Screen point.
+   */
+  public static DoublePoint calcWorldToScreen(Environment environment, DoublePoint worldPoint) {
 
     double worldHorOffset = environment.getWorldHorOffset();
     double worldPointHor = worldPoint.getX();
@@ -17,10 +27,17 @@ public final class PointCalculator {
     double screenHorPos = (worldHorOffset + worldPointHor) * zoomHor;
     double screenVerPos = (worldVerOffset + worldPointVer) * zoomVer;
 
-    return new MyPoint(screenHorPos, screenVerPos);
+    return new DoublePoint(screenHorPos, screenVerPos);
   }
 
-  public static MyPoint calcScreenToWorld(Environment environment, MyPoint screenPoint) {
+  /**
+   * Converts a screen point to a world point in the given {@link Environment}.
+   *
+   * @param environment {@link Environment} in which the conversion takes place.
+   * @param screenPoint Screen point to be converted.
+   * @return World point.
+   */
+  public static DoublePoint calcScreenToWorld(Environment environment, DoublePoint screenPoint) {
 
     double zoomHor = environment.getZoomHor();
     double zoomVer = environment.getZoomVer();
@@ -31,11 +48,19 @@ public final class PointCalculator {
     double worldHorPos = screenPoint.getX() / zoomHor - worldHorOffset;
     double worldVerPos = screenPoint.getY() / zoomVer - worldVerOffset;
 
-    return new MyPoint(worldHorPos, worldVerPos);
+    return new DoublePoint(worldHorPos, worldVerPos);
   }
 
-  public static MyPoint calcScreenToWorld(Environment environment, Point screenPoint) {
-    return calcScreenToWorld(environment, new MyPoint(screenPoint.x, screenPoint.y));
+  /**
+   * Converts a screen point to a world point in the given {@link Environment}. Works with
+   * {@link java.awt.Point} instead of {@link DoublePoint}.
+   *
+   * @param environment {@link Environment} in which the conversion takes place.
+   * @param screenPoint Screen point to be converted.
+   * @return World point.
+   */
+  public static DoublePoint calcScreenToWorld(Environment environment, java.awt.Point screenPoint) {
+    return calcScreenToWorld(environment, new DoublePoint(screenPoint.x, screenPoint.y));
   }
 
 }

@@ -35,7 +35,7 @@ public class FieldDrawPanel extends JPanel {
     setBackground(Color.WHITE);
     setPreferredSize(new Dimension(env.getWidth(), env.getHeight()));
 
-    MyMouseAdapter myMouseAdapter = new MyMouseAdapter(env);
+    PanningAndZoomMouseAdapter myMouseAdapter = new PanningAndZoomMouseAdapter(env);
     addMouseMotionListener(myMouseAdapter);
     addMouseListener(myMouseAdapter);
     addMouseWheelListener(myMouseAdapter);
@@ -159,14 +159,14 @@ public class FieldDrawPanel extends JPanel {
 
   protected void fillRectangle(Graphics g, int horPos, int verPos, int width, int height) {
 
-    MyPoint topLeftWorldPoint = new MyPoint(horPos, verPos);
-    MyPoint bottomRightWorldPoint = new MyPoint(horPos + width, verPos + height);
+    DoublePoint topLeftWorldPoint = new DoublePoint(horPos, verPos);
+    DoublePoint botRightWorldPoint = new DoublePoint(horPos + width, verPos + height);
 
-    MyPoint topLeftScreenPoint = PointCalculator.calcWorldToScreen(env, topLeftWorldPoint);
-    MyPoint bottomRightScreenPoint = PointCalculator.calcWorldToScreen(env, bottomRightWorldPoint);
+    DoublePoint topLeftScreenPoint = PointCalculator.calcWorldToScreen(env, topLeftWorldPoint);
+    DoublePoint botRightScreenPoint = PointCalculator.calcWorldToScreen(env, botRightWorldPoint);
 
-    double screenWidth = bottomRightScreenPoint.getX() - topLeftScreenPoint.getX();
-    double screenHeight = bottomRightScreenPoint.getY() - topLeftScreenPoint.getY();
+    double screenWidth = botRightScreenPoint.getX() - topLeftScreenPoint.getX();
+    double screenHeight = botRightScreenPoint.getY() - topLeftScreenPoint.getY();
 
     g.fillRect(
         (int) Math.floor(topLeftScreenPoint.getX()),
@@ -178,19 +178,19 @@ public class FieldDrawPanel extends JPanel {
 
   protected void drawLetter(Graphics g, char letter, int horPos, int verPos) {
 
-    MyPoint worldPoint = new MyPoint(horPos, verPos);
-    MyPoint screenPoint = PointCalculator.calcWorldToScreen(env, worldPoint);
+    DoublePoint worldPoint = new DoublePoint(horPos, verPos);
+    DoublePoint screenPoint = PointCalculator.calcWorldToScreen(env, worldPoint);
 
     g.drawString(String.valueOf(letter), (int) screenPoint.getX(), (int) screenPoint.getY());
   }
 
   protected void drawLine(Graphics g, int fromX, int fromY, int toX, int toY) {
 
-    MyPoint fromWorldPoint = new MyPoint(fromX, fromY);
-    MyPoint toWorldPoint = new MyPoint(toX, toY);
+    DoublePoint fromWorldPoint = new DoublePoint(fromX, fromY);
+    DoublePoint toWorldPoint = new DoublePoint(toX, toY);
 
-    MyPoint fromScreenPoint = PointCalculator.calcWorldToScreen(env, fromWorldPoint);
-    MyPoint toScreenPoint = PointCalculator.calcWorldToScreen(env, toWorldPoint);
+    DoublePoint fromScreenPoint = PointCalculator.calcWorldToScreen(env, fromWorldPoint);
+    DoublePoint toScreenPoint = PointCalculator.calcWorldToScreen(env, toWorldPoint);
 
     g.drawLine(
         (int) fromScreenPoint.getX(),

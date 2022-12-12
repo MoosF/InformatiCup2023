@@ -53,7 +53,7 @@ public class Main {
 
       NondominatedPopulation population = new Executor().withProblemClass(
               MinePlacingProblemReaching.class, field, possibleMines, input.getTurns())
-          .withAlgorithm("NSGAII").withMaxTime(3 * 1000).distributeOnAllCores().run();
+          .withAlgorithm("NSGAII").withMaxTime(5 * 1000).distributeOnAllCores().run();
 
       Solution solution = population.iterator().next();
 

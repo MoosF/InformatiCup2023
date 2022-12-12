@@ -120,26 +120,22 @@ final class Json extends InputOutputHandle {
 
     for (MovableObject movableObject : output) {
       JsonObject jsonObject = new JsonObject();
-      jsonObject.add(KEY_TYPE, new JsonPrimitive(
-          switch (movableObject.getType()) {
-            case COMBINER -> VALUE_COMBINER;
-            case CONVEYER -> VALUE_CONVEYER;
-            case FACTORY -> VALUE_FACTORY;
-            case MINE -> VALUE_MINE;
-          }
-      ));
+      jsonObject.add(KEY_TYPE, new JsonPrimitive(switch (movableObject.getType()) {
+        case COMBINER -> VALUE_COMBINER;
+        case CONVEYER -> VALUE_CONVEYER;
+        case FACTORY -> VALUE_FACTORY;
+        case MINE -> VALUE_MINE;
+      }));
 
       jsonObject.add(KEY_X, new JsonPrimitive(movableObject.getX()));
       jsonObject.add(KEY_Y, new JsonPrimitive(movableObject.getY()));
 
-      jsonObject.add(KEY_SUBTYPE, new JsonPrimitive(
-          switch (movableObject.getType()) {
-            case COMBINER -> ((Combiner) movableObject).getSubType().ordinal();
-            case CONVEYER -> ((Conveyer) movableObject).getSubType().ordinal();
-            case FACTORY -> ((Factory) movableObject).getSubType().ordinal();
-            case MINE -> ((Mine) movableObject).getSubType().ordinal();
-          }
-      ));
+      jsonObject.add(KEY_SUBTYPE, new JsonPrimitive(switch (movableObject.getType()) {
+        case COMBINER -> ((Combiner) movableObject).getSubType().ordinal();
+        case CONVEYER -> ((Conveyer) movableObject).getSubType().ordinal();
+        case FACTORY -> ((Factory) movableObject).getSubType().ordinal();
+        case MINE -> ((Mine) movableObject).getSubType().ordinal();
+      }));
 
       outputArray.add(jsonObject);
     }
@@ -160,8 +156,8 @@ final class Json extends InputOutputHandle {
       writer.write(outputString);
       writer.close();
     } catch (IOException e) {
-      throw new InputOutputException("Failed to write output to file " +
-          settings.getExportFileName() + "!");
+      throw new InputOutputException(
+          "Failed to write output to file " + settings.getExportFileName() + "!");
     }
   }
 
@@ -322,8 +318,8 @@ final class Json extends InputOutputHandle {
           json.objects.add(Deposit.createDeposit(subtype, x, y, width, height));
         }
         case TYPE_VALUE_OBSTACLE -> json.objects.add(Obstacle.createObstacle(x, y, width, height));
-        default -> throw new InputOutputException("Encountered \"object\"= with unsupported type(="
-            + type + "!");
+        default -> throw new InputOutputException(
+            "Encountered \"object\"= with unsupported type(=" + type + "!");
       }
     }
   }
@@ -405,8 +401,8 @@ final class Json extends InputOutputHandle {
         try {
           resourcesList.put(getResourceTypeFor(i), resourcesArray.get(i).getAsInt());
         } catch (UnsupportedOperationException e) {
-          throw new InputOutputException("Resources requirement for product was not of a " +
-              "primitive Json type!");
+          throw new InputOutputException(
+              "Resources requirement for product was not of a " + "primitive Json type!");
         } catch (NumberFormatException | IllegalStateException e) {
           throw new InputOutputException("Resources requirement for product was not an int!");
         }
