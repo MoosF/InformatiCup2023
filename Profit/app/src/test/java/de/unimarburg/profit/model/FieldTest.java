@@ -173,4 +173,17 @@ public class FieldTest {
 
   }
 
+
+  @Test
+  public void testIllegalConveyerPlacements2() throws CouldNotPlaceObjectException {
+
+    Field field = new Field(20, 20);
+
+    field.addBaseObject(Conveyer.createConveyor(1,1, ConveyerSubType.SHORT_OUTPUT_NORTH));
+    field.addBaseObject(Conveyer.createConveyor(3,1, ConveyerSubType.SHORT_OUTPUT_NORTH));
+
+    Assertions.assertThrows(CouldNotPlaceObjectException.class,
+        () -> field.addBaseObject(Conveyer.createConveyor(2,3, ConveyerSubType.SHORT_OUTPUT_NORTH)));
+
+  }
 }

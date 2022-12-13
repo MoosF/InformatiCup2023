@@ -1,7 +1,5 @@
 package de.unimarburg.profit;
 
-import de.unimarburg.profit.model.Conveyer;
-import de.unimarburg.profit.model.enums.ConveyerSubType;
 import de.unimarburg.profit.model.exceptions.CouldNotPlaceObjectException;
 import de.unimarburg.profit.mineplacer.MinePlaceFinder;
 import de.unimarburg.profit.mineplacer.MinePlacingProblemReaching;
@@ -30,16 +28,42 @@ public class Main {
    *
    * @param args Arguments. Should be an empty array.
    */
-  public static void main(String[] args) throws SimulateException, CouldNotPlaceObjectException {
-
-    Field field = new Field(20, 20);
-
-    field.addBaseObject(Conveyer.createConveyor(1,1, ConveyerSubType.SHORT_OUTPUT_NORTH));
-    field.addBaseObject(Conveyer.createConveyor(1,1, ConveyerSubType.SHORT_OUTPUT_WEST));
+  public static void main(String[] args) throws SimulateException {
 
 
+    var settings = Settings.getInstance();
+    settings.updateImportTarget(false);
+    settings.updateImportFileType(FileType.JSON);
 
-    field.show();
+    for (String file : args) {
+      Input input = InputOutputHandle.readInputFrom(file);
+
+      Field field = new Field(input.getWidth(), input.getHeight());
+
+      for (FixedObject obj : input.getInputObjects()) {
+        try {
+          field.addBaseObject(obj);
+        } catch (CouldNotPlaceObjectException e) {
+          throw new RuntimeException(e);
+        }
+      }
+
+      MinePlaceFinder minePlaceFinder = new MinePlaceFinder(field);
+      Mine[] possibleMines = minePlaceFinder.getAllPossibleMines();
+
+      NondominatedPopulation population = new Executor().withProblemClass(
+              MinePlacingProblemReaching.class, field, possibleMines, input.getTurns())
+          .withAlgorithm("NSGAII").withMaxTime(5 * 1000).distributeOnAllCores().run();
+
+      Solution solution = population.iterator().next();
+
+      Field copy = field.copy();
+      placeMines(copy, possibleMines, solution);
+      System.out.println("Violates constraint: " + solution.violatesConstraints());
+      System.out.println("Objective: " + solution.getObjective(1));
+      System.out.println();
+      copy.show();
+    }
 
   }
 

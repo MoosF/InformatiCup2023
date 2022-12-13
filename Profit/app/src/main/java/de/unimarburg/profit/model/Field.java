@@ -230,6 +230,16 @@ public class Field {
 
     }
 
+    //Checks if it only connects to one input, if it is an output
+    if (Objects.equals(type, TileType.OUTPUT)) {
+      long inputCount = neighbors.stream()
+          .filter(neighbor -> neighbor.getType().equals(TileType.INPUT)).count();
+      if (inputCount > 1) {
+        return false;
+      }
+    }
+
+    //Checks if connected to an output, that is already connected to an input.
     if (type.equals(TileType.INPUT) || type.equals(TileType.MINE_INPUT)) {
 
       for (Tile neighbor : neighbors) {
