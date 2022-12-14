@@ -1,5 +1,8 @@
 package de.uni.marburg.profit;
 
+import de.uni.marburg.profit.factoryplacer.FactoryPlacingProblem;
+import de.uni.marburg.profit.factoryplacer.FactoryPlacingSolution;
+import de.uni.marburg.profit.model.Product;
 import de.uni.marburg.profit.model.exceptions.CouldNotPlaceObjectException;
 import de.uni.marburg.profit.mineplacer.MinePlaceFinder;
 import de.uni.marburg.profit.mineplacer.MinePlacingProblemReaching;
@@ -11,6 +14,7 @@ import de.uni.marburg.profit.service.InputOutputHandle;
 import de.uni.marburg.profit.service.InputOutputHandle.FileType;
 import de.uni.marburg.profit.service.Settings;
 import de.uni.marburg.profit.simulation.SimulateException;
+import java.util.List;
 import org.moeaframework.Executor;
 import org.moeaframework.core.NondominatedPopulation;
 import org.moeaframework.core.Solution;
@@ -47,6 +51,8 @@ public class Main {
         }
       }
 
+      List<Product> products = input.getProducts();
+
       MinePlaceFinder minePlaceFinder = new MinePlaceFinder(field);
       Mine[] possibleMines = minePlaceFinder.getAllPossibleMines();
 
@@ -60,6 +66,13 @@ public class Main {
       System.out.println("Violates contraint: " + solution.violatesConstraints());
       System.out.println("Objective: " + solution.getObjective(1));
       System.out.println();
+
+      NondominatedPopulation factories = new Executor().withProblemClass(
+          FactoryPlacingProblem.class, field, input.getTurns())
+          .withAlgorithm("NSGAII").withMaxTime(3 * 1000).distributeOnAllCores().run();
+
+      FactoryPlacingSolution factoriesSolution = (FactoryPlacingSolution) factories.iterator().next();
+      field = factoriesSolution.getField();
 
       field.show();
 
