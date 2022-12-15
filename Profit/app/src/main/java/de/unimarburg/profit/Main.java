@@ -30,7 +30,6 @@ public class Main {
    */
   public static void main(String[] args) throws SimulateException {
 
-
     var settings = Settings.getInstance();
     settings.updateImportTarget(false);
     settings.updateImportFileType(FileType.JSON);

@@ -63,7 +63,7 @@ public class MinePlacingProblemReaching extends AbstractProblem {
 
     int reachingScore = 0;
     for (Mine mine : copy.getObjectsOfClass(Mine.class)) {
-      reachingScore += calcReachScore(copy.copy(), mine, new HashSet<>(), turns);
+      reachingScore += calcReachScore(copy, mine, new HashSet<>(), turns);
     }
 
     solution.setObjective(1, -reachingScore);
@@ -138,22 +138,21 @@ public class MinePlacingProblemReaching extends AbstractProblem {
     return neighbors;
   }
 
-  private Conveyer createConveyerFromInputPosition(Position neighborPosition,
-      ConveyerSubType subtype) {
-    int horPos = neighborPosition.horPos();
-    int verPos = neighborPosition.verPos();
+  private Conveyer createConveyerFromInputPosition(Position inputPosition, ConveyerSubType type) {
+    int horPos = inputPosition.horPos();
+    int verPos = inputPosition.verPos();
 
     Conveyer conveyer;
-    switch (subtype) {
+    switch (type) {
       case SHORT_OUTPUT_EAST, LONG_OUTPUT_EAST ->
-          conveyer = Conveyer.createConveyor(horPos + 1, verPos, subtype);
+          conveyer = Conveyer.createConveyor(horPos + 1, verPos, type);
       case SHORT_OUTPUT_SOUTH, LONG_OUTPUT_SOUTH ->
-          conveyer = Conveyer.createConveyor(horPos, verPos + 1, subtype);
-      case SHORT_OUTPUT_WEST -> conveyer = Conveyer.createConveyor(horPos - 1, verPos, subtype);
-      case LONG_OUTPUT_WEST -> conveyer = Conveyer.createConveyor(horPos - 2, verPos, subtype);
-      case SHORT_OUTPUT_NORTH -> conveyer = Conveyer.createConveyor(horPos, verPos - 1, subtype);
-      case LONG_OUTPUT_NORTH -> conveyer = Conveyer.createConveyor(horPos, verPos - 2, subtype);
-      default -> throw new IllegalStateException("Unexpected value: " + subtype);
+          conveyer = Conveyer.createConveyor(horPos, verPos + 1, type);
+      case SHORT_OUTPUT_WEST -> conveyer = Conveyer.createConveyor(horPos - 1, verPos, type);
+      case LONG_OUTPUT_WEST -> conveyer = Conveyer.createConveyor(horPos - 2, verPos, type);
+      case SHORT_OUTPUT_NORTH -> conveyer = Conveyer.createConveyor(horPos, verPos - 1, type);
+      case LONG_OUTPUT_NORTH -> conveyer = Conveyer.createConveyor(horPos, verPos - 2, type);
+      default -> throw new IllegalStateException("Unexpected value: " + type);
     }
     return conveyer;
   }

@@ -13,7 +13,8 @@ import java.util.Map.Entry;
  */
 public class Factory extends MovableObject {
 
-  private final Product product;
+  private Product product;
+  private final ProductType productType;
 
   /**
    * Constructor of {@link Factory}.
@@ -26,6 +27,21 @@ public class Factory extends MovableObject {
   private Factory(int horPos, int verPos, Tile[] tiles, Product product, MovableObjectType type) {
     super(horPos, verPos, tiles, type);
     this.product = product;
+    productType = product.getType();
+  }
+
+  private Factory(int horPos, int verPos, Tile[] tiles, int subtype, MovableObjectType type) {
+    super(horPos, verPos, tiles, type);
+    switch (subtype) {
+      case 0 -> productType = ProductType.ZERO;
+      case 1 -> productType = ProductType.ONE;
+      case 2 -> productType = ProductType.TWO;
+      case 3 -> productType = ProductType.THREE;
+      case 4 -> productType = ProductType.FOUR;
+      case 5 -> productType = ProductType.FIVE;
+      case 6 -> productType = ProductType.SIX;
+      default -> productType = ProductType.SEVEN;
+    }
   }
 
   /**
@@ -67,6 +83,39 @@ public class Factory extends MovableObject {
     };
 
     return new Factory(horPos, verPos, tiles, product, MovableObjectType.FACTORY);
+  }
+
+  public static Factory createFactory(int horPos, int verPos, int subtype) {
+
+    Tile[] tiles = new Tile[]{
+        new Tile(-2, -2, TileType.INPUT),
+        new Tile(-1, -2, TileType.INPUT),
+        new Tile(0, -2, TileType.INPUT),
+        new Tile(1, -2, TileType.INPUT),
+        new Tile(2, -2, TileType.INPUT),
+        new Tile(-2, -1, TileType.INPUT),
+        new Tile(-1, -1, TileType.SOLID),
+        new Tile(0, -1, TileType.SOLID),
+        new Tile(1, -1, TileType.SOLID),
+        new Tile(2, -1, TileType.INPUT),
+        new Tile(-2, 0, TileType.INPUT),
+        new Tile(-1, 0, TileType.SOLID),
+        new Tile(0, 0, TileType.SOLID),
+        new Tile(1, 0, TileType.SOLID),
+        new Tile(2, 0, TileType.INPUT),
+        new Tile(-2, 1, TileType.INPUT),
+        new Tile(-1, 1, TileType.SOLID),
+        new Tile(0, 1, TileType.SOLID),
+        new Tile(1, 1, TileType.SOLID),
+        new Tile(2, 1, TileType.INPUT),
+        new Tile(-2, 2, TileType.INPUT),
+        new Tile(-1, 2, TileType.INPUT),
+        new Tile(0, 2, TileType.INPUT),
+        new Tile(1, 2, TileType.INPUT),
+        new Tile(2, 2, TileType.INPUT),
+    };
+
+    return new Factory(horPos, verPos, tiles, subtype, MovableObjectType.FACTORY);
   }
 
   @Override

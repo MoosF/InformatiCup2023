@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiConsumer;
 
 /**
  * This class models {@link Field}.
@@ -59,26 +60,13 @@ public class Field {
    * @param o new model.BaseObject on the {@link Field}.
    */
   public void addBaseObject(BaseObject o) throws CouldNotPlaceObjectException {
-
     if (baseObjectCanBePlaced(o)) {
-
-      for (Tile tile : o.getTiles()) {
-        int verPos = o.getX() + tile.getRelHorPos();
-        int horPos = o.getY() + tile.getRelVerPos();
-        tiles[verPos][horPos] = tile;
-      }
-
-      if (!objects.containsKey(o.getClass())) {
-        objects.put(o.getClass(), new ArrayList<>());
-      }
-      objects.get(o.getClass()).add(o);
-
-
+      addBaseObjectWithoutCheck(o);
     } else {
       throw new CouldNotPlaceObjectException(o.getX(), o.getY());
     }
-
   }
+
 
   /**
    * Checks if a {@link BaseObject} can be placed.
@@ -164,16 +152,17 @@ public class Field {
    */
   public Field copy() {
     Field copy = new Field(getWidth(), getHeight());
-    for (BaseObject object : getAllObjects()) {
-      try {
-        copy.addBaseObject(object);
-      } catch (CouldNotPlaceObjectException e) {
-        throw new RuntimeException(e);
-      }
+
+    objects.forEach(
+        (aClass, baseObjects) -> copy.objects.put(aClass, new LinkedList<>(baseObjects)));
+
+    for (int i = 0; i < tiles.length; i++) {
+      System.arraycopy(tiles[i], 0, copy.tiles[i], 0, tiles[i].length);
     }
 
     return copy;
   }
+
 
   public int getWidth() {
     return width;
@@ -181,6 +170,19 @@ public class Field {
 
   public int getHeight() {
     return height;
+  }
+
+  private void addBaseObjectWithoutCheck(BaseObject o) {
+    for (Tile tile : o.getTiles()) {
+      int verPos = o.getX() + tile.getRelHorPos();
+      int horPos = o.getY() + tile.getRelVerPos();
+      tiles[verPos][horPos] = tile;
+    }
+
+    if (!objects.containsKey(o.getClass())) {
+      objects.put(o.getClass(), new ArrayList<>());
+    }
+    objects.get(o.getClass()).add(o);
   }
 
   private boolean tileCanBePlaced(int horPos, int verPos, Tile tile) {
