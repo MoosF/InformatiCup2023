@@ -1,18 +1,16 @@
-package de.uni.marburg.profit.factoryplacer;
+package de.unimarburg.profit.algorithm.factoryplacer;
 
-import de.uni.marburg.profit.model.Combiner;
-import de.uni.marburg.profit.model.Conveyer;
-import de.uni.marburg.profit.model.Factory;
-import de.uni.marburg.profit.model.Field;
-import de.uni.marburg.profit.model.MovableObject;
-import de.uni.marburg.profit.model.Product;
-import de.uni.marburg.profit.model.Tile;
-import de.uni.marburg.profit.model.enums.CombinerSubType;
-import de.uni.marburg.profit.model.enums.ConveyerSubType;
-import de.uni.marburg.profit.model.enums.TileType;
-import de.uni.marburg.profit.model.exceptions.CouldNotPlaceObjectException;
-import de.uni.marburg.profit.simulation.SimulateException;
-import de.uni.marburg.profit.simulation.Simulator;
+import de.unimarburg.profit.model.Combiner;
+import de.unimarburg.profit.model.Conveyer;
+import de.unimarburg.profit.model.Factory;
+import de.unimarburg.profit.model.Field;
+import de.unimarburg.profit.model.Tile;
+import de.unimarburg.profit.model.enums.CombinerSubType;
+import de.unimarburg.profit.model.enums.ConveyerSubType;
+import de.unimarburg.profit.model.enums.TileType;
+import de.unimarburg.profit.model.exceptions.CouldNotPlaceObjectException;
+import de.unimarburg.profit.simulation.SimulateException;
+import de.unimarburg.profit.simulation.Simulator;
 import java.util.List;
 import java.util.Random;
 import org.moeaframework.core.Solution;
@@ -88,7 +86,7 @@ public class FactoryPlacingProblem extends AbstractProblem {
     Factory factory;
     // versuchen rechts vom Ausgang
     for (int i = 0; i < 5; i++) {
-      factory = Factory.createFactory(x+1, y+i, subtype);
+      factory = Factory.createFactoryWithSubtype(x+1, y+i, subtype);
       if (field.baseObjectCanBePlaced(factory)) {
         try {
           field.addBaseObject(factory);
@@ -101,7 +99,7 @@ public class FactoryPlacingProblem extends AbstractProblem {
 
     // versuchen links vom Ausgang
     for (int i = 0; i < 5; i++) {
-      factory = Factory.createFactory(x-5, y+i, subtype);
+      factory = Factory.createFactoryWithSubtype(x-5, y+i, subtype);
       if (field.baseObjectCanBePlaced(factory)) {
         try {
           field.addBaseObject(factory);
@@ -114,7 +112,7 @@ public class FactoryPlacingProblem extends AbstractProblem {
 
     // versuchen über dem Ausgang
     for (int i = 0; i < 5; i++) {
-      factory = Factory.createFactory(x-i, y-5, subtype);
+      factory = Factory.createFactoryWithSubtype(x-i, y-5, subtype);
       if (field.baseObjectCanBePlaced(factory)) {
         try {
           field.addBaseObject(factory);
@@ -127,7 +125,7 @@ public class FactoryPlacingProblem extends AbstractProblem {
 
     // versuchen unter dem Ausgang
     for (int i = 0; i < 5; i++) {
-      factory = Factory.createFactory(x-i, y+1, subtype);
+      factory = Factory.createFactoryWithSubtype(x-i, y+1, subtype);
       if (field.baseObjectCanBePlaced(factory)) {
         try {
           field.addBaseObject(factory);

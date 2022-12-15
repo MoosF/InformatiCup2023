@@ -52,7 +52,7 @@ public class Factory extends MovableObject {
    * @param product {@link Product} that is produced by the {@link Factory}.
    * @return New instance of {@link Factory}.
    */
-  public static Factory createFactory(int horPos, int verPos, Product product) {
+  public static Factory createFactoryWithProduct(int horPos, int verPos, Product product) {
 
     Tile[] tiles = new Tile[]{
         new Tile(-2, -2, TileType.INPUT),
@@ -85,7 +85,7 @@ public class Factory extends MovableObject {
     return new Factory(horPos, verPos, tiles, product, MovableObjectType.FACTORY);
   }
 
-  public static Factory createFactory(int horPos, int verPos, int subtype) {
+  public static Factory createFactoryWithSubtype(int horPos, int verPos, int subtype) {
 
     Tile[] tiles = new Tile[]{
         new Tile(-2, -2, TileType.INPUT),

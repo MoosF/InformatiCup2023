@@ -1,4 +1,4 @@
-package de.unimarburg.profit.mineplacer;
+package de.unimarburg.profit.algorithm.mineplacer;
 
 import de.unimarburg.profit.model.Deposit;
 import de.unimarburg.profit.model.Field;
@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * This class is able to find all possible {@link Mine}s, that can be placed on a given Field.
@@ -16,17 +17,11 @@ import java.util.function.Predicate;
  *
  * @author Yannick Kraml
  */
-public class MinePlaceFinder {
+public class MinePlaceFinderImpl implements MinePlaceFinder {
 
-  private final Mine[] allPlacements;
 
-  /**
-   * Constructor of this class.
-   *
-   * @param field {@link Field}, where to find all possible {@link Mine}s.
-   */
-  public MinePlaceFinder(Field field) {
-
+  @Override
+  public Collection<Mine> calculatePossibleMines(Field field) {
     List<Mine> placements = new ArrayList<>();
     Collection<Deposit> deposits = field.getObjectsOfClass(Deposit.class);
     for (Deposit deposit : deposits) {
@@ -55,11 +50,6 @@ public class MinePlaceFinder {
     }
 
     Predicate<Mine> filter = field::baseObjectCanBePlaced;
-    this.allPlacements = placements.stream().filter(filter).toArray(Mine[]::new);
-  }
-
-
-  public Mine[] getAllPossibleMines() {
-    return allPlacements;
+    return placements.stream().filter(filter).collect(Collectors.toSet());
   }
 }

@@ -1,4 +1,4 @@
-package de.unimarburg.profit.mineplacer;
+package de.unimarburg.profit.algorithm.mineplacer;
 
 /**
  * This class represents a single position on a two-dimensional plane. The coordinates are
@@ -6,7 +6,7 @@ package de.unimarburg.profit.mineplacer;
  *
  * @author Yannick Kraml
  */
-public record Position(int horPos, int verPos) {
+record Position(int horPos, int verPos) {
 
   @Override
   public boolean equals(Object o) {

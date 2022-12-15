@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 
 public class FieldTest {
 
@@ -122,8 +121,8 @@ public class FieldTest {
     field.addBaseObject(conveyor10);
     field.addBaseObject(conveyor11);
 
-    Factory factory = Factory.createFactory(20, 7, product0);
-    Factory factory1 = Factory.createFactory(20, 12, product1);
+    Factory factory = Factory.createFactoryWithProduct(20, 7, product0);
+    Factory factory1 = Factory.createFactoryWithProduct(20, 12, product1);
     field.addBaseObject(factory);
     field.addBaseObject(factory1);
 

@@ -1,8 +1,8 @@
 package de.unimarburg.profit.simulation;
 
 import de.unimarburg.profit.model.Field;
-import de.unimarburg.profit.model.Tile;
 import de.unimarburg.profit.model.enums.ResourceType;
+import de.unimarburg.profit.model.Tile;
 import de.unimarburg.profit.model.enums.TileType;
 import java.util.ArrayList;
 import java.util.Collection;

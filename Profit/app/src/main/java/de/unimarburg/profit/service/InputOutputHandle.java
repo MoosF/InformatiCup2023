@@ -5,10 +5,10 @@ import de.unimarburg.profit.model.Conveyer;
 import de.unimarburg.profit.model.Factory;
 import de.unimarburg.profit.model.Field;
 import de.unimarburg.profit.model.FixedObject;
+import de.unimarburg.profit.model.Tile;
 import de.unimarburg.profit.model.Mine;
 import de.unimarburg.profit.model.MovableObject;
 import de.unimarburg.profit.model.Product;
-import de.unimarburg.profit.model.Tile;
 import java.util.List;
 
 /**

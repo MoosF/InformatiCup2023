@@ -1,4 +1,4 @@
-package de.unimarburg.profit.mineplacer;
+package de.unimarburg.profit.algorithm.mineplacer;
 
 import de.unimarburg.profit.model.BaseObject;
 import de.unimarburg.profit.model.Conveyer;
@@ -25,21 +25,21 @@ import org.moeaframework.problem.AbstractProblem;
  *
  * @author Yannick Kraml
  */
-public class MinePlacingProblemReaching extends AbstractProblem {
+public class MinePlacingProblem extends AbstractProblem {
 
   private final Mine[] possibleMines;
   private final Field field;
   private final int turns;
 
   /**
-   * Constructor of {@link MinePlacingProblemReaching}.
+   * Constructor of {@link MinePlacingProblem}.
    *
    * @param field         {@link Field}, where the {@link Mine}s should be placed.
    * @param possibleMines An array of {@link Mine}s, containing all possible {@link Mine}s, that can
    *                      be placed.
    * @param turns         The amount of turns, that the field will be simulated in the future.
    */
-  public MinePlacingProblemReaching(Field field, Mine[] possibleMines, int turns) {
+  public MinePlacingProblem(Field field, Mine[] possibleMines, int turns) {
     super(1, 2, 0);
     this.possibleMines = possibleMines;
     this.field = field;

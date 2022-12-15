@@ -47,7 +47,7 @@ class JsonOutputTest {
     outputObjects.add(Conveyer.createConveyor(5, 9, ConveyerSubType.SHORT_OUTPUT_EAST));
     outputObjects.add(Conveyer.createConveyor(6, 11, ConveyerSubType.LONG_OUTPUT_SOUTH));
     outputObjects.add(Conveyer.createConveyor(8, 13, ConveyerSubType.SHORT_OUTPUT_EAST));
-    outputObjects.add(Factory.createFactory(13, 12, product0));
+    outputObjects.add(Factory.createFactoryWithProduct(13, 12, product0));
 
     String expectedOutput = "["
         + "{\"type\":\"mine\",\"x\":3,\"y\":7,\"subtype\":1},"
@@ -101,8 +101,8 @@ class JsonOutputTest {
     outputObjects.add(Mine.createMine(13, 7, MineSubType.OUTPUT_WEST));
     outputObjects.add(Mine.createMine(89, 5, MineSubType.OUTPUT_SOUTH));
     outputObjects.add(Mine.createMine(26, 77, MineSubType.OUTPUT_NORTH));
-    outputObjects.add(Factory.createFactory(0, 0, product0));
-    outputObjects.add(Factory.createFactory(30, 30, product1));
+    outputObjects.add(Factory.createFactoryWithProduct(0, 0, product0));
+    outputObjects.add(Factory.createFactoryWithProduct(30, 30, product1));
     outputObjects.add(Conveyer.createConveyor(25, 52, ConveyerSubType.SHORT_OUTPUT_EAST));
     outputObjects.add(Conveyer.createConveyor(59, 69, ConveyerSubType.SHORT_OUTPUT_SOUTH));
     outputObjects.add(Conveyer.createConveyor(32, 11, ConveyerSubType.SHORT_OUTPUT_WEST));
@@ -120,14 +120,14 @@ class JsonOutputTest {
     outputObjects.add(Combiner.createCombiner(14, 55, CombinerSubType.OUTPUT_NORTH));
     outputObjects.add(Conveyer.createConveyor(33, 98, ConveyerSubType.SHORT_OUTPUT_EAST));
     outputObjects.add(Conveyer.createConveyor(54, 22, ConveyerSubType.SHORT_OUTPUT_NORTH));
-    outputObjects.add(Factory.createFactory(13, 15, product0));
-    outputObjects.add(Factory.createFactory(77, 77, product2));
-    outputObjects.add(Factory.createFactory(90, 10, product2));
-    outputObjects.add(Factory.createFactory(5, 30, product3));
-    outputObjects.add(Factory.createFactory(90, 30, product4));
-    outputObjects.add(Factory.createFactory(5, 40, product5));
-    outputObjects.add(Factory.createFactory(90, 50, product6));
-    outputObjects.add(Factory.createFactory(5, 14, product7));
+    outputObjects.add(Factory.createFactoryWithProduct(13, 15, product0));
+    outputObjects.add(Factory.createFactoryWithProduct(77, 77, product2));
+    outputObjects.add(Factory.createFactoryWithProduct(90, 10, product2));
+    outputObjects.add(Factory.createFactoryWithProduct(5, 30, product3));
+    outputObjects.add(Factory.createFactoryWithProduct(90, 30, product4));
+    outputObjects.add(Factory.createFactoryWithProduct(5, 40, product5));
+    outputObjects.add(Factory.createFactoryWithProduct(90, 50, product6));
+    outputObjects.add(Factory.createFactoryWithProduct(5, 14, product7));
 
     String expectedOutput = "["
         + "{\"type\":\"mine\",\"x\":7,\"y\":13,\"subtype\":0},"
@@ -199,7 +199,7 @@ class JsonOutputTest {
     outputObjects.add(Conveyer.createConveyor(5, 9, ConveyerSubType.SHORT_OUTPUT_EAST));
     outputObjects.add(Conveyer.createConveyor(6, 11, ConveyerSubType.LONG_OUTPUT_SOUTH));
     outputObjects.add(Conveyer.createConveyor(8, 13, ConveyerSubType.SHORT_OUTPUT_EAST));
-    outputObjects.add(Factory.createFactory(13, 12, product0));
+    outputObjects.add(Factory.createFactoryWithProduct(13, 12, product0));
 
     String expectedInput = "["
         + "{\"type\":\"mine\",\"x\":3,\"y\":7,\"subtype\":1},"

@@ -1,9 +1,9 @@
 package de.unimarburg.profit.model;
 
+import de.unimarburg.profit.view.FieldFrame;
 import de.unimarburg.profit.model.enums.TileType;
 import de.unimarburg.profit.model.exceptions.CouldNotPlaceObjectException;
 import de.unimarburg.profit.model.exceptions.CouldNotRemoveObjectException;
-import de.unimarburg.profit.view.FieldFrame;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.BiConsumer;
 
 /**
  * This class models {@link Field}.
