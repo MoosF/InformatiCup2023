@@ -5,6 +5,12 @@ import de.unimarburg.profit.model.Field;
 import java.util.Collection;
 import java.util.Optional;
 
+/**
+ * This clas is responsible to calculate which {@link Factory} should be placed next on a given
+ * {@link Field}.
+ *
+ * @author Yannick Kraml
+ */
 public abstract class FactoryChooser {
 
   private final Field field;
@@ -15,6 +21,11 @@ public abstract class FactoryChooser {
     this.possibleFactories = possibleFactories;
   }
 
+  /**
+   * Calculates which {@link Factory} should be placed next.
+   *
+   * @return Optional of {@link Factory}. Empty, if no {@link Factory} could be found.
+   */
   public abstract Optional<Factory> chooseFactory();
 
   protected Field getField() {

@@ -7,6 +7,7 @@ import de.unimarburg.profit.algorithm.mineplacer.MinePlacerImpl;
 import de.unimarburg.profit.model.Field;
 import de.unimarburg.profit.model.FixedObject;
 import de.unimarburg.profit.model.Mine;
+import de.unimarburg.profit.model.enums.ResourceType;
 import de.unimarburg.profit.model.exceptions.CouldNotPlaceObjectException;
 import de.unimarburg.profit.service.Input;
 import de.unimarburg.profit.service.InputOutputHandle;
@@ -14,6 +15,7 @@ import de.unimarburg.profit.service.InputOutputHandle.FileType;
 import de.unimarburg.profit.service.Settings;
 import de.unimarburg.profit.simulation.SimulateException;
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * This class only contains the main method.
@@ -37,6 +39,8 @@ public class Main {
       Input input = InputOutputHandle.readInputFrom(file);
 
       Field field = new Field(input.getWidth(), input.getHeight());
+      field.show();
+
 
       for (FixedObject obj : input.getInputObjects()) {
         try {
@@ -47,13 +51,10 @@ public class Main {
       }
 
       MinePlaceFinder minePlaceFinder = new MinePlaceFinderImpl();
-      Collection<Mine> possibleMines = minePlaceFinder.calculatePossibleMines(field);
+      Map<Mine, ResourceType> possibleMines = minePlaceFinder.calculatePossibleMines(field);
 
       MinePlacer minePlacer = new MinePlacerImpl();
-      minePlacer.placeMines(field, possibleMines);
-
-
-      field.show();
+      minePlacer.placeMines(field, possibleMines.keySet());
 
     }
 

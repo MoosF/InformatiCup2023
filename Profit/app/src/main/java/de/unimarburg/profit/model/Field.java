@@ -1,9 +1,9 @@
 package de.unimarburg.profit.model;
 
-import de.unimarburg.profit.view.FieldFrame;
 import de.unimarburg.profit.model.enums.TileType;
 import de.unimarburg.profit.model.exceptions.CouldNotPlaceObjectException;
 import de.unimarburg.profit.model.exceptions.CouldNotRemoveObjectException;
+import de.unimarburg.profit.view.FieldFrame;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -153,7 +153,7 @@ public class Field {
     Field copy = new Field(getWidth(), getHeight());
 
     objects.forEach(
-        (aClass, baseObjects) -> copy.objects.put(aClass, new LinkedList<>(baseObjects)));
+        (clazz, baseObjects) -> copy.objects.put(clazz, new LinkedList<>(baseObjects)));
 
     for (int i = 0; i < tiles.length; i++) {
       System.arraycopy(tiles[i], 0, copy.tiles[i], 0, tiles[i].length);

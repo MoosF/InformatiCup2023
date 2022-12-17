@@ -4,9 +4,12 @@ import de.unimarburg.profit.model.Deposit;
 import de.unimarburg.profit.model.Field;
 import de.unimarburg.profit.model.Mine;
 import de.unimarburg.profit.model.enums.MineSubType;
+import de.unimarburg.profit.model.enums.ResourceType;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -21,8 +24,8 @@ public class MinePlaceFinderImpl implements MinePlaceFinder {
 
 
   @Override
-  public Collection<Mine> calculatePossibleMines(Field field) {
-    List<Mine> placements = new ArrayList<>();
+  public Map<Mine, ResourceType> calculatePossibleMines(Field field) {
+    Map<Mine, ResourceType> placements = new HashMap<>();
     Collection<Deposit> deposits = field.getObjectsOfClass(Deposit.class);
     for (Deposit deposit : deposits) {
 
@@ -32,24 +35,27 @@ public class MinePlaceFinderImpl implements MinePlaceFinder {
       int height = deposit.getHeight();
 
       //From left to right.
+      ResourceType resource = deposit.getResourceType();
       for (int i = horPos; i < horPos + width; i++) {
-        placements.add(Mine.createMine(i - 1, verPos - 3, MineSubType.OUTPUT_NORTH));
-        placements.add(Mine.createMine(i + 1, verPos - 2, MineSubType.OUTPUT_EAST));
-        placements.add(Mine.createMine(i, verPos + height + 1, MineSubType.OUTPUT_SOUTH));
-        placements.add(Mine.createMine(i - 2, verPos + height, MineSubType.OUTPUT_WEST));
+        placements.put(Mine.createMine(i - 1, verPos - 3, MineSubType.OUTPUT_NORTH), resource);
+        placements.put(Mine.createMine(i + 1, verPos - 2, MineSubType.OUTPUT_EAST), resource);
+        placements.put(Mine.createMine(i, verPos + height + 1, MineSubType.OUTPUT_SOUTH), resource);
+        placements.put(Mine.createMine(i - 2, verPos + height, MineSubType.OUTPUT_WEST), resource);
       }
 
       //From top to bottom
       for (int i = verPos; i < verPos + height; i++) {
-        placements.add(Mine.createMine(horPos - 2, i - 2, MineSubType.OUTPUT_NORTH));
-        placements.add(Mine.createMine(horPos + width + 1, i - 1, MineSubType.OUTPUT_EAST));
-        placements.add(Mine.createMine(horPos + width, i + 1, MineSubType.OUTPUT_SOUTH));
-        placements.add(Mine.createMine(horPos - 3, i, MineSubType.OUTPUT_WEST));
+        placements.put(Mine.createMine(horPos - 2, i - 2, MineSubType.OUTPUT_NORTH), resource);
+        placements.put(Mine.createMine(horPos + width + 1, i - 1, MineSubType.OUTPUT_EAST),
+            resource);
+        placements.put(Mine.createMine(horPos + width, i + 1, MineSubType.OUTPUT_SOUTH), resource);
+        placements.put(Mine.createMine(horPos - 3, i, MineSubType.OUTPUT_WEST), resource);
       }
 
     }
 
-    Predicate<Mine> filter = field::baseObjectCanBePlaced;
-    return placements.stream().filter(filter).collect(Collectors.toSet());
+    placements.keySet().removeIf(o -> !field.baseObjectCanBePlaced(o));
+
+    return placements;
   }
 }

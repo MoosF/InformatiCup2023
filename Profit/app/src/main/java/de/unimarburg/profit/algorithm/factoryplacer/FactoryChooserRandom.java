@@ -5,10 +5,15 @@ import de.unimarburg.profit.model.Field;
 import java.util.Collection;
 import java.util.Optional;
 
-public class FactoryChooserRandom extends FactoryChooser {
+/**
+ * Implementation of {@link FactoryChooser}. Chooses {@link Factory}s random.
+ *
+ * @author Yannick Kraml.
+ */
+public final class FactoryChooserRandom extends FactoryChooser {
 
 
-  protected FactoryChooserRandom(Field field, Collection<Factory> possibleFactories) {
+  public FactoryChooserRandom(Field field, Collection<Factory> possibleFactories) {
     super(field, possibleFactories);
   }
 

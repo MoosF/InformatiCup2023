@@ -9,6 +9,11 @@ import org.moeaframework.core.NondominatedPopulation;
 import org.moeaframework.core.Solution;
 import org.moeaframework.core.variable.EncodingUtils;
 
+/**
+ * Implementation of {@link MinePlacer}. It works with evolutionary algorithms.
+ *
+ * @author Yannick Kraml.
+ */
 public class MinePlacerImpl implements MinePlacer {
 
   private static final int SEARCH_DEPTH = 20;
