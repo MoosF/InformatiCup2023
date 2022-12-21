@@ -34,7 +34,7 @@ public class Product {
    *
    * @return Map, that contains the resources as keys and the amount needed per resource as values.
    */
-  public Map<ResourceType, Integer> getNeededResourcesMap() {
+  public Map<ResourceType, Integer> getNeededResources() {
     return Collections.unmodifiableMap(neededResourcesMap);
   }
 

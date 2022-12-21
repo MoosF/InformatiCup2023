@@ -126,7 +126,7 @@ public class Factory extends MovableObject {
     while (addedPoints) {
       addedPoints = false;
 
-      Map<ResourceType, Integer> neededResourcesMap = product.getNeededResourcesMap();
+      Map<ResourceType, Integer> neededResourcesMap = product.getNeededResources();
 
       //Check if neededResources are present.
       boolean willProduce = true;

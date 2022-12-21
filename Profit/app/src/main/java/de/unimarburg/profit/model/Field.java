@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Objects;
@@ -137,7 +138,7 @@ public class Field {
   @SuppressWarnings("unchecked")
   public <K extends BaseObject> Collection<K> getObjectsOfClass(Class<K> clazz) {
     if (!objects.containsKey(clazz)) {
-      objects.put(clazz, new ArrayList<>());
+      objects.put(clazz, new HashSet<>());
     }
     return (Collection<K>) objects.get(clazz);
   }

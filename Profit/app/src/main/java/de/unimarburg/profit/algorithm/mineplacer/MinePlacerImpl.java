@@ -1,9 +1,12 @@
 package de.unimarburg.profit.algorithm.mineplacer;
 
+import de.unimarburg.profit.model.Deposit;
 import de.unimarburg.profit.model.Field;
 import de.unimarburg.profit.model.Mine;
 import de.unimarburg.profit.model.exceptions.CouldNotPlaceObjectException;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import org.moeaframework.Executor;
 import org.moeaframework.core.NondominatedPopulation;
 import org.moeaframework.core.Solution;
@@ -19,9 +22,9 @@ public class MinePlacerImpl implements MinePlacer {
   private static final int SEARCH_DEPTH = 20;
 
   @Override
-  public void placeMines(Field field, Collection<Mine> possibleMines) {
+  public Map<Mine, Deposit> placeMines(Field field, Map<Mine, Deposit> possibleMines) {
 
-    Mine[] mines = possibleMines.toArray(new Mine[0]);
+    Mine[] mines = possibleMines.keySet().toArray(new Mine[0]);
 
     NondominatedPopulation population = new Executor()
         .withProblemClass(MinePlacingProblem.class, field, mines, SEARCH_DEPTH)
@@ -34,6 +37,7 @@ public class MinePlacerImpl implements MinePlacer {
 
     boolean[] binary = EncodingUtils.getBinary(solution.getVariable(0));
 
+    Map<Mine, Deposit> placedMines = new HashMap<>();
     for (int i = 0; i < binary.length; i++) {
       boolean shouldBePlaced = binary[i];
       Mine mine = mines[i];
@@ -41,12 +45,14 @@ public class MinePlacerImpl implements MinePlacer {
       if (shouldBePlaced) {
         try {
           field.addBaseObject(mine);
+          placedMines.put(mine, possibleMines.get(mine));
         } catch (CouldNotPlaceObjectException ignore) {
           //Ignore
         }
       }
     }
 
+    return placedMines;
   }
 
 

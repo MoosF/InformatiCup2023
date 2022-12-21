@@ -4,10 +4,11 @@ import de.unimarburg.profit.algorithm.mineplacer.MinePlaceFinder;
 import de.unimarburg.profit.algorithm.mineplacer.MinePlaceFinderImpl;
 import de.unimarburg.profit.algorithm.mineplacer.MinePlacer;
 import de.unimarburg.profit.algorithm.mineplacer.MinePlacerImpl;
+import de.unimarburg.profit.algorithm.mineplacer.MineResourceAmount;
+import de.unimarburg.profit.model.Deposit;
 import de.unimarburg.profit.model.Field;
 import de.unimarburg.profit.model.FixedObject;
 import de.unimarburg.profit.model.Mine;
-import de.unimarburg.profit.model.enums.ResourceType;
 import de.unimarburg.profit.model.exceptions.CouldNotPlaceObjectException;
 import de.unimarburg.profit.service.Input;
 import de.unimarburg.profit.service.InputOutputHandle;
@@ -51,11 +52,15 @@ public class Main {
       }
 
       MinePlaceFinder minePlaceFinder = new MinePlaceFinderImpl();
-      Map<Mine, ResourceType> possibleMines = minePlaceFinder.calculatePossibleMines(field);
+      Map<Mine, Deposit> possibleMines = minePlaceFinder.calculatePossibleMines(field);
 
       MinePlacer minePlacer = new MinePlacerImpl();
-      minePlacer.placeMines(field, possibleMines.keySet());
+      Map<Mine, Deposit> placedMines = minePlacer.placeMines(field, possibleMines);
 
+
+      Collection<MineResourceAmount> mineResourceAmounts = minePlaceFinder.calcResourcesPerMine(placedMines);
+
+      System.out.println("Stop");
     }
 
   }

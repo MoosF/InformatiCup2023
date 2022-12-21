@@ -1,6 +1,8 @@
 package de.unimarburg.profit.algorithm.productchooser;
 
+import de.unimarburg.profit.algorithm.mineplacer.MineResourceAmount;
 import de.unimarburg.profit.model.Mine;
+import de.unimarburg.profit.model.Product;
 import de.unimarburg.profit.model.enums.ProductType;
 import de.unimarburg.profit.model.enums.ResourceType;
 import java.util.Collection;
@@ -14,22 +16,48 @@ import java.util.Map;
 public class TypeAndMinesCombination {
 
 
-  private final ProductType productType;
+  private final Product product;
 
-  private final Map<ResourceType, Collection<Mine>> minesToConnect;
+  private final Collection<MineResourceAmount> mines;
 
 
-  public TypeAndMinesCombination(ProductType productType,
-      Map<ResourceType, Collection<Mine>> minesToConnect) {
-    this.productType = productType;
-    this.minesToConnect = minesToConnect;
+  public TypeAndMinesCombination(Product product,
+      Collection<MineResourceAmount> mines) {
+    this.product = product;
+    this.mines = mines;
   }
 
-  public ProductType getProductType() {
-    return productType;
+  public Product getProductType() {
+    return product;
   }
 
-  public Map<ResourceType, Collection<Mine>> getMinesToConnect() {
-    return minesToConnect;
+  public Collection<MineResourceAmount> getMines() {
+    return mines;
   }
+
+  /**
+   * Calculates how good the {@link TypeAndMinesCombination} is. This method uses for the
+   * calculation the points of the {@link Product}.
+   *
+   * @return Value of the {@link TypeAndMinesCombination}.
+   */
+  public double getValue() {
+
+    int points = product.getPoints();
+    Map<ResourceType, Integer> neededResources = product.getNeededResources();
+
+    for (MineResourceAmount mineResourceAmount : mines) {
+
+      Mine mine = mineResourceAmount.getMine();
+      int amount = mineResourceAmount.getAmount();
+      ResourceType resourceType = mineResourceAmount.getResourceType();
+
+    }
+
+    // TODO: 21.12.2022 Calc value of this Combination
+
+
+    return -1;
+  }
+
 }
