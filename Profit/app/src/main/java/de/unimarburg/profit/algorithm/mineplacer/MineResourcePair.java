@@ -3,13 +3,13 @@ package de.unimarburg.profit.algorithm.mineplacer;
 import de.unimarburg.profit.model.Mine;
 import de.unimarburg.profit.model.enums.ResourceType;
 
-public class MineResourceAmount {
+public class MineResourcePair {
 
   private final Mine mine;
   private final ResourceType resourceType;
   private final int amount;
 
-  public MineResourceAmount(Mine mine, ResourceType resourceType, int amount) {
+  public MineResourcePair(Mine mine, ResourceType resourceType, int amount) {
     this.mine = mine;
     this.resourceType = resourceType;
     this.amount = amount;

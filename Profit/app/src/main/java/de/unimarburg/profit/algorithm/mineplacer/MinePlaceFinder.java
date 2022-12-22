@@ -48,12 +48,12 @@ public interface MinePlaceFinder {
    *
    * @param placedMines Map, that contains the placed {@link Mine}s as keys and the connected
    *                    {@link Deposit}s as values.
-   * @return Collection of {@link MineResourceAmount}.
+   * @return Collection of {@link MineResourcePair}.
    */
-  default Collection<MineResourceAmount> calcResourcesPerMine(Map<Mine, Deposit> placedMines) {
+  default Collection<MineResourcePair> calcResourcesPerMine(Map<Mine, Deposit> placedMines) {
     Map<Deposit, Collection<Mine>> minesFromDeposits = getMinesFromDeposits(placedMines);
 
-    Collection<MineResourceAmount> amounts = new HashSet<>();
+    Collection<MineResourcePair> amounts = new HashSet<>();
 
     minesFromDeposits.forEach((deposit, mines) -> {
 
@@ -63,7 +63,7 @@ public interface MinePlaceFinder {
 
       int amountPerMine = amount / mines.size();
 
-      mines.forEach(mine -> amounts.add(new MineResourceAmount(mine, resourceType, amountPerMine)));
+      mines.forEach(mine -> amounts.add(new MineResourcePair(mine, resourceType, amountPerMine)));
 
     });
 

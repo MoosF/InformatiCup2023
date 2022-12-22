@@ -4,7 +4,7 @@ import de.unimarburg.profit.algorithm.mineplacer.MinePlaceFinder;
 import de.unimarburg.profit.algorithm.mineplacer.MinePlaceFinderImpl;
 import de.unimarburg.profit.algorithm.mineplacer.MinePlacer;
 import de.unimarburg.profit.algorithm.mineplacer.MinePlacerImpl;
-import de.unimarburg.profit.algorithm.mineplacer.MineResourceAmount;
+import de.unimarburg.profit.algorithm.mineplacer.MineResourcePair;
 import de.unimarburg.profit.model.Deposit;
 import de.unimarburg.profit.model.Field;
 import de.unimarburg.profit.model.FixedObject;
@@ -58,7 +58,7 @@ public class Main {
       Map<Mine, Deposit> placedMines = minePlacer.placeMines(field, possibleMines);
 
 
-      Collection<MineResourceAmount> mineResourceAmounts = minePlaceFinder.calcResourcesPerMine(placedMines);
+      Collection<MineResourcePair> mineResourcePairs = minePlaceFinder.calcResourcesPerMine(placedMines);
 
       System.out.println("Stop");
     }

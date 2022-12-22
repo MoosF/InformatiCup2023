@@ -1,6 +1,6 @@
 package de.unimarburg.profit.algorithm.productchooser;
 
-import de.unimarburg.profit.algorithm.mineplacer.MineResourceAmount;
+import de.unimarburg.profit.algorithm.mineplacer.MineResourcePair;
 import de.unimarburg.profit.model.Deposit;
 import de.unimarburg.profit.model.Mine;
 import de.unimarburg.profit.model.Product;
@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import org.moeaframework.Executor;
 import org.moeaframework.core.NondominatedPopulation;
 import org.moeaframework.core.Solution;
@@ -23,27 +22,33 @@ public class CombinationFinderImpl implements CombinationFinder {
 
   @Override
   public Collection<TypeAndMinesCombination> findProductMinesCombination(
-      Map<Mine, Deposit> connectableMines, Collection<MineResourceAmount> mineResourceAmounts,
+      Map<Mine, Deposit> connectableMines, Collection<MineResourcePair> mineResourcePairs,
       Collection<Product> products) {
 
-    MineResourceAmount[] connectableMinesArray = mineResourceAmounts.stream()
+    MineResourcePair[] connectableMinesArray = mineResourcePairs.stream()
         .filter(mineResourceAmount -> connectableMines.containsKey(mineResourceAmount.getMine()))
-        .distinct().toArray(MineResourceAmount[]::new);
+        .distinct().toArray(MineResourcePair[]::new);
 
-    Product[] productArray = products.toArray(new Product[0]);
+    Collection<TypeAndMinesCombination> combinations = new HashSet<>();
+    for (Product product : products) {
 
-    NondominatedPopulation population = new Executor().withProblemClass(
-            ProductChoosingProblem.class, connectableMinesArray, productArray).withAlgorithm("NSGAII")
-        .withMaxEvaluations(1000).distributeOnAllCores().run();
+      NondominatedPopulation population = new Executor()
+          .withProblemClass(ProductChoosingProblem.class, connectableMinesArray, product)
+          .withAlgorithm("NSGAII")
+          .withMaxEvaluations(500)
+          .distributeOnAllCores()
+          .run();
 
-    Collection<TypeAndMinesCombination> collection = new HashSet<>();
-
-    for (Solution solution : population) {
-      collection.add(
-          ProductChoosingProblem.convertSolutionToCombination(solution, connectableMinesArray,
-              productArray));
+      for (Solution solution : population) {
+        combinations.add(
+            ProductChoosingProblem.convertSolutionToCombination(solution, connectableMinesArray,
+                product));
+      }
     }
 
-    return collection;
+    combinations.removeIf(
+        typeAndMinesCombination -> typeAndMinesCombination.getMineResourcePairs().isEmpty());
+
+    return combinations;
   }
 }

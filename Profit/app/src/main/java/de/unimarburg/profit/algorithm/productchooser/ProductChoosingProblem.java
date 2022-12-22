@@ -1,8 +1,7 @@
 package de.unimarburg.profit.algorithm.productchooser;
 
-import de.unimarburg.profit.algorithm.mineplacer.MineResourceAmount;
+import de.unimarburg.profit.algorithm.mineplacer.MineResourcePair;
 import de.unimarburg.profit.model.Product;
-import de.unimarburg.profit.model.enums.ProductType;
 import java.util.Collection;
 import java.util.HashSet;
 import org.moeaframework.core.Solution;
@@ -11,33 +10,38 @@ import org.moeaframework.problem.AbstractProblem;
 
 public class ProductChoosingProblem extends AbstractProblem {
 
-  private final MineResourceAmount[] connectableMines;
-  private final Product[] products;
+  private final MineResourcePair[] connectableMines;
+  private final Product product;
 
-  public ProductChoosingProblem(MineResourceAmount[] connectableMines, Product[] products) {
-    super(2, 1);
+  public ProductChoosingProblem(MineResourcePair[] connectableMines, Product product) {
+    super(1, 2);
     this.connectableMines = connectableMines;
-    this.products = products;
+    this.product = product;
   }
 
   @Override
   public void evaluate(Solution solution) {
 
-    TypeAndMinesCombination combination = convertSolutionToCombination(solution,
-        connectableMines, products);
+    TypeAndMinesCombination combination = convertSolutionToCombination(solution, connectableMines,
+        product);
 
     solution.setObjective(0, -combination.getValue());
+    solution.setObjective(1, combination.getMineResourcePairs().size());
 
   }
 
-  public static TypeAndMinesCombination convertSolutionToCombination(Solution solution,
-      MineResourceAmount[] connectableMines,
-      Product[] products) {
-    boolean[] minesBinary = EncodingUtils.getBinary(solution.getVariable(0));
-    int productIndex = EncodingUtils.getInt(solution.getVariable(1));
+  @Override
+  public Solution newSolution() {
+    Solution solution = new Solution(numberOfVariables, numberOfObjectives, numberOfConstraints);
+    solution.setVariable(0, EncodingUtils.newBinary(connectableMines.length));
+    return solution;
+  }
 
-    Product product = products[productIndex];
-    Collection<MineResourceAmount> mines = new HashSet<>();
+  public static TypeAndMinesCombination convertSolutionToCombination(Solution solution,
+      MineResourcePair[] connectableMines, Product product) {
+    boolean[] minesBinary = EncodingUtils.getBinary(solution.getVariable(0));
+
+    Collection<MineResourcePair> mines = new HashSet<>();
 
     for (int i = 0; i < minesBinary.length; i++) {
       if (minesBinary[i]) {
@@ -46,13 +50,5 @@ public class ProductChoosingProblem extends AbstractProblem {
     }
 
     return new TypeAndMinesCombination(product, mines);
-  }
-
-  @Override
-  public Solution newSolution() {
-    Solution solution = new Solution(numberOfVariables, numberOfObjectives, numberOfConstraints);
-    solution.setVariable(0, EncodingUtils.newBinary(connectableMines.length));
-    solution.setVariable(1, EncodingUtils.newBinaryInt(0, products.length - 1));
-    return solution;
   }
 }
