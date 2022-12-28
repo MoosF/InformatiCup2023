@@ -38,38 +38,6 @@ public abstract class FactoryChooser {
     return field;
   }
 
-  public Collection<Factory> calculatePossibleFactories(Input input) {
-    // benötigte Typen von Factories bestimmen
-    Collection<Product> products = new LinkedList<>(input.getProducts());
-
-    // mögliche Plätze für Fabriken bestimmen
-    Collection<Factory> result = new LinkedList<>();
-    Tile[][] tiles = field.getTiles();
-    for (int i = 0; i < field.getWidth(); i++)
-      for (int j = 0; j < field.getWidth(); j++) {
-        boolean possiblePlace = true;
-        for (int x = 0; x < 5; x++) {
-          for (int y = 0; y < 5; y++) {
-            if (i + x >= field.getWidth() || j + y >= field.getHeight()
-                || !tiles[i + x][j + y].getType().equals(TileType.EMPTY)) {
-              possiblePlace = false;
-              break;
-            }
-          }
-          if (!possiblePlace)
-            break;
-        }
-
-        if (possiblePlace) {
-          int finalJ = j;
-          int finalI = i;
-          products.forEach(product -> result.add(Factory.createFactoryWithProduct(finalI + 2, finalJ + 2, product)));
-        }
-      }
-
-    return result;
-  }
-
   protected Collection<Factory> getPossibleFactories() {
     return possibleFactories;
   }
