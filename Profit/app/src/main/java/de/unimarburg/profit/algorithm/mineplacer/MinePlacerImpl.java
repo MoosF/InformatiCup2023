@@ -29,7 +29,7 @@ public class MinePlacerImpl implements MinePlacer {
     NondominatedPopulation population = new Executor()
         .withProblemClass(MinePlacingProblem.class, field, mines, SEARCH_DEPTH)
         .withAlgorithm("PESA2")
-        .withMaxEvaluations(1000)
+        .withMaxTime(5 * 1000)
         .run();
 
     Solution solution = population.iterator().next();

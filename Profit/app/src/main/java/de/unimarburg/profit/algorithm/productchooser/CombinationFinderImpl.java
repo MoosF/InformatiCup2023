@@ -1,13 +1,13 @@
 package de.unimarburg.profit.algorithm.productchooser;
 
-import de.unimarburg.profit.algorithm.mineplacer.MineResourcePair;
+import de.unimarburg.profit.algorithm.mineplacer.MineWithResource;
 import de.unimarburg.profit.model.Deposit;
+import de.unimarburg.profit.model.Factory;
 import de.unimarburg.profit.model.Mine;
 import de.unimarburg.profit.model.Product;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.function.Predicate;
 import org.moeaframework.Executor;
 import org.moeaframework.core.NondominatedPopulation;
 import org.moeaframework.core.Solution;
@@ -22,18 +22,18 @@ public class CombinationFinderImpl implements CombinationFinder {
 
   @Override
   public Collection<TypeAndMinesCombination> findProductMinesCombination(
-      Map<Mine, Deposit> connectableMines, Collection<MineResourcePair> mineResourcePairs,
-      Collection<Product> products) {
+      Map<Mine, Deposit> connectableMines, Collection<MineWithResource> mineWithResources,
+      Collection<Product> products, Factory factory) {
 
-    MineResourcePair[] connectableMinesArray = mineResourcePairs.stream()
+    MineWithResource[] connectableMinesArray = mineWithResources.stream()
         .filter(mineResourceAmount -> connectableMines.containsKey(mineResourceAmount.getMine()))
-        .distinct().toArray(MineResourcePair[]::new);
+        .distinct().toArray(MineWithResource[]::new);
 
     Collection<TypeAndMinesCombination> combinations = new HashSet<>();
     for (Product product : products) {
 
       NondominatedPopulation population = new Executor()
-          .withProblemClass(ProductChoosingProblem.class, connectableMinesArray, product)
+          .withProblemClass(MineConnectionsChoosingProblem.class, factory, connectableMinesArray, product)
           .withAlgorithm("NSGAII")
           .withMaxEvaluations(500)
           .distributeOnAllCores()
@@ -41,13 +41,14 @@ public class CombinationFinderImpl implements CombinationFinder {
 
       for (Solution solution : population) {
         combinations.add(
-            ProductChoosingProblem.convertSolutionToCombination(solution, connectableMinesArray,
+            MineConnectionsChoosingProblem.convertSolutionToCombination(solution, factory,
+                connectableMinesArray,
                 product));
       }
     }
 
     combinations.removeIf(
-        typeAndMinesCombination -> typeAndMinesCombination.getMineResourcePairs().isEmpty());
+        typeAndMinesCombination -> typeAndMinesCombination.getMinesWithResources().isEmpty());
 
     return combinations;
   }

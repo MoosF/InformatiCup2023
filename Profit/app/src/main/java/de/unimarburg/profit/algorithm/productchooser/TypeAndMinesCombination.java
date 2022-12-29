@@ -1,6 +1,7 @@
 package de.unimarburg.profit.algorithm.productchooser;
 
-import de.unimarburg.profit.algorithm.mineplacer.MineResourcePair;
+import de.unimarburg.profit.algorithm.mineplacer.MineWithResource;
+import de.unimarburg.profit.model.Factory;
 import de.unimarburg.profit.model.Mine;
 import de.unimarburg.profit.model.Product;
 import de.unimarburg.profit.model.enums.ProductType;
@@ -17,22 +18,32 @@ import java.util.Map;
 public class TypeAndMinesCombination {
 
 
+  private final Factory factory;
   private final Product product;
 
-  private final Collection<MineResourcePair> mineResourcePairs;
+  private final Collection<MineWithResource> minesWithResources;
 
 
-  public TypeAndMinesCombination(Product product, Collection<MineResourcePair> mineResourcePairs) {
+  /**
+   * Constructor of this class.
+   *
+   * @param factory            {@link Factory}, with which the {@link Mine}s are connected.
+   * @param product            {@link Product}, which the {@link Factory} should produce.
+   * @param minesWithResources Collection of {@link Mine}s with their mined Resources.
+   */
+  public TypeAndMinesCombination(Factory factory, Product product,
+      Collection<MineWithResource> minesWithResources) {
+    this.factory = factory;
     this.product = product;
-    this.mineResourcePairs = mineResourcePairs;
+    this.minesWithResources = minesWithResources;
   }
 
   public Product getProduct() {
     return product;
   }
 
-  public Collection<MineResourcePair> getMineResourcePairs() {
-    return mineResourcePairs;
+  public Collection<MineWithResource> getMinesWithResources() {
+    return minesWithResources;
   }
 
   /**
@@ -43,8 +54,6 @@ public class TypeAndMinesCombination {
    */
   public double getValue() {
 
-
-    int points = product.getPoints();
     Map<ResourceType, Integer> neededResources = product.getNeededResources();
 
     Map<ResourceType, Integer> availableResources = new HashMap<>();
@@ -52,12 +61,11 @@ public class TypeAndMinesCombination {
       availableResources.put(resourceType, 0);
     }
 
-    for (MineResourcePair mineResourcePair : mineResourcePairs) {
+    for (MineWithResource mineWithResource : minesWithResources) {
 
-      Mine mine = mineResourcePair.getMine();
-      int amount = mineResourcePair.getAmount();
+      int amount = mineWithResource.getAmount();
 
-      ResourceType resourceType = mineResourcePair.getResourceType();
+      ResourceType resourceType = mineWithResource.getResourceType();
 
       //If there exists an unnecessary mine.
       if (!neededResources.containsKey(resourceType)) {
@@ -68,7 +76,7 @@ public class TypeAndMinesCombination {
 
     }
 
-    double value = Integer.MAX_VALUE;
+    double amount = Integer.MAX_VALUE;
     for (ResourceType resourceType : neededResources.keySet()) {
 
       double available = availableResources.get(resourceType);
@@ -76,16 +84,42 @@ public class TypeAndMinesCombination {
 
       //If there are not enough resources.
       if (needed > available) {
-        return 0;
+        amount = 0;
       }
 
       double resourceRatio = available / needed;
-      if (resourceRatio < value) {
-        value = resourceRatio;
+      if (resourceRatio < amount) {
+        amount = resourceRatio;
       }
     }
 
-    return value;
+    return amount * product.getPoints();
   }
 
+  /**
+   * Calculates the cumulative distance between the {@link Factory} to each {@link Mine}.
+   *
+   * @return Sum of distances.
+   */
+  public int getDistances() {
+
+    int distance = 0;
+
+    int factoryX = factory.getX();
+    int factoryY = factory.getY();
+
+    for (MineWithResource mineWithResource : minesWithResources) {
+      int mineX = mineWithResource.getMine().getX();
+      int mineY = mineWithResource.getMine().getY();
+
+      distance += Math.sqrt(Math.pow(factoryX - mineX, 2) + Math.pow(factoryY - mineY, 2));
+    }
+
+    return distance;
+  }
+
+
+  public Factory getFactory() {
+    return factory;
+  }
 }

@@ -51,20 +51,6 @@ public class Product {
     return type;
   }
 
-  /**
-   * Adds a single resource to the {@link Product}, that is needed to produce it. Each
-   * {@link ResourceType} can only be used once.
-   *
-   * @param resourceType Needed resource for production.
-   * @param amount       Amount of the given resource.
-   */
-  public void addNeededRessource(ResourceType resourceType, int amount) {
-    if (neededResourcesMap.containsKey(resourceType)) {
-      throw new RuntimeException("Resource type already registered.");
-    }
-    neededResourcesMap.put(resourceType, amount);
-  }
-
   @Override
   public boolean equals(Object obj) {
     if (!this.getClass().equals(obj.getClass())) {

@@ -1,8 +1,9 @@
 package de.unimarburg.profit.algorithm.productchooser;
 
-import de.unimarburg.profit.algorithm.mineplacer.MineResourcePair;
+import de.unimarburg.profit.algorithm.mineplacer.MineWithResource;
 import de.unimarburg.profit.algorithm.mineplacer.MinePlaceFinderImpl;
 import de.unimarburg.profit.model.Deposit;
+import de.unimarburg.profit.model.Factory;
 import de.unimarburg.profit.model.Mine;
 import de.unimarburg.profit.model.Product;
 import de.unimarburg.profit.model.enums.MineSubType;
@@ -12,14 +13,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class CombinationFinderImplTest {
 
   @Test
   public void test1() {
-
-    CombinationFinder chooser = new CombinationFinderImpl();
 
     Collection<Product> products = new LinkedList<>();
     products.add(
@@ -38,13 +38,17 @@ class CombinationFinderImplTest {
     connectableMines.put(Mine.createMine(10, 10, MineSubType.OUTPUT_NORTH), deposit3);
     connectableMines.put(Mine.createMine(10, 10, MineSubType.OUTPUT_NORTH), deposit4);
 
-    Collection<MineResourcePair> mineResourcePairs = new MinePlaceFinderImpl().calcResourcesPerMine(
+    Collection<MineWithResource> mineWithResources = new MinePlaceFinderImpl().calcResourcesPerMine(
         connectableMines);
 
-    Collection<TypeAndMinesCombination> combs = chooser.findProductMinesCombination(
-        connectableMines, mineResourcePairs, products);
+    Factory factory = Factory.createFactoryWithoutProduct(20,20);
 
-    //Assertions.assertEquals(2, combs.size());
+    CombinationFinder chooser = new CombinationFinderImpl();
+    Collection<TypeAndMinesCombination> combs = chooser.findProductMinesCombination(
+        connectableMines, mineWithResources, products, factory);
+
+    //There can only be two possibilities. Mine1 and Mine2 with Product1 or Mine3 and Mine4 with Product 2
+    Assertions.assertEquals(2, combs.size());
 
   }
 
