@@ -295,4 +295,21 @@ public class Field {
     }
   }
 
+  public Collection<MovableObject> getMovableObjects() {
+
+    Collection<MovableObject> movableObjects = new HashSet<>();
+
+    for (Class<? extends BaseObject> clazz : objects.keySet()) {
+
+      boolean isSubClass = MovableObject.class.isAssignableFrom(clazz);
+      if(isSubClass){
+        for (BaseObject baseObject : objects.get(clazz)) {
+          movableObjects.add((MovableObject) baseObject);
+        }
+      }
+
+    }
+
+    return movableObjects;
+  }
 }

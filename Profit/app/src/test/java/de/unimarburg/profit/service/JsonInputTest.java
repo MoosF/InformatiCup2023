@@ -37,7 +37,7 @@ class JsonInputTest {
   }
 
   @Test
-  void testExampleTask001WithTime() {
+  void testExampleTask001WithTime() throws InputOutputException {
     String testFile = "001.task-with-time.json";
     Input input = InputOutputHandle.readInputFrom(testFile);
 
@@ -76,7 +76,7 @@ class JsonInputTest {
   }
 
   @Test
-  void testExampleTask002WithTime() {
+  void testExampleTask002WithTime() throws InputOutputException {
     String testFile = "002.task-with-time.json";
     Input input = InputOutputHandle.readInputFrom(testFile);
 
@@ -112,7 +112,7 @@ class JsonInputTest {
   }
 
   @Test
-  void testExampleTask003WithTime() {
+  void testExampleTask003WithTime() throws InputOutputException {
     String testFile = "003.task-with-time.json";
     Input input = InputOutputHandle.readInputFrom(testFile);
 
@@ -148,7 +148,7 @@ class JsonInputTest {
   }
 
   @Test
-  void testExampleTask004WithTime() {
+  void testExampleTask004WithTime() throws InputOutputException {
     String testFile = "004.task-with-time.json";
     Input input = InputOutputHandle.readInputFrom(testFile);
 

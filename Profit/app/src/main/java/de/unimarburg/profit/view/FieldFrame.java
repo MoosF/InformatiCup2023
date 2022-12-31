@@ -15,7 +15,7 @@ public class FieldFrame extends JFrame {
 
   private FieldFrame() {
     setTitle("Profit!");
-    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setLocationRelativeTo(null);
   }
 

@@ -23,6 +23,7 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
@@ -75,12 +76,13 @@ final class Json extends InputOutputHandle {
    *
    * @param output A {@link List} of {@link MovableObject}s.
    */
-  public static void writeOutObjects(List<MovableObject> output) {
+  public static void writeOutObjects(Collection<MovableObject> output) throws InputOutputException {
     var settings = Settings.getInstance();
+    String outputString = generateOutputString(output);
     if (settings.exportTargetIsStdOut()) {
-      System.out.println(generateOutputString(output));
+      System.out.println(outputString);
     } else {
-      writeOutputToFile(output);
+      writeOutputToFile(outputString);
     }
   }
 
@@ -115,7 +117,7 @@ final class Json extends InputOutputHandle {
    * @return a {@link String} containing the {@link MovableObject}s from {@code output} as a
    * JSON-Array.
    */
-  static String generateOutputString(List<MovableObject> output) {
+  static String generateOutputString(Collection<MovableObject> output) {
     JsonArray outputArray = new JsonArray();
 
     for (MovableObject movableObject : output) {
@@ -146,11 +148,10 @@ final class Json extends InputOutputHandle {
   /**
    * Writes the {@link MovableObject}s in output into the file that is set in {@link Settings}.
    *
-   * @param output A list of {@link MovableObject}s.
+   * @param outputString
    */
-  private static void writeOutputToFile(List<MovableObject> output) throws InputOutputException {
+  private static void writeOutputToFile(String outputString) throws InputOutputException {
     var settings = Settings.getInstance();
-    String outputString = generateOutputString(output);
     try {
       BufferedWriter writer = new BufferedWriter(new FileWriter(settings.getExportFileName()));
       writer.write(outputString);
@@ -372,7 +373,7 @@ final class Json extends InputOutputHandle {
    *                              a non-integer value or if the required amount for a resource for
    *                              the {@link Product} is missing.
    */
-  private static void readProducts(Json json, JsonObject jsonObject) {
+  private static void readProducts(Json json, JsonObject jsonObject) throws InputOutputException {
     var jsonArray = jsonObject.getAsJsonArray(KEY_PRODUCTS);
     if (null == jsonArray) {
       throw new InputOutputException("No products supplied!");

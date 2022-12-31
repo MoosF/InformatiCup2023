@@ -169,7 +169,7 @@ class JsonOutputTest {
   }
 
   @Test
-  void testOutputToFile1() {
+  void testOutputToFile1() throws InputOutputException {
     this.setSettingsForFileOutTests();
 
     InputOutputHandle.writeOutObjects(new ArrayList<>());
@@ -180,7 +180,7 @@ class JsonOutputTest {
   }
 
   @Test
-  void testOutputToFile2() {
+  void testOutputToFile2() throws InputOutputException {
     this.setSettingsForFileOutTests();
 
     var product0 = new Product(Integer.MAX_VALUE, ProductType.ZERO, new HashMap<>());

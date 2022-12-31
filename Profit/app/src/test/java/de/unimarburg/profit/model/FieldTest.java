@@ -9,6 +9,7 @@ import de.unimarburg.profit.model.enums.ProductType;
 import de.unimarburg.profit.model.enums.ResourceType;
 import de.unimarburg.profit.model.exceptions.CouldNotPlaceObjectException;
 import de.unimarburg.profit.model.exceptions.CouldNotRemoveObjectException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Assertions;
@@ -183,6 +184,35 @@ public class FieldTest {
 
     Assertions.assertThrows(CouldNotPlaceObjectException.class,
         () -> field.addBaseObject(Conveyer.createConveyor(2,3, ConveyerSubType.SHORT_OUTPUT_NORTH)));
+
+  }
+
+  @Test
+  public void testGetMovableObjects() throws CouldNotPlaceObjectException {
+
+
+    Deposit deposit = Deposit.createDeposit(ResourceType.ZERO,0,0,3,3);
+    Obstacle obstacle = Obstacle.createObstacle(3,3,3,3);
+    Conveyer conveyer = Conveyer.createConveyor(10,10,ConveyerSubType.SHORT_OUTPUT_EAST);
+    Combiner combiner = Combiner.createCombiner(20,10,CombinerSubType.OUTPUT_EAST);
+    Mine mine = Mine.createMine(10,20,MineSubType.OUTPUT_EAST);
+    Factory factory = Factory.createFactoryWithoutProduct(30,30);
+
+    Field field = new Field(100,100);
+    field.addBaseObject(deposit);
+    field.addBaseObject(obstacle);
+    field.addBaseObject(combiner);
+    field.addBaseObject(conveyer);
+    field.addBaseObject(mine);
+    field.addBaseObject(factory);
+
+    Collection<MovableObject> movableObjects = field.getMovableObjects();
+
+    Assertions.assertEquals(4, movableObjects.size());
+    Assertions.assertTrue(movableObjects.contains(conveyer));
+    Assertions.assertTrue(movableObjects.contains(combiner));
+    Assertions.assertTrue(movableObjects.contains(mine));
+    Assertions.assertTrue(movableObjects.contains(factory));
 
   }
 }

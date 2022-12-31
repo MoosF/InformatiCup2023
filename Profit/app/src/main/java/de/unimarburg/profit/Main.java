@@ -11,6 +11,7 @@ import de.unimarburg.profit.model.FixedObject;
 import de.unimarburg.profit.model.Mine;
 import de.unimarburg.profit.model.exceptions.CouldNotPlaceObjectException;
 import de.unimarburg.profit.service.Input;
+import de.unimarburg.profit.service.InputOutputException;
 import de.unimarburg.profit.service.InputOutputHandle;
 import de.unimarburg.profit.service.InputOutputHandle.FileType;
 import de.unimarburg.profit.service.Settings;
@@ -30,7 +31,7 @@ public class Main {
    *
    * @param args Arguments. Should be an empty array.
    */
-  public static void main(String[] args) throws SimulateException {
+  public static void main(String[] args) throws InputOutputException {
 
     var settings = Settings.getInstance();
     settings.updateImportTarget(false);
@@ -50,15 +51,6 @@ public class Main {
           throw new RuntimeException(e);
         }
       }
-
-      MinePlaceFinder minePlaceFinder = new MinePlaceFinderImpl();
-      Map<Mine, Deposit> possibleMines = minePlaceFinder.calculatePossibleMines(field);
-
-      MinePlacer minePlacer = new MinePlacerImpl();
-      Map<Mine, Deposit> placedMines = minePlacer.placeMines(field, possibleMines);
-
-
-      Collection<MineWithResource> mineWithResources = minePlaceFinder.calcResourcesPerMine(placedMines);
 
       System.out.println("Stop");
     }

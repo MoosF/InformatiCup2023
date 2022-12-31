@@ -13,7 +13,7 @@ public class Settings {
   private boolean exportToStdOut = true;
   private String exportFileName = "default.json";
   private FileType importFileType = FileType.JSON;
-  private boolean importFromStdIn = false;
+  private boolean importFromStdIn = true;
 
   private Settings() {
   }

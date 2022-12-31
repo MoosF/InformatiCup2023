@@ -9,6 +9,7 @@ import de.unimarburg.profit.model.Tile;
 import de.unimarburg.profit.model.Mine;
 import de.unimarburg.profit.model.MovableObject;
 import de.unimarburg.profit.model.Product;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -18,7 +19,7 @@ import java.util.List;
  * @author Fabian Moos
  * @see Input
  * @see InputOutputHandle#readInputFrom(String)
- * @see InputOutputHandle#writeOutObjects(List)
+ * @see InputOutputHandle#writeOutObjects(Collection) (List)
  */
 public abstract class InputOutputHandle implements Input {
 
@@ -49,7 +50,7 @@ public abstract class InputOutputHandle implements Input {
    * @param input A {@link String} containing a valid JSON-object or the relative or absolute path
    *              to a file containing the JSON-object.
    * @return A class that implements the interface {@link Input} and holds all relevant information
-   *         about the {@link Field} defined by the input file.
+   * about the {@link Field} defined by the input file.
    * @throws InputOutputException when an error has occurred while parsing the input.
    */
   public static Input readInputFrom(String input) throws InputOutputException {
@@ -66,12 +67,10 @@ public abstract class InputOutputHandle implements Input {
    * by the values set in the {@link Settings}-class.
    *
    * @param output A {@link List} of {@link MovableObject}s.
-   * @return the generated {@link String} containing the output in the format determined by
-   *         {@link Settings}.
    * @throws InputOutputException when a {@link FileType} is set in the {@link Settings} that is not
    *                              yet implemented.
    */
-  public static void writeOutObjects(List<MovableObject> output) throws InputOutputException {
+  public static void writeOutObjects(Collection<MovableObject> output) throws InputOutputException {
     var settings = Settings.getInstance();
     switch (settings.getExportFileType()) {
       case JSON -> Json.writeOutObjects(output);
