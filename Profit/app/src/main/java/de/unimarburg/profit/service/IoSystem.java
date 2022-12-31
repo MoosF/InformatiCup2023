@@ -13,19 +13,35 @@ import java.io.PrintStream;
 import java.util.Collection;
 import java.util.Scanner;
 
+/**
+ * System, that is responsible for the input and output. You can specify the {@link InputStream} and
+ * {@link OutputStream}.
+ *
+ * @author Yannick Kraml.
+ */
 public class IoSystem {
 
   private final PrintStream printStream;
   private final Scanner scanner;
-
   private boolean isReading;
 
+  /**
+   * Constructor of the {@link IoSystem}.
+   *
+   * @param inputStream  {@link InputStream}, from which the input will be read. Should support a
+   *                     scanner.
+   * @param outputStream {@link OutputStream}, to which the output will be written. Should support a
+   *                     printStream.
+   */
   public IoSystem(InputStream inputStream, OutputStream outputStream) {
     this.isReading = false;
     scanner = new Scanner(inputStream);
     printStream = new PrintStream(outputStream);
   }
 
+  /**
+   * Starts the {@link IoSystem}. If already running, an {@link RuntimeException} will be thrown.
+   */
   public void start() {
 
     if (isReading) {
@@ -52,6 +68,7 @@ public class IoSystem {
 
   }
 
+
   private void readField(String line) throws IOException {
     Input input = InputOutputHandle.readInputFrom(line);
 
@@ -68,9 +85,9 @@ public class IoSystem {
 
     Algorithm algorithm = new AlgorithmImpl();
     Collection<MovableObject> movableObjects = algorithm.runAlgorithm(field, input.getTime(),
-        input.getTurns());
+        input.getTurns(), input.getProducts());
 
-    String outputString = Json.generateOutputString(movableObjects);
+    String outputString = InputOutputHandle.generateOutput(movableObjects);
     printStream.println(outputString);
 
   }

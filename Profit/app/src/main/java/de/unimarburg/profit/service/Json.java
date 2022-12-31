@@ -122,22 +122,24 @@ final class Json extends InputOutputHandle {
 
     for (MovableObject movableObject : output) {
       JsonObject jsonObject = new JsonObject();
-      jsonObject.add(KEY_TYPE, new JsonPrimitive(switch (movableObject.getType()) {
-        case COMBINER -> VALUE_COMBINER;
-        case CONVEYER -> VALUE_CONVEYER;
-        case FACTORY -> VALUE_FACTORY;
-        case MINE -> VALUE_MINE;
-      }));
+      jsonObject.add(KEY_TYPE, new JsonPrimitive(
+          switch (movableObject.getType()) {
+            case COMBINER -> VALUE_COMBINER;
+            case CONVEYER -> VALUE_CONVEYER;
+            case FACTORY -> VALUE_FACTORY;
+            case MINE -> VALUE_MINE;
+          }));
 
       jsonObject.add(KEY_X, new JsonPrimitive(movableObject.getX()));
       jsonObject.add(KEY_Y, new JsonPrimitive(movableObject.getY()));
 
-      jsonObject.add(KEY_SUBTYPE, new JsonPrimitive(switch (movableObject.getType()) {
-        case COMBINER -> ((Combiner) movableObject).getSubType().ordinal();
-        case CONVEYER -> ((Conveyer) movableObject).getSubType().ordinal();
-        case FACTORY -> ((Factory) movableObject).getSubType().ordinal();
-        case MINE -> ((Mine) movableObject).getSubType().ordinal();
-      }));
+      jsonObject.add(KEY_SUBTYPE, new JsonPrimitive(
+          switch (movableObject.getType()) {
+            case COMBINER -> ((Combiner) movableObject).getSubType().ordinal();
+            case CONVEYER -> ((Conveyer) movableObject).getSubType().ordinal();
+            case FACTORY -> ((Factory) movableObject).getSubType().ordinal();
+            case MINE -> ((Mine) movableObject).getSubType().ordinal();
+          }));
 
       outputArray.add(jsonObject);
     }
@@ -147,8 +149,6 @@ final class Json extends InputOutputHandle {
 
   /**
    * Writes the {@link MovableObject}s in output into the file that is set in {@link Settings}.
-   *
-   * @param outputString
    */
   private static void writeOutputToFile(String outputString) throws InputOutputException {
     var settings = Settings.getInstance();
@@ -222,6 +222,8 @@ final class Json extends InputOutputHandle {
   }
 
   /**
+   * Gets the {@link ProductType} from a number.
+   *
    * @param num The number of the required requested resource.
    * @return the {@link ProductType} variant corresponding to the given number.
    * @throws InputOutputException When a number is encountered that does not correspond to a valid
@@ -242,6 +244,8 @@ final class Json extends InputOutputHandle {
   }
 
   /**
+   * Gets the {@link ResourceType} for a number.
+   *
    * @param num The number of the resource. Must be in the interval [0,7].
    * @return The {@link ResourceType} corresponding to the given number.
    * @throws InputOutputException when the number input is outside the interval [0,7].
@@ -266,20 +270,20 @@ final class Json extends InputOutputHandle {
    * {@code int}.
    *
    * @param jsonObject The {@code int} will be retrieved from this {@link JsonObject}.
-   * @param KEY        The key in the given {@link JsonObject} that maps to the requested
+   * @param key        The key in the given {@link JsonObject} that maps to the requested
    *                   {@code int} value.
    * @return the requested integer.
-   * @throws InputOutputException if the JSON-primitive found under {@code KEY} is not a valid
+   * @throws InputOutputException if the JSON-primitive found under {@code key} is not a valid
    *                              integer or the acquired integer is smaller than 0.
    */
-  private static int readIntFromJsonObject(JsonObject jsonObject, final String KEY)
+  private static int readIntFromJsonObject(JsonObject jsonObject, final String key)
       throws InputOutputException {
-    var maybeValue = readPrimitiveValueFromJsonObject(jsonObject, KEY);
+    var maybeValue = readPrimitiveValueFromJsonObject(jsonObject, key);
     int value;
     try {
       value = maybeValue.getAsInt();
     } catch (NumberFormatException e) {
-      throw new InputOutputException("Value for key " + KEY + "must be convertible to int!");
+      throw new InputOutputException("Value for key " + key + "must be convertible to int!");
     }
     if (value < 0) {
       throw new InputOutputException("Integer is smaller than 0!");
@@ -314,8 +318,8 @@ final class Json extends InputOutputHandle {
 
       switch (type) {
         case TYPE_VALUE_DEPOSIT -> {
-          var subtype_number = object.get(KEY_SUBTYPE).getAsInt();
-          var subtype = getResourceTypeFor(subtype_number);
+          var subtypeNumber = object.get(KEY_SUBTYPE).getAsInt();
+          var subtype = getResourceTypeFor(subtypeNumber);
           json.objects.add(Deposit.createDeposit(subtype, x, y, width, height));
         }
         case TYPE_VALUE_OBSTACLE -> json.objects.add(Obstacle.createObstacle(x, y, width, height));
@@ -343,19 +347,19 @@ final class Json extends InputOutputHandle {
    * Reads a primitive value from a {@link JsonObject}.
    *
    * @param jsonObject The {@link JsonObject} the primitive value will be retrieved from.
-   * @param KEY        The key that maps to the desired value in the {@link JsonObject}.
+   * @param key        The key that maps to the desired value in the {@link JsonObject}.
    * @return a {@code JsonElement} containing a value of a primitive Json-type.
-   * @throws InputOutputException if there is no mapping for {@code KEY}, or if the requested value
+   * @throws InputOutputException if there is no mapping for {@code key}, or if the requested value
    *                              the key maps to does not have a primitive Json-type.
    */
   private static JsonElement readPrimitiveValueFromJsonObject(JsonObject jsonObject,
-      final String KEY) throws InputOutputException {
-    var maybeValue = jsonObject.get(KEY);
+      final String key) throws InputOutputException {
+    var maybeValue = jsonObject.get(key);
     if (maybeValue == null) {
-      throw new InputOutputException(KEY + " value has not been supplied!");
+      throw new InputOutputException(key + " value has not been supplied!");
     }
     if (!maybeValue.isJsonPrimitive()) {
-      throw new InputOutputException(KEY + " must be a primitive JSON-value!");
+      throw new InputOutputException(key + " must be a primitive JSON-value!");
     }
     return maybeValue;
   }
@@ -387,9 +391,6 @@ final class Json extends InputOutputHandle {
       if (!TYPE_VALUE_PRODUCT.equals(type)) {
         throw new InputOutputException("Unsupported products type \"" + type + "\" encountered!");
       }
-      var subtype_number = readIntFromJsonObject(object, KEY_SUBTYPE);
-      var subtype = getProductTypeFor(subtype_number);
-      var points = readIntFromJsonObject(object, KEY_POINTS);
 
       var resourcesArray = object.getAsJsonArray(KEY_RESOURCES);
       if (resourcesArray == null) {
@@ -414,6 +415,10 @@ final class Json extends InputOutputHandle {
         throw new InputOutputException("Not enough resource requirements for product!");
       }
 
+      var subtypeNumber = readIntFromJsonObject(object, KEY_SUBTYPE);
+      var subtype = getProductTypeFor(subtypeNumber);
+      var points = readIntFromJsonObject(object, KEY_POINTS);
+
       json.products.add(new Product(points, subtype, resourcesList));
     }
   }
@@ -422,15 +427,15 @@ final class Json extends InputOutputHandle {
    * Reads a {@link String} from a {@link JsonObject}.
    *
    * @param jsonObject The {@link JsonObject} the {@code String} will be retrieved from.
-   * @param KEY        The key that maps to the desired value in the json object.
-   * @return the string the {@code KEY} maps to in the given json object.
+   * @param key        The key that maps to the desired value in the json object.
+   * @return the string the {@code key} maps to in the given json object.
    * @throws InputOutputException if there is an exception while reading the primitive value from
    *                              the {@link JsonObject}.
    * @see Json#readPrimitiveValueFromJsonObject(JsonObject, String)
    */
-  private static String readStringFromJsonObject(JsonObject jsonObject, final String KEY)
+  private static String readStringFromJsonObject(JsonObject jsonObject, final String key)
       throws InputOutputException {
-    var maybeValue = readPrimitiveValueFromJsonObject(jsonObject, KEY);
+    var maybeValue = readPrimitiveValueFromJsonObject(jsonObject, key);
     // All Exceptions that could be thrown by getAsString are already handled in
     // readPrimitiveValueFromJsonObject!
     return maybeValue.getAsString();

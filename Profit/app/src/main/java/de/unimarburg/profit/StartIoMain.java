@@ -5,6 +5,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+/**
+ * Second temporary main method to test the {@link IoSystem}.
+ *
+ * @author Yannick Kraml.
+ */
 public class StartIoMain {
 
 

@@ -5,10 +5,10 @@ import de.unimarburg.profit.model.Conveyer;
 import de.unimarburg.profit.model.Factory;
 import de.unimarburg.profit.model.Field;
 import de.unimarburg.profit.model.FixedObject;
-import de.unimarburg.profit.model.Tile;
 import de.unimarburg.profit.model.Mine;
 import de.unimarburg.profit.model.MovableObject;
 import de.unimarburg.profit.model.Product;
+import de.unimarburg.profit.model.Tile;
 import java.util.Collection;
 import java.util.List;
 
@@ -50,7 +50,7 @@ public abstract class InputOutputHandle implements Input {
    * @param input A {@link String} containing a valid JSON-object or the relative or absolute path
    *              to a file containing the JSON-object.
    * @return A class that implements the interface {@link Input} and holds all relevant information
-   * about the {@link Field} defined by the input file.
+   *         about the {@link Field} defined by the input file.
    * @throws InputOutputException when an error has occurred while parsing the input.
    */
   public static Input readInputFrom(String input) throws InputOutputException {
@@ -77,6 +77,25 @@ public abstract class InputOutputHandle implements Input {
       case XML -> throw new InputOutputException("Output file type XML is not yet implemented!");
       default -> throw new InputOutputException("Output file type is not yet implemented!");
     }
+  }
+
+  /**
+   * Generates the output how specified.
+   *
+   * @param movableObjects {@link Collection} of {@link MovableObject}, that should be included in
+   *                       the output
+   * @return String, that represents the output.
+   */
+  public static String generateOutput(Collection<MovableObject> movableObjects) {
+    String returnString;
+    switch (Settings.getInstance().getExportFileType()) {
+      case JSON -> returnString = Json.generateOutputString(movableObjects);
+      case XML -> throw new IllegalStateException("Output file type XML is not yet implemented!");
+      default -> throw new IllegalStateException(
+          "Unexpected value: " + Settings.getInstance().getExportFileType());
+    }
+
+    return returnString;
   }
 
   /**

@@ -44,8 +44,8 @@ class CombinationFinderImplTest {
     Factory factory = Factory.createFactoryWithoutProduct(20,20);
 
     CombinationFinder chooser = new CombinationFinderImpl();
-    Collection<TypeAndMinesCombination> combs = chooser.findProductMinesCombination(
-        connectableMines, mineWithResources, products, factory);
+    Collection<TypeAndMinesCombination> combs = chooser.findCombinations(
+        connectableMines.keySet(), mineWithResources, products, factory);
 
     //There can only be two possibilities. Mine1 and Mine2 with Product1 or Mine3 and Mine4 with Product 2
     Assertions.assertEquals(2, combs.size());

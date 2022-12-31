@@ -98,39 +98,13 @@ public class Factory extends MovableObject {
     return new Factory(horPos, verPos, tiles, product, MovableObjectType.FACTORY);
   }
 
-  public static Factory createFactoryWithSubtype(int horPos, int verPos, int subtype) {
-
-    Tile[] tiles = new Tile[]{
-        new Tile(-2, -2, TileType.INPUT),
-        new Tile(-1, -2, TileType.INPUT),
-        new Tile(0, -2, TileType.INPUT),
-        new Tile(1, -2, TileType.INPUT),
-        new Tile(2, -2, TileType.INPUT),
-        new Tile(-2, -1, TileType.INPUT),
-        new Tile(-1, -1, TileType.SOLID),
-        new Tile(0, -1, TileType.SOLID),
-        new Tile(1, -1, TileType.SOLID),
-        new Tile(2, -1, TileType.INPUT),
-        new Tile(-2, 0, TileType.INPUT),
-        new Tile(-1, 0, TileType.SOLID),
-        new Tile(0, 0, TileType.SOLID),
-        new Tile(1, 0, TileType.SOLID),
-        new Tile(2, 0, TileType.INPUT),
-        new Tile(-2, 1, TileType.INPUT),
-        new Tile(-1, 1, TileType.SOLID),
-        new Tile(0, 1, TileType.SOLID),
-        new Tile(1, 1, TileType.SOLID),
-        new Tile(2, 1, TileType.INPUT),
-        new Tile(-2, 2, TileType.INPUT),
-        new Tile(-1, 2, TileType.INPUT),
-        new Tile(0, 2, TileType.INPUT),
-        new Tile(1, 2, TileType.INPUT),
-        new Tile(2, 2, TileType.INPUT),
-    };
-
-    return new Factory(horPos, verPos, tiles, subtype, MovableObjectType.FACTORY);
-  }
-
+  /**
+   * Creates an instance of a {@link Factory} without a product.
+   *
+   * @param horPos X-Coordinate of the {@link Factory}.
+   * @param verPos Y-Coordinate of the {@link Factory}.
+   * @return New instance of {@link Factory}.
+   */
   public static Factory createFactoryWithoutProduct(int horPos, int verPos) {
     Tile[] tiles = new Tile[]{
         new Tile(-2, -2, TileType.INPUT),

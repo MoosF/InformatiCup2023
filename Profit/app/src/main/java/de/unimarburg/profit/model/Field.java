@@ -295,6 +295,11 @@ public class Field {
     }
   }
 
+  /**
+   * Finds all {@link MovableObject}s, that are placed on this {@link Field}.
+   *
+   * @return Collection of all {@link MovableObject}s, placed on this {@link Field}.
+   */
   public Collection<MovableObject> getMovableObjects() {
 
     Collection<MovableObject> movableObjects = new HashSet<>();
@@ -302,7 +307,7 @@ public class Field {
     for (Class<? extends BaseObject> clazz : objects.keySet()) {
 
       boolean isSubClass = MovableObject.class.isAssignableFrom(clazz);
-      if(isSubClass){
+      if (isSubClass) {
         for (BaseObject baseObject : objects.get(clazz)) {
           movableObjects.add((MovableObject) baseObject);
         }

@@ -1,5 +1,7 @@
 package de.unimarburg.profit;
 
+import de.unimarburg.profit.algorithm.Algorithm;
+import de.unimarburg.profit.algorithm.AlgorithmImpl;
 import de.unimarburg.profit.algorithm.mineplacer.MinePlaceFinder;
 import de.unimarburg.profit.algorithm.mineplacer.MinePlaceFinderImpl;
 import de.unimarburg.profit.algorithm.mineplacer.MinePlacer;
@@ -51,6 +53,9 @@ public class Main {
           throw new RuntimeException(e);
         }
       }
+
+      Algorithm algorithm = new AlgorithmImpl();
+      algorithm.runAlgorithm(field, input.getTime(), input.getTurns(), input.getProducts());
 
       System.out.println("Stop");
     }

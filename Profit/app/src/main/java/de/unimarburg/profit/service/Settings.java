@@ -3,6 +3,8 @@ package de.unimarburg.profit.service;
 import de.unimarburg.profit.service.InputOutputHandle.FileType;
 
 /**
+ * Saves Settings for the IO.
+ *
  * @author Fabian Moos
  */
 public class Settings {
@@ -10,9 +12,9 @@ public class Settings {
   private static Settings instance = null;
 
   private FileType exportFileType = FileType.JSON;
+  private FileType importFileType = FileType.JSON;
   private boolean exportToStdOut = true;
   private String exportFileName = "default.json";
-  private FileType importFileType = FileType.JSON;
   private boolean importFromStdIn = true;
 
   private Settings() {
@@ -31,9 +33,14 @@ public class Settings {
   }
 
   public FileType getImportFileType() {
-    return this.exportFileType;
+    return this.importFileType;
   }
 
+  /**
+   * Singleton getInstance() Method.
+   *
+   * @return Instance of {@link Settings}.
+   */
   public static Settings getInstance() {
     if (instance == null) {
       instance = new Settings();

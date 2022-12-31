@@ -8,6 +8,7 @@ import de.unimarburg.profit.model.Tile;
 import de.unimarburg.profit.model.enums.ProductType;
 import de.unimarburg.profit.model.enums.ResourceType;
 import de.unimarburg.profit.service.InputOutputHandle.FileType;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -232,16 +233,15 @@ class JsonInputTest {
       }
     }
 
-    List<Product> actualProducts = input.getProducts();
+    Collection<Product> actualProducts = input.getProducts();
 
     assertNotNull(actualProducts);
     assertEquals(expectedProducts.length, actualProducts.size());
 
-    for (int i = 0; i < actualProducts.size(); ++i) {
-      Product actualProduct = actualProducts.get(i);
-      Product expectedProduct = expectedProducts[i];
-      assertEquals(expectedProduct, actualProduct);
+    for (Product product : expectedProducts) {
+      assertTrue(actualProducts.contains(product));
     }
+
   }
 
 }

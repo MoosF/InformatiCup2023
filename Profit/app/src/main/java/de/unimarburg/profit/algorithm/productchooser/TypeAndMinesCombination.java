@@ -9,6 +9,7 @@ import de.unimarburg.profit.model.enums.ResourceType;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * This class saves a single combination of a {@link ProductType} and a set of {@link Mine}s.
@@ -121,5 +122,9 @@ public class TypeAndMinesCombination {
 
   public Factory getFactory() {
     return factory;
+  }
+
+  public Collection<Mine> getMines() {
+    return minesWithResources.stream().map(MineWithResource::getMine).toList();
   }
 }

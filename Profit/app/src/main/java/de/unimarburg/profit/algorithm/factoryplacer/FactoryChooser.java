@@ -24,7 +24,7 @@ public abstract class FactoryChooser {
 
   protected FactoryChooser(Field field, Collection<Factory> possibleFactories) {
     this.field = field;
-    this.possibleFactories = possibleFactories;
+    this.possibleFactories = new LinkedList<>(possibleFactories);
   }
 
   /**

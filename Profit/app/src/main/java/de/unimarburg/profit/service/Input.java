@@ -2,8 +2,9 @@ package de.unimarburg.profit.service;
 
 import de.unimarburg.profit.model.Field;
 import de.unimarburg.profit.model.FixedObject;
-import de.unimarburg.profit.model.Tile;
 import de.unimarburg.profit.model.Product;
+import de.unimarburg.profit.model.Tile;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -42,7 +43,7 @@ public interface Input {
    *
    * @return the List of {@link Product}s for this {@link Field}.
    */
-  List<Product> getProducts();
+  Collection<Product> getProducts();
 
   /**
    * Returns a number {@code >= 0} as number of turns for this {@link Field}.

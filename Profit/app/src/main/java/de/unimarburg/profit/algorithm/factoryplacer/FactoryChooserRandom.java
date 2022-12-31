@@ -4,6 +4,7 @@ import de.unimarburg.profit.model.Factory;
 import de.unimarburg.profit.model.Field;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
  * Implementation of {@link FactoryChooser}. Chooses {@link Factory}s random.
@@ -20,8 +21,12 @@ public final class FactoryChooserRandom extends FactoryChooser {
   @Override
   public Optional<Factory> chooseFactory() {
     Collection<Factory> possibleFactories = getPossibleFactories();
-    return possibleFactories.stream()
+    Optional<Factory> first = possibleFactories.stream()
         .skip((int) (possibleFactories.size() * Math.random()))
         .findFirst();
+
+    first.ifPresent(possibleFactories::remove);
+
+    return first;
   }
 }

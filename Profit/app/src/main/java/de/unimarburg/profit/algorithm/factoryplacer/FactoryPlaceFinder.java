@@ -5,9 +5,9 @@ import de.unimarburg.profit.model.Field;
 import de.unimarburg.profit.model.Product;
 import de.unimarburg.profit.model.Tile;
 import de.unimarburg.profit.model.enums.TileType;
-import de.unimarburg.profit.service.Input;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * This clas is responsible to find all possible {@link Factory} for a given {@link Field}.
@@ -18,18 +18,23 @@ public class FactoryPlaceFinder {
 
   private final Field field;
 
-  protected FactoryPlaceFinder(Field field) {
+  public FactoryPlaceFinder(Field field) {
     this.field = field;
   }
 
-  public Collection<Factory> calculatePossibleFactories(Input input) {
+  /**
+   * Calculates all possible {@link Factory}s, that could be placed on the given {@link Field}.
+   *
+   * @param products {@link Collection} of {@link Product}s, that exist.
+   * @return {@link Collection} of {@link Factory}s, which can be placed.
+   */
+  public Collection<Factory> calculatePossibleFactories(Collection<Product> products) {
     // benötigte Typen von Factories bestimmen
-    Collection<Product> products = new LinkedList<>(input.getProducts());
 
     // mögliche Plätze für Fabriken bestimmen
     Collection<Factory> result = new LinkedList<>();
     Tile[][] tiles = field.getTiles();
-    for (int i = 0; i < field.getWidth(); i++)
+    for (int i = 0; i < field.getWidth(); i++) {
       for (int j = 0; j < field.getWidth(); j++) {
         boolean possiblePlace = true;
         for (int x = 0; x < 5; x++) {
@@ -40,16 +45,19 @@ public class FactoryPlaceFinder {
               break;
             }
           }
-          if (!possiblePlace)
+          if (!possiblePlace) {
             break;
+          }
         }
 
         if (possiblePlace) {
           int finalJ = j;
           int finalI = i;
-          products.forEach(product -> result.add(Factory.createFactoryWithProduct(finalI + 2, finalJ + 2, product)));
+          products.forEach(product -> result.add(
+              Factory.createFactoryWithProduct(finalI + 2, finalJ + 2, product)));
         }
       }
+    }
 
     return result;
   }

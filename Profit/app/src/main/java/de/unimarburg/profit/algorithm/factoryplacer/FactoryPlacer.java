@@ -6,12 +6,16 @@ import de.unimarburg.profit.model.exceptions.CouldNotPlaceObjectException;
 
 public class FactoryPlacer {
 
-  public static void placeFactory(Field field, Factory factory)
-      throws CouldNotPlaceObjectException {
-    field.addBaseObject(factory);
+  public boolean placeFactory(Field field, Factory factory) {
+    try {
+      field.addBaseObject(factory);
+      return true;
+    } catch (CouldNotPlaceObjectException e) {
+      return false;
+    }
   }
 
-  public static void placeFactory(Field field, FactoryChooser factoryChooser)
+  public void placeFactory(Field field, FactoryChooser factoryChooser)
       throws CouldNotPlaceObjectException {
     field.addBaseObject(factoryChooser.chooseFactory().orElseThrow());
   }

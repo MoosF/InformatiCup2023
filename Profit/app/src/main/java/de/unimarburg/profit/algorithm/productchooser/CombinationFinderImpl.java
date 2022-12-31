@@ -21,19 +21,20 @@ public class CombinationFinderImpl implements CombinationFinder {
 
 
   @Override
-  public Collection<TypeAndMinesCombination> findProductMinesCombination(
-      Map<Mine, Deposit> connectableMines, Collection<MineWithResource> mineWithResources,
+  public Collection<TypeAndMinesCombination> findCombinations(
+      Collection<Mine> connectableMines, Collection<MineWithResource> mineWithResources,
       Collection<Product> products, Factory factory) {
 
     MineWithResource[] connectableMinesArray = mineWithResources.stream()
-        .filter(mineResourceAmount -> connectableMines.containsKey(mineResourceAmount.getMine()))
+        .filter(mineResourceAmount -> connectableMines.contains(mineResourceAmount.getMine()))
         .distinct().toArray(MineWithResource[]::new);
 
     Collection<TypeAndMinesCombination> combinations = new HashSet<>();
     for (Product product : products) {
 
       NondominatedPopulation population = new Executor()
-          .withProblemClass(MineConnectionsChoosingProblem.class, factory, connectableMinesArray, product)
+          .withProblemClass(MineConnectionsChoosingProblem.class, factory, connectableMinesArray,
+              product)
           .withAlgorithm("NSGAII")
           .withMaxEvaluations(500)
           .distributeOnAllCores()
