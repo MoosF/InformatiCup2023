@@ -55,7 +55,7 @@ public abstract class InputOutputHandle implements Input {
   public static Input readInputFrom(String input) throws InputOutputException {
     var settings = Settings.getInstance();
     return switch (settings.getImportFileType()) {
-      case JSON -> Json.getInputFrom(input);
+      case JSON -> Json.readInputFrom(input);
       case XML -> throw new InputOutputException("Input file type XML is not yet implemented!");
       default -> throw new InputOutputException("Input file type is not yet implemented!");
     };

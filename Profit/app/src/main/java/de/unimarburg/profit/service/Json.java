@@ -59,7 +59,7 @@ final class Json extends InputOutputHandle {
 
 
   /**
-   * Use the static function {@link Json#getInputFrom} to create objects of type {@link Json}.
+   * Use the static function {@link Json#readInputFrom} to create objects of type {@link Json}.
    */
   private Json() {
     super(new Vector<>(), new Vector<>());
@@ -96,7 +96,7 @@ final class Json extends InputOutputHandle {
    * @throws InputOutputException when an error has occurred while parsing the input or if
    *                              {@code input} has been {@code null}.
    */
-  public static Input getInputFrom(String input) throws InputOutputException {
+  public static Input readInputFrom(String input) throws InputOutputException {
     if (null == input) {
       throw new InputOutputException("The input string has been empty!");
     }
