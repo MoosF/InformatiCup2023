@@ -24,8 +24,8 @@ public class MinePlaceFinderImpl implements MinePlaceFinder {
 
 
   @Override
-  public Map<Mine, ResourceType> calculatePossibleMines(Field field) {
-    Map<Mine, ResourceType> placements = new HashMap<>();
+  public Map<Mine, Deposit> calculatePossibleMines(Field field) {
+    Map<Mine, Deposit> placements = new HashMap<>();
     Collection<Deposit> deposits = field.getObjectsOfClass(Deposit.class);
     for (Deposit deposit : deposits) {
 
@@ -37,19 +37,19 @@ public class MinePlaceFinderImpl implements MinePlaceFinder {
       //From left to right.
       ResourceType resource = deposit.getResourceType();
       for (int i = horPos; i < horPos + width; i++) {
-        placements.put(Mine.createMine(i - 1, verPos - 3, MineSubType.OUTPUT_NORTH), resource);
-        placements.put(Mine.createMine(i + 1, verPos - 2, MineSubType.OUTPUT_EAST), resource);
-        placements.put(Mine.createMine(i, verPos + height + 1, MineSubType.OUTPUT_SOUTH), resource);
-        placements.put(Mine.createMine(i - 2, verPos + height, MineSubType.OUTPUT_WEST), resource);
+        placements.put(Mine.createMine(i - 1, verPos - 3, MineSubType.OUTPUT_NORTH), deposit);
+        placements.put(Mine.createMine(i + 1, verPos - 2, MineSubType.OUTPUT_EAST), deposit);
+        placements.put(Mine.createMine(i, verPos + height + 1, MineSubType.OUTPUT_SOUTH), deposit);
+        placements.put(Mine.createMine(i - 2, verPos + height, MineSubType.OUTPUT_WEST), deposit);
       }
 
       //From top to bottom
       for (int i = verPos; i < verPos + height; i++) {
-        placements.put(Mine.createMine(horPos - 2, i - 2, MineSubType.OUTPUT_NORTH), resource);
+        placements.put(Mine.createMine(horPos - 2, i - 2, MineSubType.OUTPUT_NORTH), deposit);
         placements.put(Mine.createMine(horPos + width + 1, i - 1, MineSubType.OUTPUT_EAST),
-            resource);
-        placements.put(Mine.createMine(horPos + width, i + 1, MineSubType.OUTPUT_SOUTH), resource);
-        placements.put(Mine.createMine(horPos - 3, i, MineSubType.OUTPUT_WEST), resource);
+            deposit);
+        placements.put(Mine.createMine(horPos + width, i + 1, MineSubType.OUTPUT_SOUTH), deposit);
+        placements.put(Mine.createMine(horPos - 3, i, MineSubType.OUTPUT_WEST), deposit);
       }
 
     }

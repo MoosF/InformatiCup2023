@@ -34,7 +34,7 @@ public class Product {
    *
    * @return Map, that contains the resources as keys and the amount needed per resource as values.
    */
-  public Map<ResourceType, Integer> getNeededResourcesMap() {
+  public Map<ResourceType, Integer> getNeededResources() {
     return Collections.unmodifiableMap(neededResourcesMap);
   }
 
@@ -49,20 +49,6 @@ public class Product {
 
   public ProductType getType() {
     return type;
-  }
-
-  /**
-   * Adds a single resource to the {@link Product}, that is needed to produce it. Each
-   * {@link ResourceType} can only be used once.
-   *
-   * @param resourceType Needed resource for production.
-   * @param amount       Amount of the given resource.
-   */
-  public void addNeededRessource(ResourceType resourceType, int amount) {
-    if (neededResourcesMap.containsKey(resourceType)) {
-      throw new RuntimeException("Resource type already registered.");
-    }
-    neededResourcesMap.put(resourceType, amount);
   }
 
   @Override

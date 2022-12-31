@@ -14,7 +14,7 @@ import java.util.Map.Entry;
 public class Factory extends MovableObject {
 
   private Product product;
-  private final ProductType productType;
+  private ProductType productType;
 
   /**
    * Constructor of {@link Factory}.
@@ -42,6 +42,19 @@ public class Factory extends MovableObject {
       case 6 -> productType = ProductType.SIX;
       default -> productType = ProductType.SEVEN;
     }
+  }
+
+  public Factory(int horPos, int verPos, Tile[] tiles, MovableObjectType type) {
+    super(horPos, verPos, tiles, type);
+  }
+
+
+  public void setProduct(Product product) {
+    this.product = product;
+  }
+
+  public void setProductType(ProductType productType) {
+    this.productType = productType;
   }
 
   /**
@@ -118,6 +131,37 @@ public class Factory extends MovableObject {
     return new Factory(horPos, verPos, tiles, subtype, MovableObjectType.FACTORY);
   }
 
+  public static Factory createFactoryWithoutProduct(int horPos, int verPos) {
+    Tile[] tiles = new Tile[]{
+        new Tile(-2, -2, TileType.INPUT),
+        new Tile(-1, -2, TileType.INPUT),
+        new Tile(0, -2, TileType.INPUT),
+        new Tile(1, -2, TileType.INPUT),
+        new Tile(2, -2, TileType.INPUT),
+        new Tile(-2, -1, TileType.INPUT),
+        new Tile(-1, -1, TileType.SOLID),
+        new Tile(0, -1, TileType.SOLID),
+        new Tile(1, -1, TileType.SOLID),
+        new Tile(2, -1, TileType.INPUT),
+        new Tile(-2, 0, TileType.INPUT),
+        new Tile(-1, 0, TileType.SOLID),
+        new Tile(0, 0, TileType.SOLID),
+        new Tile(1, 0, TileType.SOLID),
+        new Tile(2, 0, TileType.INPUT),
+        new Tile(-2, 1, TileType.INPUT),
+        new Tile(-1, 1, TileType.SOLID),
+        new Tile(0, 1, TileType.SOLID),
+        new Tile(1, 1, TileType.SOLID),
+        new Tile(2, 1, TileType.INPUT),
+        new Tile(-2, 2, TileType.INPUT),
+        new Tile(-1, 2, TileType.INPUT),
+        new Tile(0, 2, TileType.INPUT),
+        new Tile(1, 2, TileType.INPUT),
+        new Tile(2, 2, TileType.INPUT),
+    };
+    return new Factory(horPos, verPos, tiles, MovableObjectType.FACTORY);
+  }
+
   @Override
   public int doWorkForPoints(Map<ResourceType, Integer> storedResources) {
     int points = 0;
@@ -126,7 +170,7 @@ public class Factory extends MovableObject {
     while (addedPoints) {
       addedPoints = false;
 
-      Map<ResourceType, Integer> neededResourcesMap = product.getNeededResourcesMap();
+      Map<ResourceType, Integer> neededResourcesMap = product.getNeededResources();
 
       //Check if neededResources are present.
       boolean willProduce = true;

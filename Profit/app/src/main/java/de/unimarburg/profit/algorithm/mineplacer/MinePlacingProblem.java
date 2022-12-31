@@ -40,7 +40,7 @@ public class MinePlacingProblem extends AbstractProblem {
    * @param turns         The amount of turns, that the field will be simulated in the future.
    */
   public MinePlacingProblem(Field field, Mine[] possibleMines, int turns) {
-    super(1, 2, 0);
+    super(1, 1, 0);
     this.possibleMines = possibleMines;
     this.field = field;
     this.turns = turns;
@@ -66,7 +66,7 @@ public class MinePlacingProblem extends AbstractProblem {
       reachingScore += calcReachScore(copy, mine, new HashSet<>(), turns);
     }
 
-    solution.setObjective(1, -reachingScore);
+    solution.setObjective(0, -reachingScore);
   }
 
   /**
