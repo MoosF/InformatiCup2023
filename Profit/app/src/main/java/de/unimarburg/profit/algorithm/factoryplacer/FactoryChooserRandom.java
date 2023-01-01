@@ -4,23 +4,17 @@ import de.unimarburg.profit.model.Factory;
 import de.unimarburg.profit.model.Field;
 import java.util.Collection;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 /**
  * Implementation of {@link FactoryChooser}. Chooses {@link Factory}s random.
  *
  * @author Yannick Kraml.
  */
-public final class FactoryChooserRandom extends FactoryChooser {
+public final class FactoryChooserRandom implements FactoryChooser {
 
-
-  public FactoryChooserRandom(Field field, Collection<Factory> possibleFactories) {
-    super(field, possibleFactories);
-  }
 
   @Override
-  public Optional<Factory> chooseFactory() {
-    Collection<Factory> possibleFactories = getPossibleFactories();
+  public Optional<Factory> chooseFactory(Field field, Collection<Factory> possibleFactories) {
     Optional<Factory> first = possibleFactories.stream()
         .skip((int) (possibleFactories.size() * Math.random()))
         .findFirst();

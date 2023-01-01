@@ -1,7 +1,13 @@
 package de.unimarburg.profit.service;
 
 import de.unimarburg.profit.algorithm.Algorithm;
-import de.unimarburg.profit.algorithm.AlgorithmImpl;
+import de.unimarburg.profit.algorithm.connector.ConnectorImpl;
+import de.unimarburg.profit.algorithm.factoryplacer.FactoryChooserRandom;
+import de.unimarburg.profit.algorithm.factoryplacer.FactoryPlaceFinder;
+import de.unimarburg.profit.algorithm.factoryplacer.FactoryPlacer;
+import de.unimarburg.profit.algorithm.mineplacer.MinePlaceFinderImpl;
+import de.unimarburg.profit.algorithm.mineplacer.MinePlacerImpl;
+import de.unimarburg.profit.algorithm.productchooser.CombinationFinderImpl;
 import de.unimarburg.profit.model.Field;
 import de.unimarburg.profit.model.FixedObject;
 import de.unimarburg.profit.model.MovableObject;
@@ -62,7 +68,6 @@ public class IoSystem {
       } catch (Exception e) {
         printStream.printf("Could not read field. Reason: %s%n", e.getMessage());
       }
-
     }
 
 
@@ -83,7 +88,16 @@ public class IoSystem {
       }
     }
 
-    Algorithm algorithm = new AlgorithmImpl();
+    Algorithm algorithm = new Algorithm(
+        new MinePlaceFinderImpl(),
+        new MinePlacerImpl(),
+        new FactoryPlaceFinder(),
+        new FactoryChooserRandom(),
+        new FactoryPlacer(),
+        new CombinationFinderImpl(),
+        new ConnectorImpl(field)
+    );
+
     Collection<MovableObject> movableObjects = algorithm.runAlgorithm(field, input.getTime(),
         input.getTurns(), input.getProducts());
 

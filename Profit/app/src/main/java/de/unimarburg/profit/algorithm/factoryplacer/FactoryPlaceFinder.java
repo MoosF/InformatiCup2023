@@ -16,19 +16,13 @@ import java.util.List;
  */
 public class FactoryPlaceFinder {
 
-  private final Field field;
-
-  public FactoryPlaceFinder(Field field) {
-    this.field = field;
-  }
-
   /**
    * Calculates all possible {@link Factory}s, that could be placed on the given {@link Field}.
    *
    * @param products {@link Collection} of {@link Product}s, that exist.
    * @return {@link Collection} of {@link Factory}s, which can be placed.
    */
-  public Collection<Factory> calculatePossibleFactories(Collection<Product> products) {
+  public Collection<Factory> calculatePossibleFactories(Field field, Collection<Product> products) {
     // benötigte Typen von Factories bestimmen
 
     // mögliche Plätze für Fabriken bestimmen

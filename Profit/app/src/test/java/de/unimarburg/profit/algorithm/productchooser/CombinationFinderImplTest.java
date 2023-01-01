@@ -1,6 +1,6 @@
 package de.unimarburg.profit.algorithm.productchooser;
 
-import de.unimarburg.profit.algorithm.mineplacer.MineWithResource;
+import de.unimarburg.profit.algorithm.mineplacer.MineWithResources;
 import de.unimarburg.profit.algorithm.mineplacer.MinePlaceFinderImpl;
 import de.unimarburg.profit.model.Deposit;
 import de.unimarburg.profit.model.Factory;
@@ -38,7 +38,7 @@ class CombinationFinderImplTest {
     connectableMines.put(Mine.createMine(10, 10, MineSubType.OUTPUT_NORTH), deposit3);
     connectableMines.put(Mine.createMine(10, 10, MineSubType.OUTPUT_NORTH), deposit4);
 
-    Collection<MineWithResource> mineWithResources = new MinePlaceFinderImpl().calcResourcesPerMine(
+    Collection<MineWithResources> mineWithResources = new MinePlaceFinderImpl().calcResourcesPerMine(
         connectableMines);
 
     Factory factory = Factory.createFactoryWithoutProduct(20,20);

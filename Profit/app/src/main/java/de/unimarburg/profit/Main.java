@@ -1,25 +1,21 @@
 package de.unimarburg.profit;
 
 import de.unimarburg.profit.algorithm.Algorithm;
-import de.unimarburg.profit.algorithm.AlgorithmImpl;
-import de.unimarburg.profit.algorithm.mineplacer.MinePlaceFinder;
+import de.unimarburg.profit.algorithm.connector.ConnectorImpl;
+import de.unimarburg.profit.algorithm.factoryplacer.FactoryChooserRandom;
+import de.unimarburg.profit.algorithm.factoryplacer.FactoryPlaceFinder;
+import de.unimarburg.profit.algorithm.factoryplacer.FactoryPlacer;
 import de.unimarburg.profit.algorithm.mineplacer.MinePlaceFinderImpl;
-import de.unimarburg.profit.algorithm.mineplacer.MinePlacer;
 import de.unimarburg.profit.algorithm.mineplacer.MinePlacerImpl;
-import de.unimarburg.profit.algorithm.mineplacer.MineWithResource;
-import de.unimarburg.profit.model.Deposit;
+import de.unimarburg.profit.algorithm.productchooser.CombinationFinderImpl;
 import de.unimarburg.profit.model.Field;
 import de.unimarburg.profit.model.FixedObject;
-import de.unimarburg.profit.model.Mine;
 import de.unimarburg.profit.model.exceptions.CouldNotPlaceObjectException;
 import de.unimarburg.profit.service.Input;
 import de.unimarburg.profit.service.InputOutputException;
 import de.unimarburg.profit.service.InputOutputHandle;
 import de.unimarburg.profit.service.InputOutputHandle.FileType;
 import de.unimarburg.profit.service.Settings;
-import de.unimarburg.profit.simulation.SimulateException;
-import java.util.Collection;
-import java.util.Map;
 
 /**
  * This class only contains the main method.
@@ -54,7 +50,15 @@ public class Main {
         }
       }
 
-      Algorithm algorithm = new AlgorithmImpl();
+      Algorithm algorithm = new Algorithm(
+          new MinePlaceFinderImpl(),
+          new MinePlacerImpl(),
+          new FactoryPlaceFinder(),
+          new FactoryChooserRandom(),
+          new FactoryPlacer(),
+          new CombinationFinderImpl(),
+          new ConnectorImpl(field)
+      );
       algorithm.runAlgorithm(field, input.getTime(), input.getTurns(), input.getProducts());
 
       System.out.println("Stop");

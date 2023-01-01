@@ -3,6 +3,7 @@ package de.unimarburg.profit.algorithm.factoryplacer;
 import de.unimarburg.profit.model.Factory;
 import de.unimarburg.profit.model.Field;
 import de.unimarburg.profit.model.exceptions.CouldNotPlaceObjectException;
+import de.unimarburg.profit.model.exceptions.CouldNotRemoveObjectException;
 
 public class FactoryPlacer {
 
@@ -15,8 +16,11 @@ public class FactoryPlacer {
     }
   }
 
-  public void placeFactory(Field field, FactoryChooser factoryChooser)
-      throws CouldNotPlaceObjectException {
-    field.addBaseObject(factoryChooser.chooseFactory().orElseThrow());
+  public void removeFactory(Field field, Factory factory) {
+    try {
+      field.removeBaseObject(factory);
+    } catch (CouldNotRemoveObjectException e) {
+      throw new RuntimeException(e); //Should be never thrown
+    }
   }
 }

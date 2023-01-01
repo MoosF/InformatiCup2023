@@ -1,13 +1,11 @@
 package de.unimarburg.profit.algorithm.productchooser;
 
-import de.unimarburg.profit.algorithm.mineplacer.MineWithResource;
-import de.unimarburg.profit.model.Deposit;
+import de.unimarburg.profit.algorithm.mineplacer.MineWithResources;
 import de.unimarburg.profit.model.Factory;
 import de.unimarburg.profit.model.Mine;
 import de.unimarburg.profit.model.Product;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
 import org.moeaframework.Executor;
 import org.moeaframework.core.NondominatedPopulation;
 import org.moeaframework.core.Solution;
@@ -22,12 +20,12 @@ public class CombinationFinderImpl implements CombinationFinder {
 
   @Override
   public Collection<TypeAndMinesCombination> findCombinations(
-      Collection<Mine> connectableMines, Collection<MineWithResource> mineWithResources,
+      Collection<Mine> connectableMines, Collection<MineWithResources> mineWithResources,
       Collection<Product> products, Factory factory) {
 
-    MineWithResource[] connectableMinesArray = mineWithResources.stream()
+    MineWithResources[] connectableMinesArray = mineWithResources.stream()
         .filter(mineResourceAmount -> connectableMines.contains(mineResourceAmount.getMine()))
-        .distinct().toArray(MineWithResource[]::new);
+        .distinct().toArray(MineWithResources[]::new);
 
     Collection<TypeAndMinesCombination> combinations = new HashSet<>();
     for (Product product : products) {

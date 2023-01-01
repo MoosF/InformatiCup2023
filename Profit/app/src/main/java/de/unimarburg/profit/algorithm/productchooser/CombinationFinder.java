@@ -1,6 +1,6 @@
 package de.unimarburg.profit.algorithm.productchooser;
 
-import de.unimarburg.profit.algorithm.mineplacer.MineWithResource;
+import de.unimarburg.profit.algorithm.mineplacer.MineWithResources;
 import de.unimarburg.profit.model.Factory;
 import de.unimarburg.profit.model.Mine;
 import de.unimarburg.profit.model.Product;
@@ -15,7 +15,7 @@ import java.util.Collection;
 public interface CombinationFinder {
 
   Collection<TypeAndMinesCombination> findCombinations(
-      Collection<Mine> connectableMines, Collection<MineWithResource> mineWithResources,
+      Collection<Mine> connectableMines, Collection<MineWithResources> mineWithResources,
       Collection<Product> products,
       Factory factory);
 }

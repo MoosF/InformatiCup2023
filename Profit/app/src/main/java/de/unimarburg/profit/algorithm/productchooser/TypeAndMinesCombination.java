@@ -1,6 +1,6 @@
 package de.unimarburg.profit.algorithm.productchooser;
 
-import de.unimarburg.profit.algorithm.mineplacer.MineWithResource;
+import de.unimarburg.profit.algorithm.mineplacer.MineWithResources;
 import de.unimarburg.profit.model.Factory;
 import de.unimarburg.profit.model.Mine;
 import de.unimarburg.profit.model.Product;
@@ -9,7 +9,6 @@ import de.unimarburg.profit.model.enums.ResourceType;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 
 /**
  * This class saves a single combination of a {@link ProductType} and a set of {@link Mine}s.
@@ -22,7 +21,7 @@ public class TypeAndMinesCombination {
   private final Factory factory;
   private final Product product;
 
-  private final Collection<MineWithResource> minesWithResources;
+  private final Collection<MineWithResources> minesWithResources;
 
 
   /**
@@ -33,7 +32,7 @@ public class TypeAndMinesCombination {
    * @param minesWithResources Collection of {@link Mine}s with their mined Resources.
    */
   public TypeAndMinesCombination(Factory factory, Product product,
-      Collection<MineWithResource> minesWithResources) {
+      Collection<MineWithResources> minesWithResources) {
     this.factory = factory;
     this.product = product;
     this.minesWithResources = minesWithResources;
@@ -43,7 +42,7 @@ public class TypeAndMinesCombination {
     return product;
   }
 
-  public Collection<MineWithResource> getMinesWithResources() {
+  public Collection<MineWithResources> getMinesWithResources() {
     return minesWithResources;
   }
 
@@ -62,11 +61,11 @@ public class TypeAndMinesCombination {
       availableResources.put(resourceType, 0);
     }
 
-    for (MineWithResource mineWithResource : minesWithResources) {
+    for (MineWithResources mineWithResources : minesWithResources) {
 
-      int amount = mineWithResource.getAmount();
+      int amount = mineWithResources.getAmount();
 
-      ResourceType resourceType = mineWithResource.getResourceType();
+      ResourceType resourceType = mineWithResources.getResourceType();
 
       //If there exists an unnecessary mine.
       if (!neededResources.containsKey(resourceType)) {
@@ -109,9 +108,9 @@ public class TypeAndMinesCombination {
     int factoryX = factory.getX();
     int factoryY = factory.getY();
 
-    for (MineWithResource mineWithResource : minesWithResources) {
-      int mineX = mineWithResource.getMine().getX();
-      int mineY = mineWithResource.getMine().getY();
+    for (MineWithResources mineWithResources : minesWithResources) {
+      int mineX = mineWithResources.getMine().getX();
+      int mineY = mineWithResources.getMine().getY();
 
       distance += Math.sqrt(Math.pow(factoryX - mineX, 2) + Math.pow(factoryY - mineY, 2));
     }
@@ -125,6 +124,6 @@ public class TypeAndMinesCombination {
   }
 
   public Collection<Mine> getMines() {
-    return minesWithResources.stream().map(MineWithResource::getMine).toList();
+    return minesWithResources.stream().map(MineWithResources::getMine).toList();
   }
 }

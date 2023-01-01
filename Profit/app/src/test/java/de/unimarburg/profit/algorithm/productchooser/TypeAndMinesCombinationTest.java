@@ -1,15 +1,12 @@
 package de.unimarburg.profit.algorithm.productchooser;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import de.unimarburg.profit.algorithm.mineplacer.MineWithResource;
+import de.unimarburg.profit.algorithm.mineplacer.MineWithResources;
 import de.unimarburg.profit.model.Factory;
 import de.unimarburg.profit.model.Mine;
 import de.unimarburg.profit.model.Product;
 import de.unimarburg.profit.model.enums.MineSubType;
 import de.unimarburg.profit.model.enums.ProductType;
 import de.unimarburg.profit.model.enums.ResourceType;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.Assertions;
@@ -29,8 +26,8 @@ class TypeAndMinesCombinationTest {
     Factory factory1 = Factory.createFactoryWithoutProduct(0,0);
     Product product1 = new Product(10, ProductType.ZERO, Map.of(ResourceType.ZERO, 5, ResourceType.ONE, 10));
 
-    MineWithResource mine11 = new MineWithResource(Mine.createMine(0,0, MineSubType.OUTPUT_NORTH), ResourceType.ZERO, 30);
-    MineWithResource mine12 = new MineWithResource(Mine.createMine(0,0, MineSubType.OUTPUT_NORTH), ResourceType.ONE, 40);
+    MineWithResources mine11 = new MineWithResources(Mine.createMine(0,0, MineSubType.OUTPUT_NORTH), ResourceType.ZERO, 30);
+    MineWithResources mine12 = new MineWithResources(Mine.createMine(0,0, MineSubType.OUTPUT_NORTH), ResourceType.ONE, 40);
 
     comb1 = new TypeAndMinesCombination(factory1, product1, Set.of(mine11, mine12));
 
@@ -42,9 +39,9 @@ class TypeAndMinesCombinationTest {
     Factory factory2 = Factory.createFactoryWithoutProduct(10,10);
     Product product2 = new Product(10, ProductType.ZERO, Map.of(ResourceType.ZERO, 5, ResourceType.ONE, 10));
 
-    MineWithResource mine21 = new MineWithResource(Mine.createMine(0,10, MineSubType.OUTPUT_NORTH), ResourceType.ZERO, 30);
-    MineWithResource mine22 = new MineWithResource(Mine.createMine(10,0, MineSubType.OUTPUT_NORTH), ResourceType.ONE, 40);
-    MineWithResource mine23 = new MineWithResource(Mine.createMine(7,6, MineSubType.OUTPUT_NORTH), ResourceType.THREE, 40); //Unnecessary Mine
+    MineWithResources mine21 = new MineWithResources(Mine.createMine(0,10, MineSubType.OUTPUT_NORTH), ResourceType.ZERO, 30);
+    MineWithResources mine22 = new MineWithResources(Mine.createMine(10,0, MineSubType.OUTPUT_NORTH), ResourceType.ONE, 40);
+    MineWithResources mine23 = new MineWithResources(Mine.createMine(7,6, MineSubType.OUTPUT_NORTH), ResourceType.THREE, 40); //Unnecessary Mine
 
 
     comb2 = new TypeAndMinesCombination(factory2, product2, Set.of(mine21, mine22, mine23));
@@ -53,8 +50,8 @@ class TypeAndMinesCombinationTest {
     Factory factory3 = Factory.createFactoryWithoutProduct(0,0);
     Product product3 = new Product(10, ProductType.ZERO, Map.of(ResourceType.ZERO, 50, ResourceType.ONE, 10));
 
-    MineWithResource mine31 = new MineWithResource(Mine.createMine(-10,0, MineSubType.OUTPUT_NORTH), ResourceType.ZERO, 30); //Not enough resource Zero
-    MineWithResource mine32 = new MineWithResource(Mine.createMine(0,-20, MineSubType.OUTPUT_NORTH), ResourceType.ONE, 40);
+    MineWithResources mine31 = new MineWithResources(Mine.createMine(-10,0, MineSubType.OUTPUT_NORTH), ResourceType.ZERO, 30); //Not enough resource Zero
+    MineWithResources mine32 = new MineWithResources(Mine.createMine(0,-20, MineSubType.OUTPUT_NORTH), ResourceType.ONE, 40);
 
     comb3 = new TypeAndMinesCombination(factory3, product3, Set.of(mine31, mine32));
 

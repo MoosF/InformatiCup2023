@@ -1,6 +1,6 @@
 package de.unimarburg.profit.algorithm.productchooser;
 
-import de.unimarburg.profit.algorithm.mineplacer.MineWithResource;
+import de.unimarburg.profit.algorithm.mineplacer.MineWithResources;
 import de.unimarburg.profit.model.Factory;
 import de.unimarburg.profit.model.Mine;
 import de.unimarburg.profit.model.Product;
@@ -22,7 +22,7 @@ import org.moeaframework.problem.AbstractProblem;
 public class MineConnectionsChoosingProblem extends AbstractProblem {
 
   private final Factory factory;
-  private final MineWithResource[] connectableMines;
+  private final MineWithResources[] connectableMines;
   private final Product product;
 
   /**
@@ -32,7 +32,7 @@ public class MineConnectionsChoosingProblem extends AbstractProblem {
    * @param connectableMines {@link Mine}s, that can be connected to the {@link Factory}.
    * @param product          {@link Product}, that the Factory will produce.
    */
-  public MineConnectionsChoosingProblem(Factory factory, MineWithResource[] connectableMines,
+  public MineConnectionsChoosingProblem(Factory factory, MineWithResources[] connectableMines,
       Product product) {
     super(1, 3);
     this.factory = factory;
@@ -67,17 +67,17 @@ public class MineConnectionsChoosingProblem extends AbstractProblem {
    * @param solution         {@link Solution}, to be converted.
    * @param factory          {@link Factory}, with that the {@link MineConnectionsChoosingProblem}
    *                         was constructed.
-   * @param connectableMines Collection of {@link MineWithResource}, with that the
+   * @param connectableMines Collection of {@link MineWithResources}, with that the
    *                         {@link MineConnectionsChoosingProblem} was constructed.
    * @param product          {@link Product}, with that the {@link MineConnectionsChoosingProblem}
    *                         was constructed.
    * @return {@link TypeAndMinesCombination}, that contains all information to solve the problem.
    */
   public static TypeAndMinesCombination convertSolutionToCombination(Solution solution,
-      Factory factory, MineWithResource[] connectableMines, Product product) {
+      Factory factory, MineWithResources[] connectableMines, Product product) {
     boolean[] minesBinary = EncodingUtils.getBinary(solution.getVariable(0));
 
-    Collection<MineWithResource> mines = new HashSet<>();
+    Collection<MineWithResources> mines = new HashSet<>();
 
     for (int i = 0; i < minesBinary.length; i++) {
       if (minesBinary[i]) {
