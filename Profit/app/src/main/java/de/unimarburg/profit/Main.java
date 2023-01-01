@@ -39,7 +39,6 @@ public class Main {
       Input input = InputOutputHandle.readInputFrom(file);
 
       Field field = new Field(input.getWidth(), input.getHeight());
-      field.show();
 
 
       for (FixedObject obj : input.getInputObjects()) {
@@ -59,9 +58,8 @@ public class Main {
           new CombinationFinderImpl(),
           new ConnectorImpl(field)
       );
-      algorithm.runAlgorithm(field, input.getTime(), input.getTurns(), input.getProducts());
 
-      System.out.println("Stop");
+      algorithm.runAlgorithm(field, input.getTime(), input.getTurns(), input.getProducts());
     }
 
   }

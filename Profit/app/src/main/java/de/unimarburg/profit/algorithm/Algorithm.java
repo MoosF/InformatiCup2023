@@ -15,9 +15,18 @@ import de.unimarburg.profit.model.Field;
 import de.unimarburg.profit.model.Mine;
 import de.unimarburg.profit.model.MovableObject;
 import de.unimarburg.profit.model.Product;
+import de.unimarburg.profit.simulation.SimulateException;
+import de.unimarburg.profit.simulation.Simulator;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Implementation of the Algorithm.
@@ -34,6 +43,7 @@ public class Algorithm {
   private final CombinationFinder combinationFinder;
   private final Connector connector;
 
+
   public Algorithm(MinePlaceFinder minePlaceFinder, MinePlacer minePlacer,
       FactoryPlaceFinder factoryPlaceFinder, FactoryChooser factoryChooser,
       FactoryPlacer factoryPlacer, CombinationFinder combinationFinder, Connector connector) {
@@ -49,6 +59,39 @@ public class Algorithm {
 
   public Collection<MovableObject> runAlgorithm(Field field, int time, int turns,
       Collection<Product> products) {
+
+    Map<Integer, Field> solutions = new HashMap<>();
+
+    CompletableFuture<Void> future = CompletableFuture.supplyAsync(() -> {
+      //At the moment the algorithm will start completely from scratch everytime it has finished.
+      while (true) {
+        Field solution = createNewSolution(field, products);
+        try {
+          solutions.put(Simulator.getInstance().simulate(solution, turns), solution);
+        } catch (SimulateException ignored) {
+          throw new RuntimeException("Exception while simulated");
+        }
+      }
+    });
+
+    try {
+      //The future will be canceled five seconds before the time limit.
+      future.get(time - 5, TimeUnit.SECONDS);
+    } catch (InterruptedException | ExecutionException | TimeoutException ignored) {
+    }
+
+    Optional<Integer> maxPoints = solutions.keySet().stream().max(Comparator.naturalOrder());
+    if (maxPoints.isPresent()) {
+      return solutions.get(maxPoints.get()).getMovableObjects();
+    } else {
+      return new LinkedList<>();
+    }
+
+  }
+
+  private Field createNewSolution(Field field, Collection<Product> products) {
+    field = field.copy();
+    field.show();
 
     Map<Mine, Deposit> possibleMines = minePlaceFinder.calculatePossibleMines(field);
     Map<Mine, Deposit> placedMines = minePlacer.placeMines(field, possibleMines);
@@ -67,18 +110,18 @@ public class Algorithm {
       if (placed) {
 
         Collection<Mine> reachableMines = connector.getReachableMines(factory);
-        Collection<TypeAndMinesCombination> combination = combinationFinder.findCombinations(
+        Collection<TypeAndMinesCombination> combinations = combinationFinder.findCombinations(
             reachableMines, minesWithResources, products, factory);
 
         boolean connectedAll = false;
-        for (TypeAndMinesCombination typeAndMinesCombination : combination) {
-          connectedAll = connector.connectMines(factory, typeAndMinesCombination.getMines());
+        for (TypeAndMinesCombination combination : combinations) {
+          connectedAll = connector.connectMines(factory, combination.getMines());
           if (connectedAll) {
             break;
           }
         }
 
-        if(!connectedAll){
+        if (!connectedAll) {
           factoryPlacer.removeFactory(field, factory);
         }
 
@@ -86,9 +129,7 @@ public class Algorithm {
 
       optionalFactory = factoryChooser.chooseFactory(field, factories);
     }
-
-    return field.getMovableObjects();
-
+    return field;
   }
 
 

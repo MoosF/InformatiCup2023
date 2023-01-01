@@ -78,7 +78,6 @@ public class IoSystem {
     Input input = InputOutputHandle.readInputFrom(line);
 
     Field field = new Field(input.getWidth(), input.getHeight());
-    field.show();
 
     for (FixedObject obj : input.getInputObjects()) {
       try {

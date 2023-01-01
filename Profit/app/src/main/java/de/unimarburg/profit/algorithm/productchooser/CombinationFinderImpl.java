@@ -4,6 +4,7 @@ import de.unimarburg.profit.algorithm.mineplacer.MineWithResources;
 import de.unimarburg.profit.model.Factory;
 import de.unimarburg.profit.model.Mine;
 import de.unimarburg.profit.model.Product;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import org.moeaframework.Executor;
