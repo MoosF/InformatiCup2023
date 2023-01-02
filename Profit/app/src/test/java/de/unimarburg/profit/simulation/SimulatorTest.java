@@ -33,7 +33,7 @@ class SimulatorTest {
     field.addBaseObject(Mine.createMine(5, 2, MineSubType.OUTPUT_EAST));
     field.addBaseObject(Conveyer.createConveyor(8, 2, ConveyerSubType.SHORT_OUTPUT_EAST));
     field.addBaseObject(Conveyer.createConveyor(11, 2, ConveyerSubType.SHORT_OUTPUT_EAST));
-    field.addBaseObject(Factory.createFactoryWithProduct(15, 2, product));
+    field.addBaseObject(Factory.createFactoryWithProduct(13, 0, product));
 
     int points = Simulator.getInstance().simulate(field, 10);
     Assertions.assertEquals(points, 360);
@@ -58,7 +58,7 @@ class SimulatorTest {
     field.addBaseObject(Conveyer.createConveyor(9, 13, ConveyerSubType.SHORT_OUTPUT_SOUTH));
     field.addBaseObject(Conveyer.createConveyor(13, 16, ConveyerSubType.SHORT_OUTPUT_EAST));
     field.addBaseObject(Conveyer.createConveyor(16, 16, ConveyerSubType.SHORT_OUTPUT_EAST));
-    field.addBaseObject(Factory.createFactoryWithProduct(20, 16, product));
+    field.addBaseObject(Factory.createFactoryWithProduct(18, 14, product));
 
     int points = Simulator.getInstance().simulate(field, 15);
     Assertions.assertEquals(points, 60);
@@ -106,8 +106,8 @@ class SimulatorTest {
     field.addBaseObject(Conveyer.createConveyor(25, 15, ConveyerSubType.SHORT_OUTPUT_NORTH));
     field.addBaseObject(Conveyer.createConveyor(24, 13, ConveyerSubType.SHORT_OUTPUT_WEST));
 
-    field.addBaseObject(Factory.createFactoryWithProduct(20, 7, product0));
-    field.addBaseObject(Factory.createFactoryWithProduct(20, 12, product1));
+    field.addBaseObject(Factory.createFactoryWithProduct(18, 5, product0));
+    field.addBaseObject(Factory.createFactoryWithProduct(18, 10, product1));
 
     int points = Simulator.getInstance().simulate(field, 16);
     Assertions.assertEquals(points, 300);
@@ -127,7 +127,7 @@ class SimulatorTest {
     field.addBaseObject(Conveyer.createConveyor(12, 12, ConveyerSubType.SHORT_OUTPUT_EAST));
     field.addBaseObject(Conveyer.createConveyor(15, 12, ConveyerSubType.SHORT_OUTPUT_EAST));
     field.addBaseObject(Conveyer.createConveyor(18, 12, ConveyerSubType.SHORT_OUTPUT_EAST));
-    field.addBaseObject(Factory.createFactoryWithProduct(22, 12, product));
+    field.addBaseObject(Factory.createFactoryWithProduct(20, 10, product));
 
     field.addBaseObject(Deposit.createDeposit(ResourceType.ZERO, 11, 0, 3, 3));
     field.addBaseObject(Mine.createMine(12, 4, MineSubType.OUTPUT_SOUTH));
@@ -135,7 +135,7 @@ class SimulatorTest {
     field.addBaseObject(Conveyer.createConveyor(12, 12, ConveyerSubType.SHORT_OUTPUT_SOUTH));
     field.addBaseObject(Conveyer.createConveyor(12, 15, ConveyerSubType.SHORT_OUTPUT_SOUTH));
     field.addBaseObject(Conveyer.createConveyor(12, 18, ConveyerSubType.SHORT_OUTPUT_SOUTH));
-    field.addBaseObject(Factory.createFactoryWithProduct(12, 22, product));
+    field.addBaseObject(Factory.createFactoryWithProduct(10, 20, product));
 
     int points = Simulator.getInstance().simulate(field, 12);
     Assertions.assertEquals(points, 120);

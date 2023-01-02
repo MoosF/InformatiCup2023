@@ -41,7 +41,7 @@ class CombinationFinderImplTest {
     Collection<MineWithResources> mineWithResources = new MinePlaceFinderImpl().calcResourcesPerMine(
         connectableMines);
 
-    Factory factory = Factory.createFactoryWithoutProduct(20,20);
+    Factory factory = Factory.createFactoryWithoutProduct(18,18);
 
     CombinationFinder chooser = new CombinationFinderImpl();
     Collection<TypeAndMinesCombination> combs = chooser.findCombinations(

@@ -48,7 +48,7 @@ public class FactoryPlaceFinder {
           int finalJ = j;
           int finalI = i;
           products.forEach(product -> result.add(
-              Factory.createFactoryWithProduct(finalI + 2, finalJ + 2, product)));
+              Factory.createFactoryWithProduct(finalI, finalJ, product)));
         }
       }
     }

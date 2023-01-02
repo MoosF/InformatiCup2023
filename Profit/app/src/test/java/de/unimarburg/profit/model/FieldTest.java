@@ -122,8 +122,8 @@ public class FieldTest {
     field.addBaseObject(conveyor10);
     field.addBaseObject(conveyor11);
 
-    Factory factory = Factory.createFactoryWithProduct(20, 7, product0);
-    Factory factory1 = Factory.createFactoryWithProduct(20, 12, product1);
+    Factory factory = Factory.createFactoryWithProduct(18, 5, product0);
+    Factory factory1 = Factory.createFactoryWithProduct(18, 10, product1);
     field.addBaseObject(factory);
     field.addBaseObject(factory1);
 
@@ -196,7 +196,7 @@ public class FieldTest {
     Conveyer conveyer = Conveyer.createConveyor(10,10,ConveyerSubType.SHORT_OUTPUT_EAST);
     Combiner combiner = Combiner.createCombiner(20,10,CombinerSubType.OUTPUT_EAST);
     Mine mine = Mine.createMine(10,20,MineSubType.OUTPUT_EAST);
-    Factory factory = Factory.createFactoryWithoutProduct(30,30);
+    Factory factory = Factory.createFactoryWithoutProduct(28,28);
 
     Field field = new Field(100,100);
     field.addBaseObject(deposit);
