@@ -19,7 +19,6 @@ public interface Connector {
 
   /**
    *
-   * @param field
    * @param factory
    * @param minesToConnect
    * @return
@@ -28,7 +27,6 @@ public interface Connector {
 
   /**
    *
-   * @param field
    * @param factory
    * @return
    */

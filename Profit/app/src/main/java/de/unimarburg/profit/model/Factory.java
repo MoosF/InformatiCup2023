@@ -66,35 +66,7 @@ public class Factory extends MovableObject {
    * @return New instance of {@link Factory}.
    */
   public static Factory createFactoryWithProduct(int horPos, int verPos, Product product) {
-
-    Tile[] tiles = new Tile[]{
-        new Tile(-2, -2, TileType.INPUT),
-        new Tile(-1, -2, TileType.INPUT),
-        new Tile(0, -2, TileType.INPUT),
-        new Tile(1, -2, TileType.INPUT),
-        new Tile(2, -2, TileType.INPUT),
-        new Tile(-2, -1, TileType.INPUT),
-        new Tile(-1, -1, TileType.SOLID),
-        new Tile(0, -1, TileType.SOLID),
-        new Tile(1, -1, TileType.SOLID),
-        new Tile(2, -1, TileType.INPUT),
-        new Tile(-2, 0, TileType.INPUT),
-        new Tile(-1, 0, TileType.SOLID),
-        new Tile(0, 0, TileType.SOLID),
-        new Tile(1, 0, TileType.SOLID),
-        new Tile(2, 0, TileType.INPUT),
-        new Tile(-2, 1, TileType.INPUT),
-        new Tile(-1, 1, TileType.SOLID),
-        new Tile(0, 1, TileType.SOLID),
-        new Tile(1, 1, TileType.SOLID),
-        new Tile(2, 1, TileType.INPUT),
-        new Tile(-2, 2, TileType.INPUT),
-        new Tile(-1, 2, TileType.INPUT),
-        new Tile(0, 2, TileType.INPUT),
-        new Tile(1, 2, TileType.INPUT),
-        new Tile(2, 2, TileType.INPUT),
-    };
-
+    Tile[] tiles = createTilesArray();
     return new Factory(horPos, verPos, tiles, product, MovableObjectType.FACTORY);
   }
 
@@ -106,33 +78,7 @@ public class Factory extends MovableObject {
    * @return New instance of {@link Factory}.
    */
   public static Factory createFactoryWithoutProduct(int horPos, int verPos) {
-    Tile[] tiles = new Tile[]{
-        new Tile(-2, -2, TileType.INPUT),
-        new Tile(-1, -2, TileType.INPUT),
-        new Tile(0, -2, TileType.INPUT),
-        new Tile(1, -2, TileType.INPUT),
-        new Tile(2, -2, TileType.INPUT),
-        new Tile(-2, -1, TileType.INPUT),
-        new Tile(-1, -1, TileType.SOLID),
-        new Tile(0, -1, TileType.SOLID),
-        new Tile(1, -1, TileType.SOLID),
-        new Tile(2, -1, TileType.INPUT),
-        new Tile(-2, 0, TileType.INPUT),
-        new Tile(-1, 0, TileType.SOLID),
-        new Tile(0, 0, TileType.SOLID),
-        new Tile(1, 0, TileType.SOLID),
-        new Tile(2, 0, TileType.INPUT),
-        new Tile(-2, 1, TileType.INPUT),
-        new Tile(-1, 1, TileType.SOLID),
-        new Tile(0, 1, TileType.SOLID),
-        new Tile(1, 1, TileType.SOLID),
-        new Tile(2, 1, TileType.INPUT),
-        new Tile(-2, 2, TileType.INPUT),
-        new Tile(-1, 2, TileType.INPUT),
-        new Tile(0, 2, TileType.INPUT),
-        new Tile(1, 2, TileType.INPUT),
-        new Tile(2, 2, TileType.INPUT),
-    };
+    Tile[] tiles = createTilesArray();
     return new Factory(horPos, verPos, tiles, MovableObjectType.FACTORY);
   }
 
@@ -184,5 +130,35 @@ public class Factory extends MovableObject {
 
   public ProductType getSubType() {
     return this.product.getType();
+  }
+
+  private static Tile[] createTilesArray() {
+    return new Tile[] {
+        new Tile(0, 0, TileType.INPUT),
+        new Tile(1, 0, TileType.INPUT),
+        new Tile(2, 0, TileType.INPUT),
+        new Tile(3, 0, TileType.INPUT),
+        new Tile(4, 0, TileType.INPUT),
+        new Tile(0, 1, TileType.INPUT),
+        new Tile(1, 1, TileType.SOLID),
+        new Tile(2, 1, TileType.SOLID),
+        new Tile(3, 1, TileType.SOLID),
+        new Tile(4, 1, TileType.INPUT),
+        new Tile(0, 2, TileType.INPUT),
+        new Tile(1, 2, TileType.SOLID),
+        new Tile(2, 2, TileType.SOLID),
+        new Tile(3, 2, TileType.SOLID),
+        new Tile(4, 2, TileType.INPUT),
+        new Tile(0, 3, TileType.INPUT),
+        new Tile(1, 3, TileType.SOLID),
+        new Tile(2, 3, TileType.SOLID),
+        new Tile(3, 3, TileType.SOLID),
+        new Tile(4, 3, TileType.INPUT),
+        new Tile(0, 4, TileType.INPUT),
+        new Tile(1, 4, TileType.INPUT),
+        new Tile(2, 4, TileType.INPUT),
+        new Tile(3, 4, TileType.INPUT),
+        new Tile(4, 4, TileType.INPUT),
+    };
   }
 }

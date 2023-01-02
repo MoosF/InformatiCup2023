@@ -23,6 +23,7 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -209,7 +210,7 @@ final class Json extends InputOutputHandle {
     try {
       jsonObject = jsonReader.fromJson(inputString, JsonObject.class);
     } catch (JsonSyntaxException e) {
-      throw new InputOutputException("Not a valid JSON-object!");
+      throw new InputOutputException("Not a valid JSON-object! " + e.getMessage());
     }
 
     Json jsonInput = new Json();
