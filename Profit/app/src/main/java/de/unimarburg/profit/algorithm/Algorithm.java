@@ -77,7 +77,9 @@ public class Algorithm {
     try {
       //The future will be canceled five seconds before the time limit.
       future.get(time - 5, TimeUnit.SECONDS);
-    } catch (InterruptedException | ExecutionException | TimeoutException ignored) {
+    } catch (InterruptedException | TimeoutException ignored) {
+    } catch (ExecutionException e) {
+      throw new RuntimeException(e);
     }
 
     Optional<Integer> maxPoints = solutions.keySet().stream().max(Comparator.naturalOrder());
@@ -106,6 +108,8 @@ public class Algorithm {
       Factory factory = optionalFactory.get();
       factories.remove(factory);
 
+      System.out.println(factory);
+
       boolean placed = factoryPlacer.placeFactory(field, factory);
       if (placed) {
 
@@ -115,6 +119,9 @@ public class Algorithm {
 
         boolean connectedAll = false;
         for (TypeAndMinesCombination combination : combinations) {
+
+          System.out.println(combination);
+
           connectedAll = connector.connectMines(combination.getMines());
           if (connectedAll) {
             break;
@@ -123,7 +130,7 @@ public class Algorithm {
 
         if (!connectedAll) {
           factoryPlacer.removeFactory(field, factory);
-          connector.removeAllPlacedObjects();
+          //connector.removeAllPlacedObjects();
         }
 
       }
