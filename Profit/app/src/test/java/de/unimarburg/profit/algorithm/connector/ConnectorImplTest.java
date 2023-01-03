@@ -19,6 +19,9 @@ import java.util.HashMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+/**
+ * @author Fabian Moos
+ */
 class ConnectorImplTest {
 
   Connector connector = null;
@@ -52,7 +55,7 @@ class ConnectorImplTest {
     assertNotEquals(null, reachableMines);
     assertTrue(reachableMines.isEmpty());
     // Try to connect reachable mines (Depends on previous method "getReachableMines")
-    assertTrue(this.connector.connectMines(this.factoryToConnect, reachableMines));
+    assertTrue(this.connector.connectMines(reachableMines));
     var simulator = Simulator.getInstance();
     assertEquals(0, simulator.simulate(this.field, 60));
   }
@@ -75,7 +78,7 @@ class ConnectorImplTest {
     assertTrue(reachableMines.contains(mine2));
 
     // Try to connect reachable mines (Depends on previous method "getReachableMines")
-    assertTrue(this.connector.connectMines(this.factoryToConnect, reachableMines));
+    assertTrue(this.connector.connectMines(reachableMines));
     var simulator = Simulator.getInstance();
     assertEquals(45, simulator.simulate(this.field, 60), 1);
   }
@@ -98,7 +101,7 @@ class ConnectorImplTest {
     assertTrue(reachableMines.contains(mine2));
 
     // Try to connect reachable mines (Depends on previous method "getReachableMines")
-    assertTrue(this.connector.connectMines(this.factoryToConnect, reachableMines));
+    assertTrue(this.connector.connectMines(reachableMines));
     var simulator = Simulator.getInstance();
     assertEquals(45, simulator.simulate(this.field, 60), 1);
   }
@@ -123,7 +126,7 @@ class ConnectorImplTest {
     assertFalse(reachableMines.contains(mine2));
 
     // Try to connect reachable mines (Depends on previous method "getReachableMines")
-    assertTrue(this.connector.connectMines(this.factoryToConnect, reachableMines));
+    assertTrue(this.connector.connectMines(reachableMines));
     var simulator = Simulator.getInstance();
     assertEquals(0, simulator.simulate(this.field, 60));
   }

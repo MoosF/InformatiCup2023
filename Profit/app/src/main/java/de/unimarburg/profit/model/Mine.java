@@ -4,6 +4,7 @@ import de.unimarburg.profit.model.enums.MineSubType;
 import de.unimarburg.profit.model.enums.ResourceType;
 import de.unimarburg.profit.model.enums.TileType;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * This class models a {@link Mine}.
@@ -97,4 +98,13 @@ public class Mine extends MovableObject {
     return this.subType;
   }
 
+  @Override
+  public boolean equals(Object obj) {
+    if (obj.getClass() != Mine.class) {
+      return false;
+    }
+    var lhs = (Mine) obj;
+    return this.getX() == lhs.getX() && this.getY() == lhs.getY()
+        && this.getSubType() == lhs.getSubType();
+  }
 }

@@ -17,7 +17,7 @@ public class Tile {
   private BaseObject object;
 
   /**
-   * Constrcutor of {@link Tile}.
+   * Constructor of {@link Tile}.
    *
    * @param relHorPos Relative horizontal position compared to the {@link BaseObject}.
    * @param relVerPos Relative vertical position compared to the {@link BaseObject}.

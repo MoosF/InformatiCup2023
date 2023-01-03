@@ -30,7 +30,7 @@ public class FieldTest {
     Assertions.assertTrue(field.getAllObjects().contains(mine));
 
     assertThrows(CouldNotPlaceObjectException.class, () -> field.addBaseObject(
-        Conveyer.createConveyor(1, 2, ConveyerSubType.SHORT_OUTPUT_EAST)));
+        Conveyor.createConveyor(1, 2, ConveyerSubType.SHORT_OUTPUT_EAST)));
     assertThrows(CouldNotPlaceObjectException.class,
         () -> field.addBaseObject(Mine.createMine(1, 0, MineSubType.OUTPUT_EAST)));
     assertThrows(CouldNotPlaceObjectException.class,
@@ -66,9 +66,9 @@ public class FieldTest {
     Mine mine = Mine.createMine(6, 0, MineSubType.OUTPUT_EAST);
     Mine mine1 = Mine.createMine(6, 2, MineSubType.OUTPUT_EAST);
     Combiner combiner = Combiner.createCombiner(10, 2, CombinerSubType.OUTPUT_EAST);
-    Conveyer conveyor = Conveyer.createConveyor(13, 2, ConveyerSubType.SHORT_OUTPUT_EAST);
-    Conveyer conveyor1 = Conveyer.createConveyor(14, 4, ConveyerSubType.SHORT_OUTPUT_SOUTH);
-    Conveyer conveyor2 = Conveyer.createConveyor(16, 5, ConveyerSubType.SHORT_OUTPUT_EAST);
+    Conveyor conveyor = Conveyor.createConveyor(13, 2, ConveyerSubType.SHORT_OUTPUT_EAST);
+    Conveyor conveyor1 = Conveyor.createConveyor(14, 4, ConveyerSubType.SHORT_OUTPUT_SOUTH);
+    Conveyor conveyor2 = Conveyor.createConveyor(16, 5, ConveyerSubType.SHORT_OUTPUT_EAST);
     field.addBaseObject(deposit);
     field.addBaseObject(mine);
     field.addBaseObject(mine1);
@@ -81,9 +81,9 @@ public class FieldTest {
     Mine mine2 = Mine.createMine(32, 1, MineSubType.OUTPUT_WEST);
     Mine mine3 = Mine.createMine(32, 3, MineSubType.OUTPUT_WEST);
     Combiner combiner1 = Combiner.createCombiner(29, 2, CombinerSubType.OUTPUT_WEST);
-    Conveyer conveyor3 = Conveyer.createConveyor(26, 2, ConveyerSubType.SHORT_OUTPUT_WEST);
-    Conveyer conveyor4 = Conveyer.createConveyor(25, 4, ConveyerSubType.SHORT_OUTPUT_SOUTH);
-    Conveyer conveyor5 = Conveyer.createConveyor(24, 6, ConveyerSubType.SHORT_OUTPUT_WEST);
+    Conveyor conveyor3 = Conveyor.createConveyor(26, 2, ConveyerSubType.SHORT_OUTPUT_WEST);
+    Conveyor conveyor4 = Conveyor.createConveyor(25, 4, ConveyerSubType.SHORT_OUTPUT_SOUTH);
+    Conveyor conveyor5 = Conveyor.createConveyor(24, 6, ConveyerSubType.SHORT_OUTPUT_WEST);
     field.addBaseObject(deposit1);
     field.addBaseObject(mine2);
     field.addBaseObject(mine3);
@@ -96,9 +96,9 @@ public class FieldTest {
     Mine mine4 = Mine.createMine(6, 15, MineSubType.OUTPUT_EAST);
     Mine mine5 = Mine.createMine(6, 17, MineSubType.OUTPUT_EAST);
     Combiner combiner2 = Combiner.createCombiner(10, 17, CombinerSubType.OUTPUT_EAST);
-    Conveyer conveyor6 = Conveyer.createConveyor(13, 17, ConveyerSubType.SHORT_OUTPUT_EAST);
-    Conveyer conveyor7 = Conveyer.createConveyor(14, 15, ConveyerSubType.SHORT_OUTPUT_NORTH);
-    Conveyer conveyor8 = Conveyer.createConveyor(16, 14, ConveyerSubType.SHORT_OUTPUT_EAST);
+    Conveyor conveyor6 = Conveyor.createConveyor(13, 17, ConveyerSubType.SHORT_OUTPUT_EAST);
+    Conveyor conveyor7 = Conveyor.createConveyor(14, 15, ConveyerSubType.SHORT_OUTPUT_NORTH);
+    Conveyor conveyor8 = Conveyor.createConveyor(16, 14, ConveyerSubType.SHORT_OUTPUT_EAST);
     field.addBaseObject(deposit2);
     field.addBaseObject(mine4);
     field.addBaseObject(mine5);
@@ -111,9 +111,9 @@ public class FieldTest {
     Mine mine6 = Mine.createMine(32, 16, MineSubType.OUTPUT_WEST);
     Mine mine7 = Mine.createMine(32, 18, MineSubType.OUTPUT_WEST);
     Combiner combiner3 = Combiner.createCombiner(29, 17, CombinerSubType.OUTPUT_WEST);
-    Conveyer conveyor9 = Conveyer.createConveyor(26, 17, ConveyerSubType.SHORT_OUTPUT_WEST);
-    Conveyer conveyor10 = Conveyer.createConveyor(25, 15, ConveyerSubType.SHORT_OUTPUT_NORTH);
-    Conveyer conveyor11 = Conveyer.createConveyor(24, 13, ConveyerSubType.SHORT_OUTPUT_WEST);
+    Conveyor conveyor9 = Conveyor.createConveyor(26, 17, ConveyerSubType.SHORT_OUTPUT_WEST);
+    Conveyor conveyor10 = Conveyor.createConveyor(25, 15, ConveyerSubType.SHORT_OUTPUT_NORTH);
+    Conveyor conveyor11 = Conveyor.createConveyor(24, 13, ConveyerSubType.SHORT_OUTPUT_WEST);
     field.addBaseObject(deposit3);
     field.addBaseObject(mine6);
     field.addBaseObject(mine7);
@@ -131,7 +131,7 @@ public class FieldTest {
         .containsAll(List.of(deposit, deposit1, deposit2, deposit3)));
     Assertions.assertTrue(field.getObjectsOfClass(Mine.class)
         .containsAll(List.of(mine, mine1, mine2, mine3, mine4, mine5, mine6, mine7)));
-    Assertions.assertTrue(field.getObjectsOfClass(Conveyer.class).containsAll(
+    Assertions.assertTrue(field.getObjectsOfClass(Conveyor.class).containsAll(
         List.of(conveyor, conveyor1, conveyor2, conveyor3, conveyor4, conveyor5, conveyor6,
             conveyor7, conveyor8, conveyor9, conveyor10, conveyor11)));
     Assertions.assertTrue(field.getObjectsOfClass(Combiner.class)
@@ -152,23 +152,23 @@ public class FieldTest {
 
     Field field = new Field(20, 20);
 
-    field.addBaseObject(Conveyer.createConveyor(4, 4, ConveyerSubType.LONG_OUTPUT_EAST));
-    field.addBaseObject(Conveyer.createConveyor(4, 5, ConveyerSubType.LONG_OUTPUT_WEST));
-    field.addBaseObject(Conveyer.createConveyor(4, 4, ConveyerSubType.LONG_OUTPUT_NORTH));
-    field.addBaseObject(Conveyer.createConveyor(5, 4, ConveyerSubType.LONG_OUTPUT_SOUTH));
+    field.addBaseObject(Conveyor.createConveyor(4, 4, ConveyerSubType.LONG_OUTPUT_EAST));
+    field.addBaseObject(Conveyor.createConveyor(4, 5, ConveyerSubType.LONG_OUTPUT_WEST));
+    field.addBaseObject(Conveyor.createConveyor(4, 4, ConveyerSubType.LONG_OUTPUT_NORTH));
+    field.addBaseObject(Conveyor.createConveyor(5, 4, ConveyerSubType.LONG_OUTPUT_SOUTH));
 
-    field.addBaseObject(Conveyer.createConveyor(4, 1, ConveyerSubType.SHORT_OUTPUT_SOUTH));
-    field.addBaseObject(Conveyer.createConveyor(5, 1, ConveyerSubType.SHORT_OUTPUT_SOUTH));
-    field.addBaseObject(Conveyer.createConveyor(7, 3, ConveyerSubType.SHORT_OUTPUT_WEST));
-    field.addBaseObject(Conveyer.createConveyor(8, 5, ConveyerSubType.SHORT_OUTPUT_WEST));
+    field.addBaseObject(Conveyor.createConveyor(4, 1, ConveyerSubType.SHORT_OUTPUT_SOUTH));
+    field.addBaseObject(Conveyor.createConveyor(5, 1, ConveyerSubType.SHORT_OUTPUT_SOUTH));
+    field.addBaseObject(Conveyor.createConveyor(7, 3, ConveyerSubType.SHORT_OUTPUT_WEST));
+    field.addBaseObject(Conveyor.createConveyor(8, 5, ConveyerSubType.SHORT_OUTPUT_WEST));
 
     Assertions.assertThrows(CouldNotPlaceObjectException.class, () -> field.addBaseObject(
-        Conveyer.createConveyor(4, 1, ConveyerSubType.SHORT_OUTPUT_NORTH)));
+        Conveyor.createConveyor(4, 1, ConveyerSubType.SHORT_OUTPUT_NORTH)));
     Assertions.assertThrows(CouldNotPlaceObjectException.class, () -> field.addBaseObject(
-        Conveyer.createConveyor(7, 3, ConveyerSubType.SHORT_OUTPUT_EAST)));
+        Conveyor.createConveyor(7, 3, ConveyerSubType.SHORT_OUTPUT_EAST)));
 
     Assertions.assertThrows(CouldNotPlaceObjectException.class,
-        () -> field.addBaseObject(Conveyer.createConveyor(4, 4, ConveyerSubType.LONG_OUTPUT_EAST)));
+        () -> field.addBaseObject(Conveyor.createConveyor(4, 4, ConveyerSubType.LONG_OUTPUT_EAST)));
 
 
   }
@@ -179,11 +179,11 @@ public class FieldTest {
 
     Field field = new Field(20, 20);
 
-    field.addBaseObject(Conveyer.createConveyor(1,1, ConveyerSubType.SHORT_OUTPUT_NORTH));
-    field.addBaseObject(Conveyer.createConveyor(3,1, ConveyerSubType.SHORT_OUTPUT_NORTH));
+    field.addBaseObject(Conveyor.createConveyor(1,1, ConveyerSubType.SHORT_OUTPUT_NORTH));
+    field.addBaseObject(Conveyor.createConveyor(3,1, ConveyerSubType.SHORT_OUTPUT_NORTH));
 
     Assertions.assertThrows(CouldNotPlaceObjectException.class,
-        () -> field.addBaseObject(Conveyer.createConveyor(2,3, ConveyerSubType.SHORT_OUTPUT_NORTH)));
+        () -> field.addBaseObject(Conveyor.createConveyor(2,3, ConveyerSubType.SHORT_OUTPUT_NORTH)));
 
   }
 
@@ -193,7 +193,7 @@ public class FieldTest {
 
     Deposit deposit = Deposit.createDeposit(ResourceType.ZERO,0,0,3,3);
     Obstacle obstacle = Obstacle.createObstacle(3,3,3,3);
-    Conveyer conveyer = Conveyer.createConveyor(10,10,ConveyerSubType.SHORT_OUTPUT_EAST);
+    Conveyor conveyor = Conveyor.createConveyor(10,10,ConveyerSubType.SHORT_OUTPUT_EAST);
     Combiner combiner = Combiner.createCombiner(20,10,CombinerSubType.OUTPUT_EAST);
     Mine mine = Mine.createMine(10,20,MineSubType.OUTPUT_EAST);
     Factory factory = Factory.createFactoryWithoutProduct(28,28);
@@ -202,14 +202,14 @@ public class FieldTest {
     field.addBaseObject(deposit);
     field.addBaseObject(obstacle);
     field.addBaseObject(combiner);
-    field.addBaseObject(conveyer);
+    field.addBaseObject(conveyor);
     field.addBaseObject(mine);
     field.addBaseObject(factory);
 
     Collection<MovableObject> movableObjects = field.getMovableObjects();
 
     Assertions.assertEquals(4, movableObjects.size());
-    Assertions.assertTrue(movableObjects.contains(conveyer));
+    Assertions.assertTrue(movableObjects.contains(conveyor));
     Assertions.assertTrue(movableObjects.contains(combiner));
     Assertions.assertTrue(movableObjects.contains(mine));
     Assertions.assertTrue(movableObjects.contains(factory));

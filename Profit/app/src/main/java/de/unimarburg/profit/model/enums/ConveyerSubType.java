@@ -1,9 +1,9 @@
 package de.unimarburg.profit.model.enums;
 
-import de.unimarburg.profit.model.Conveyer;
+import de.unimarburg.profit.model.Conveyor;
 
 /**
- * This enum represents the subtypes of {@link Conveyer}.
+ * This enum represents the subtypes of {@link Conveyor}.
  *
  * @author Yannick Kraml
  */

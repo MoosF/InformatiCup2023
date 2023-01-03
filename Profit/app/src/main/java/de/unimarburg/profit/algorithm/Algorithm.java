@@ -115,7 +115,7 @@ public class Algorithm {
 
         boolean connectedAll = false;
         for (TypeAndMinesCombination combination : combinations) {
-          connectedAll = connector.connectMines(factory, combination.getMines());
+          connectedAll = connector.connectMines(combination.getMines());
           if (connectedAll) {
             break;
           }
@@ -123,6 +123,7 @@ public class Algorithm {
 
         if (!connectedAll) {
           factoryPlacer.removeFactory(field, factory);
+          connector.removeAllPlacedObjects();
         }
 
       }

@@ -7,7 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSyntaxException;
 import de.unimarburg.profit.model.Combiner;
-import de.unimarburg.profit.model.Conveyer;
+import de.unimarburg.profit.model.Conveyor;
 import de.unimarburg.profit.model.Deposit;
 import de.unimarburg.profit.model.Factory;
 import de.unimarburg.profit.model.Field;
@@ -23,7 +23,6 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -137,7 +136,7 @@ final class Json extends InputOutputHandle {
       jsonObject.add(KEY_SUBTYPE, new JsonPrimitive(
           switch (movableObject.getType()) {
             case COMBINER -> ((Combiner) movableObject).getSubType().ordinal();
-            case CONVEYER -> ((Conveyer) movableObject).getSubType().ordinal();
+            case CONVEYER -> ((Conveyor) movableObject).getSubType().ordinal();
             case FACTORY -> ((Factory) movableObject).getSubType().ordinal();
             case MINE -> ((Mine) movableObject).getSubType().ordinal();
           }));

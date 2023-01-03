@@ -1,7 +1,7 @@
 package de.unimarburg.profit.service;
 
 import de.unimarburg.profit.model.Combiner;
-import de.unimarburg.profit.model.Conveyer;
+import de.unimarburg.profit.model.Conveyor;
 import de.unimarburg.profit.model.Factory;
 import de.unimarburg.profit.model.Mine;
 import de.unimarburg.profit.model.MovableObject;
@@ -37,16 +37,16 @@ class JsonOutputTest {
     outputObjects.add(Mine.createMine(3, 7, MineSubType.OUTPUT_SOUTH));
     outputObjects.add(Mine.createMine(7, 14, MineSubType.OUTPUT_EAST));
     outputObjects.add(Mine.createMine(19, 4, MineSubType.OUTPUT_WEST));
-    outputObjects.add(Conveyer.createConveyor(18, 1, ConveyerSubType.LONG_OUTPUT_NORTH));
-    outputObjects.add(Conveyer.createConveyor(15, 0, ConveyerSubType.LONG_OUTPUT_WEST));
-    outputObjects.add(Conveyer.createConveyor(11, 0, ConveyerSubType.LONG_OUTPUT_WEST));
-    outputObjects.add(Conveyer.createConveyor(10, 2, ConveyerSubType.LONG_OUTPUT_SOUTH));
-    outputObjects.add(Conveyer.createConveyor(10, 6, ConveyerSubType.LONG_OUTPUT_SOUTH));
-    outputObjects.add(Conveyer.createConveyor(10, 10, ConveyerSubType.LONG_OUTPUT_SOUTH));
+    outputObjects.add(Conveyor.createConveyor(18, 1, ConveyerSubType.LONG_OUTPUT_NORTH));
+    outputObjects.add(Conveyor.createConveyor(15, 0, ConveyerSubType.LONG_OUTPUT_WEST));
+    outputObjects.add(Conveyor.createConveyor(11, 0, ConveyerSubType.LONG_OUTPUT_WEST));
+    outputObjects.add(Conveyor.createConveyor(10, 2, ConveyerSubType.LONG_OUTPUT_SOUTH));
+    outputObjects.add(Conveyor.createConveyor(10, 6, ConveyerSubType.LONG_OUTPUT_SOUTH));
+    outputObjects.add(Conveyor.createConveyor(10, 10, ConveyerSubType.LONG_OUTPUT_SOUTH));
     outputObjects.add(Combiner.createCombiner(11, 14, CombinerSubType.OUTPUT_EAST));
-    outputObjects.add(Conveyer.createConveyor(5, 9, ConveyerSubType.SHORT_OUTPUT_EAST));
-    outputObjects.add(Conveyer.createConveyor(6, 11, ConveyerSubType.LONG_OUTPUT_SOUTH));
-    outputObjects.add(Conveyer.createConveyor(8, 13, ConveyerSubType.SHORT_OUTPUT_EAST));
+    outputObjects.add(Conveyor.createConveyor(5, 9, ConveyerSubType.SHORT_OUTPUT_EAST));
+    outputObjects.add(Conveyor.createConveyor(6, 11, ConveyerSubType.LONG_OUTPUT_SOUTH));
+    outputObjects.add(Conveyor.createConveyor(8, 13, ConveyerSubType.SHORT_OUTPUT_EAST));
     outputObjects.add(Factory.createFactoryWithProduct(13, 12, product0));
 
     String expectedOutput = "["
@@ -103,23 +103,23 @@ class JsonOutputTest {
     outputObjects.add(Mine.createMine(26, 77, MineSubType.OUTPUT_NORTH));
     outputObjects.add(Factory.createFactoryWithProduct(0, 0, product0));
     outputObjects.add(Factory.createFactoryWithProduct(30, 30, product1));
-    outputObjects.add(Conveyer.createConveyor(25, 52, ConveyerSubType.SHORT_OUTPUT_EAST));
-    outputObjects.add(Conveyer.createConveyor(59, 69, ConveyerSubType.SHORT_OUTPUT_SOUTH));
-    outputObjects.add(Conveyer.createConveyor(32, 11, ConveyerSubType.SHORT_OUTPUT_WEST));
-    outputObjects.add(Conveyer.createConveyor(96, 74, ConveyerSubType.SHORT_OUTPUT_NORTH));
-    outputObjects.add(Conveyer.createConveyor(50, 54, ConveyerSubType.LONG_OUTPUT_EAST));
-    outputObjects.add(Conveyer.createConveyor(45, 3, ConveyerSubType.LONG_OUTPUT_SOUTH));
+    outputObjects.add(Conveyor.createConveyor(25, 52, ConveyerSubType.SHORT_OUTPUT_EAST));
+    outputObjects.add(Conveyor.createConveyor(59, 69, ConveyerSubType.SHORT_OUTPUT_SOUTH));
+    outputObjects.add(Conveyor.createConveyor(32, 11, ConveyerSubType.SHORT_OUTPUT_WEST));
+    outputObjects.add(Conveyor.createConveyor(96, 74, ConveyerSubType.SHORT_OUTPUT_NORTH));
+    outputObjects.add(Conveyor.createConveyor(50, 54, ConveyerSubType.LONG_OUTPUT_EAST));
+    outputObjects.add(Conveyor.createConveyor(45, 3, ConveyerSubType.LONG_OUTPUT_SOUTH));
     outputObjects.add(Combiner.createCombiner(46, 7, CombinerSubType.OUTPUT_EAST));
     outputObjects.add(Combiner.createCombiner(49, 7, CombinerSubType.OUTPUT_SOUTH));
     outputObjects.add(Combiner.createCombiner(52, 7, CombinerSubType.OUTPUT_WEST));
-    outputObjects.add(Conveyer.createConveyor(13, 84, ConveyerSubType.LONG_OUTPUT_NORTH));
-    outputObjects.add(Conveyer.createConveyor(14, 75, ConveyerSubType.LONG_OUTPUT_SOUTH));
-    outputObjects.add(Conveyer.createConveyor(13, 42, ConveyerSubType.LONG_OUTPUT_WEST));
-    outputObjects.add(Conveyer.createConveyor(91, 13, ConveyerSubType.SHORT_OUTPUT_WEST));
+    outputObjects.add(Conveyor.createConveyor(13, 84, ConveyerSubType.LONG_OUTPUT_NORTH));
+    outputObjects.add(Conveyor.createConveyor(14, 75, ConveyerSubType.LONG_OUTPUT_SOUTH));
+    outputObjects.add(Conveyor.createConveyor(13, 42, ConveyerSubType.LONG_OUTPUT_WEST));
+    outputObjects.add(Conveyor.createConveyor(91, 13, ConveyerSubType.SHORT_OUTPUT_WEST));
     outputObjects.add(Combiner.createCombiner(67, 34, CombinerSubType.OUTPUT_NORTH));
     outputObjects.add(Combiner.createCombiner(14, 55, CombinerSubType.OUTPUT_NORTH));
-    outputObjects.add(Conveyer.createConveyor(33, 98, ConveyerSubType.SHORT_OUTPUT_EAST));
-    outputObjects.add(Conveyer.createConveyor(54, 22, ConveyerSubType.SHORT_OUTPUT_NORTH));
+    outputObjects.add(Conveyor.createConveyor(33, 98, ConveyerSubType.SHORT_OUTPUT_EAST));
+    outputObjects.add(Conveyor.createConveyor(54, 22, ConveyerSubType.SHORT_OUTPUT_NORTH));
     outputObjects.add(Factory.createFactoryWithProduct(13, 15, product0));
     outputObjects.add(Factory.createFactoryWithProduct(77, 77, product2));
     outputObjects.add(Factory.createFactoryWithProduct(90, 10, product2));
@@ -189,16 +189,16 @@ class JsonOutputTest {
     outputObjects.add(Mine.createMine(3, 7, MineSubType.OUTPUT_SOUTH));
     outputObjects.add(Mine.createMine(7, 14, MineSubType.OUTPUT_EAST));
     outputObjects.add(Mine.createMine(19, 4, MineSubType.OUTPUT_WEST));
-    outputObjects.add(Conveyer.createConveyor(18, 1, ConveyerSubType.LONG_OUTPUT_NORTH));
-    outputObjects.add(Conveyer.createConveyor(15, 0, ConveyerSubType.LONG_OUTPUT_WEST));
-    outputObjects.add(Conveyer.createConveyor(11, 0, ConveyerSubType.LONG_OUTPUT_WEST));
-    outputObjects.add(Conveyer.createConveyor(10, 2, ConveyerSubType.LONG_OUTPUT_SOUTH));
-    outputObjects.add(Conveyer.createConveyor(10, 6, ConveyerSubType.LONG_OUTPUT_SOUTH));
-    outputObjects.add(Conveyer.createConveyor(10, 10, ConveyerSubType.LONG_OUTPUT_SOUTH));
+    outputObjects.add(Conveyor.createConveyor(18, 1, ConveyerSubType.LONG_OUTPUT_NORTH));
+    outputObjects.add(Conveyor.createConveyor(15, 0, ConveyerSubType.LONG_OUTPUT_WEST));
+    outputObjects.add(Conveyor.createConveyor(11, 0, ConveyerSubType.LONG_OUTPUT_WEST));
+    outputObjects.add(Conveyor.createConveyor(10, 2, ConveyerSubType.LONG_OUTPUT_SOUTH));
+    outputObjects.add(Conveyor.createConveyor(10, 6, ConveyerSubType.LONG_OUTPUT_SOUTH));
+    outputObjects.add(Conveyor.createConveyor(10, 10, ConveyerSubType.LONG_OUTPUT_SOUTH));
     outputObjects.add(Combiner.createCombiner(11, 14, CombinerSubType.OUTPUT_EAST));
-    outputObjects.add(Conveyer.createConveyor(5, 9, ConveyerSubType.SHORT_OUTPUT_EAST));
-    outputObjects.add(Conveyer.createConveyor(6, 11, ConveyerSubType.LONG_OUTPUT_SOUTH));
-    outputObjects.add(Conveyer.createConveyor(8, 13, ConveyerSubType.SHORT_OUTPUT_EAST));
+    outputObjects.add(Conveyor.createConveyor(5, 9, ConveyerSubType.SHORT_OUTPUT_EAST));
+    outputObjects.add(Conveyor.createConveyor(6, 11, ConveyerSubType.LONG_OUTPUT_SOUTH));
+    outputObjects.add(Conveyor.createConveyor(8, 13, ConveyerSubType.SHORT_OUTPUT_EAST));
     outputObjects.add(Factory.createFactoryWithProduct(13, 12, product0));
 
     String expectedInput = "["
