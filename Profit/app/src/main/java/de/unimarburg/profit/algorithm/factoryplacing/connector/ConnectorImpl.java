@@ -4,17 +4,25 @@ import de.unimarburg.profit.model.Conveyor;
 import de.unimarburg.profit.model.Factory;
 import de.unimarburg.profit.model.Field;
 import de.unimarburg.profit.model.Mine;
+import de.unimarburg.profit.model.MovableObject;
 import de.unimarburg.profit.model.Tile;
+import de.unimarburg.profit.model.enums.ConveyorSubType;
 import de.unimarburg.profit.model.enums.TileType;
+import de.unimarburg.profit.model.exceptions.CouldNotPlaceObjectException;
+import de.unimarburg.profit.model.exceptions.CouldNotRemoveObjectException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Stack;
 
 /**
  * This class supplies functionality for finding reachable {@link Mine}s for a {@link Factory} and
@@ -60,6 +68,7 @@ public class ConnectorImpl implements Connector {
    * The queue of next {@link Point}s in the current BFS.
    */
   private Deque<Point> queue;
+  private Stack<Conveyor> placedConveyorsStack;
   /**
    * The maximum output count of a {@link Factory}. If the size of the factory grows, this value
    * must be adjusted. Otherwise, calling this classes methods will lead to
@@ -105,6 +114,10 @@ public class ConnectorImpl implements Connector {
    * calling this function prior to connecting the mines,
    * {@code connectMines(Collection<Mine> minesToConnect)} will not work.</p>
    *
+   * <p>This method tries to connect all mines in {@code minesToConnect} with best effort. If
+   * at least one {@link Mine} cannot be connected, the result is still false, but the method still
+   * tries to connect the rest of the mines.</p>
+   *
    * @param minesToConnect The {@link Mine}s that are supposed to be connected to the given
    *                       {@link Factory}.
    * @return {@code true} if all mines in the {@link Collection} could be connected, false
@@ -112,17 +125,274 @@ public class ConnectorImpl implements Connector {
    */
   @Override
   public boolean connectMines(Collection<Mine> minesToConnect) {
-    // TODO
-    //  Just use the results of getReachableMines to find paths from the given Mines to the Factory.
-    //  Loop over collection:
-    //  1. For the mine's output determine all inputs that are in the connectionMatrix.
-    //  2. Choose the output that has the lowest value of jumps that must be performed to reach the
-    //     factory.
-    //  3. Repeat for the output of the conveyors on the way.
-    //  4. Save all conveyors that are added to the path in a set in the current Connector-object.
-    //  5. When an input is reached that belongs to the factory, or a conveyor that is in the set of
-    //     placed conveyors, proceed with next iteration of the loop.
-    return false;
+    this.placedConveyorsStack = new Stack<>();
+    var mineOutputs = gatherMineOutputs(minesToConnect);
+    var successfullyConnected = true;
+
+    for (var output : mineOutputs) {
+      successfullyConnected = successfullyConnected && connectMineToFactory(output);
+    }
+
+    for (Conveyor conveyor : this.placedConveyorsStack) {
+      conveyor.setConnectedFactory(this.currentFactory);
+    }
+
+    return successfullyConnected;
+  }
+
+  /**
+   * Connects a {@link Mine} to the {@code currentFactory}.
+   *
+   * @param output An output of a {@link Mine} or {@link Conveyor}.
+   * @return true if the {@link Mine} is connected, when the method returns, false otherwise.
+   */
+  private boolean connectMineToFactory(Point output) {
+    if (isAdjacentToFactory(output)) {
+      return true;
+    }
+    var conveyorQueue = gatherInputsInQueue(output);
+    var placed = false;
+
+    while (!conveyorQueue.isEmpty()) {
+      var currentTriple = conveyorQueue.poll();
+      placed = placeConveyor(currentTriple);
+      if (placed) {
+        placed = this.connectMineToFactory(currentTriple.output);
+        if (placed) {
+          break;
+        } else {
+          removeTopOfConveyorStack();
+        }
+      }
+    }
+    return placed;
+  }
+
+  /**
+   * Removes the top of the stack of recently placed {@link Conveyor}s.
+   */
+  private void removeTopOfConveyorStack() {
+    if (!this.placedConveyorsStack.isEmpty()) {
+      Conveyor topOfStack = this.placedConveyorsStack.pop();
+      try {
+        this.field.removeBaseObject(topOfStack);
+      } catch (CouldNotRemoveObjectException e) {
+        System.err.println(e.getMessage());
+        System.err.println(Arrays.toString(e.getStackTrace()));
+      }
+    }
+  }
+
+  /**
+   * Places a {@link Conveyor} on the {@link Field}.
+   *
+   * @param conveyorTriple A description of the conveyor that is supposed to be placed.
+   * @return true if the {@link Conveyor} has been placed successfully, false otherwise.
+   */
+  private boolean placeConveyor(ConveyorTriple conveyorTriple) {
+    var conveyor = createNewConveyorFrom(conveyorTriple);
+    var hasBeenPlaced = true;
+    if (conveyor != null) {
+      try {
+        this.field.addBaseObject(conveyor);
+      } catch (CouldNotPlaceObjectException e) {
+        System.out.println(e.getMessage());
+        System.out.println(Arrays.toString(e.getStackTrace()));
+        hasBeenPlaced = false;
+      }
+    } else {
+      hasBeenPlaced = false;
+    }
+    if (hasBeenPlaced) {
+      this.placedConveyorsStack.push(conveyor);
+    }
+    return hasBeenPlaced;
+  }
+
+  /**
+   * Creates a new {@link Conveyor}-object from a given {@link ConveyorTriple}.
+   *
+   * @param conveyorTriple The {@link ConveyorTriple} the {@link Conveyor} is created from.
+   * @return The created {@link Conveyor} if it could be created, {@code null} otherwise.
+   */
+  private Conveyor createNewConveyorFrom(ConveyorTriple conveyorTriple) {
+    return switch (conveyorTriple.input.x - conveyorTriple.output.x) {
+      case 0 -> switch (conveyorTriple.input.y - conveyorTriple.output.y) {
+        case -2 -> // SUBTYPE 1
+            Conveyor.createConveyor(conveyorTriple.input.x,
+                (conveyorTriple.input.y + conveyorTriple.output.y) / 2,
+                ConveyorSubType.SHORT_OUTPUT_SOUTH);
+        case 2 -> // SUBTYPE 3
+            Conveyor.createConveyor(conveyorTriple.input.x,
+                (conveyorTriple.input.y + conveyorTriple.output.y) / 2,
+                ConveyorSubType.SHORT_OUTPUT_NORTH);
+        case -3 -> // SUBTYPE 5
+            Conveyor.createConveyor(conveyorTriple.input.x,
+                (conveyorTriple.input.y + conveyorTriple.output.y) / 2,
+                ConveyorSubType.LONG_OUTPUT_SOUTH);
+        case 3 -> // SUBTYPE 7
+            Conveyor.createConveyor(conveyorTriple.input.x,
+                (conveyorTriple.input.y + conveyorTriple.output.y) / 2,
+                ConveyorSubType.LONG_OUTPUT_NORTH);
+        default -> null;
+      };
+      case -2 -> // SUBTYPE 0
+          Conveyor.createConveyor((conveyorTriple.input.x + conveyorTriple.output.x) / 2,
+              conveyorTriple.input.y, ConveyorSubType.SHORT_OUTPUT_EAST);
+      case 2 -> // SUBTYPE 2
+          Conveyor.createConveyor((conveyorTriple.input.x + conveyorTriple.output.x) / 2,
+              conveyorTriple.input.y, ConveyorSubType.SHORT_OUTPUT_WEST);
+      case -3 -> // SUBTYPE 4
+          Conveyor.createConveyor((conveyorTriple.input.x + conveyorTriple.output.x) / 2,
+              conveyorTriple.input.y, ConveyorSubType.LONG_OUTPUT_EAST);
+      case 3 -> // SUBTYPE 6
+          Conveyor.createConveyor((conveyorTriple.input.x + conveyorTriple.output.x) / 2,
+              conveyorTriple.input.y, ConveyorSubType.LONG_OUTPUT_WEST);
+      default -> null;
+    };
+  }
+
+  /**
+   * Collects all inputs around a given output and saves the input together with the given output in
+   * a priority queue. The queue is in ascending order of the jump counts of the
+   * {@link ConveyorTriple}s.
+   *
+   * @param output The output the inputs are related to.
+   * @return A queue of {@link ConveyorTriple}s for every {@link Conveyor} that can be placed with
+   * the given output.
+   */
+  private Queue<ConveyorTriple> gatherInputsInQueue(Point output) {
+    var conveyorQueue = new PriorityQueue<ConveyorTriple>(
+        Comparator.comparingInt(a -> a.jumpCount));
+    for (TileConnectionInfo[][] layer : this.connectionMatrix3D) {
+      // NORTH TILE
+      if (output.y - 1 >= 0) {
+        addConnectionTriples(conveyorQueue, layer, output.x, output.y - 1);
+      }
+      // EAST TILE
+      if (output.x + 1 < this.field.getWidth()) {
+        addConnectionTriples(conveyorQueue, layer, output.x + 1, output.y);
+      }
+      // SOUTH TILE
+      if (output.y + 1 < this.field.getHeight()) {
+        addConnectionTriples(conveyorQueue, layer, output.x, output.y + 1);
+      }
+      // WEST TILE
+      if (output.x - 1 >= 0) {
+        addConnectionTriples(conveyorQueue, layer, output.x - 1, output.y);
+      }
+    }
+    return conveyorQueue;
+  }
+
+  /**
+   * Adds all {@link ConveyorTriple}s that are possible for the input with the given x- and
+   * y-coordinates to the given queue.
+   *
+   * @param queue A {@link Queue} of {@link ConveyorTriple}s.
+   * @param layer The layer the {@link ConveyorTriple}s are searched in.
+   * @param x     x-coordinate of a tile on the given layer.
+   * @param y     y-coordinate of a tile on the given layer.
+   */
+  private void addConnectionTriples(Queue<ConveyorTriple> queue, TileConnectionInfo[][] layer,
+      int x, int y) {
+    var tile = layer[y][x];
+    if (tile != null && tile.type == NodeType.INPUT) {
+      for (Point output : tile.connectedNodes) {
+        queue.add(new ConveyorTriple(new Point(x, y, NodeType.INPUT), output,
+            layer[output.y][output.x].jumpCount));
+      }
+    }
+  }
+
+  /**
+   * Checks if a {@link Point} is adjacent to a factory or to the input of a {@link Conveyor} that
+   * is transitive adjacent to the {@code currentFactory}.
+   *
+   * @param output The coordinates that are checked for being adjacent to a factory- or
+   *               conveyor-input
+   * @return {@code true} if the given coordinates are adjacent to a factory- or conveyor-input,
+   * false otherwise.
+   */
+  private boolean isAdjacentToFactory(Point output) {
+    var factoryInputFound = false;
+    // NORTH SIDE
+    if (output.y - 1 >= 0) {
+      factoryInputFound = isFactoryInput(output.x, output.y - 1) ||
+          isFactoryConnectedConveyorInput(output.x, output.y - 1);
+    }
+    // EAST SIDE
+    if (output.x + 1 < this.field.getWidth()) {
+      factoryInputFound = factoryInputFound || isFactoryInput(output.x + 1, output.y) ||
+          isFactoryConnectedConveyorInput(output.x + 1, output.y);
+    }
+    // SOUTH SIDE
+    if (output.y + 1 < this.field.getHeight()) {
+      factoryInputFound = factoryInputFound || isFactoryInput(output.x, output.y + 1) ||
+          isFactoryConnectedConveyorInput(output.x, output.y + 1);
+    }
+    // WEST SIDE
+    if (output.x - 1 >= 0) {
+      factoryInputFound = factoryInputFound || isFactoryInput(output.x - 1, output.y) ||
+          isFactoryConnectedConveyorInput(output.x - 1, output.y);
+    }
+    return factoryInputFound;
+  }
+
+  /**
+   * Checks if the input of a {@link Conveyor} is transitively connected to the input of a
+   * {@link Factory}.
+   *
+   * @param x The x-coordinate of the input of a {@link Conveyor}.
+   * @param y The y-coordinate of the input of a {@link Conveyor}.
+   * @return {@code true] if the input defined by the given x- and y-coordinates is transitive
+   * connected to a {@link Factory}, {@code false} otherwise.
+   */
+  private boolean isFactoryConnectedConveyorInput(int x, int y) {
+    var object = this.fieldTiles[x][y].getObject().orElse(null);
+    var isConnectedConveyor = object != null && object.getClass().equals(Conveyor.class) &&
+        this.placedConveyorsStack.contains((Conveyor) object);
+    return this.fieldTiles[x][y].getType() == TileType.INPUT && isConnectedConveyor;
+  }
+
+  /**
+   * Checks if the given coordinates belong to the input of the {@code currentFactory}.
+   *
+   * @param x The x-coordinate of a {@link Tile} from the current {@code fieldTiles}.
+   * @param y The y-coordinate of a {@link Tile} from the current {@code fieldTiles}.
+   * @return {@code true} if the given {@link Tile} is the input of a {@link Factory}, {@code false}
+   * otherwise.
+   */
+  private boolean isFactoryInput(int x, int y) {
+    var object = this.fieldTiles[x][y].getObject().orElse(null);
+    var isCorrectFactory = object != null && object.equals(this.currentFactory);
+    return this.fieldTiles[x][y].getType() == TileType.INPUT && isCorrectFactory;
+  }
+
+  /**
+   * Collect the coordinates of all outputs of all mines in the given {@link Collection} in an
+   * array.
+   *
+   * @param mines A {@link Collection} of mines.
+   * @return an array with coordinates of all outputs of all {@link Mine}s in the given
+   * {@link Collection}.
+   */
+  private Point[] gatherMineOutputs(Collection<Mine> mines) {
+    var outputs = new Point[mines.size()];
+    var index = 0;
+    for (Mine mine : mines) {
+      for (Tile tile : mine.getTiles()) {
+        if (tile.getType() == TileType.OUTPUT) {
+          var x = mine.getX();
+          var y = mine.getY();
+          outputs[index] = new Point(x + tile.getRelHorPos(), y + tile.getRelVerPos(),
+              NodeType.OUTPUT);
+          ++index;
+          break;
+        }
+      }
+    }
+    return outputs;
   }
 
   /**
@@ -162,7 +432,14 @@ public class ConnectorImpl implements Connector {
    */
   @Override
   public void removeAllPlacedObjects() {
-    // TODO Remove all objects that have been saved in this object.
+    for (MovableObject object : this.placedConveyorsStack) {
+      try {
+        this.field.removeBaseObject(object);
+      } catch (CouldNotRemoveObjectException e) {
+        System.out.println(e.getMessage());
+        System.out.println(Arrays.toString(e.getStackTrace()));
+      }
+    }
   }
 
   /**
@@ -553,6 +830,33 @@ public class ConnectorImpl implements Connector {
       this.y = y;
       this.type = type;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (obj != null && obj.getClass() == Point.class) {
+        var lhs = (Point) obj;
+        return this.x == lhs.x && this.y == lhs.y && this.type == lhs.type;
+      }
+      return false;
+    }
+  }
+
+  /**
+   * A {@link Conveyor} described by an input an output and the number of jumps that are required
+   * from the respective conveyor to reach the {@code currentFactory}.
+   */
+  private static class ConveyorTriple {
+
+    final Point input;
+    final Point output;
+    final int jumpCount;
+
+    ConveyorTriple(Point input, Point output, int jumpCount) {
+      this.input = input;
+      this.output = output;
+      this.jumpCount = jumpCount;
+    }
+
   }
 
   /**

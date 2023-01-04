@@ -133,7 +133,7 @@ public class Factory extends MovableObject {
   }
 
   private static Tile[] createTilesArray() {
-    return new Tile[] {
+    return new Tile[]{
         new Tile(0, 0, TileType.INPUT),
         new Tile(1, 0, TileType.INPUT),
         new Tile(2, 0, TileType.INPUT),

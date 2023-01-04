@@ -6,7 +6,7 @@ import de.unimarburg.profit.model.Field;
 import de.unimarburg.profit.model.Mine;
 import de.unimarburg.profit.model.MovableObject;
 import de.unimarburg.profit.model.Tile;
-import de.unimarburg.profit.model.enums.ConveyerSubType;
+import de.unimarburg.profit.model.enums.ConveyorSubType;
 import de.unimarburg.profit.model.enums.TileType;
 import de.unimarburg.profit.model.exceptions.CouldNotPlaceObjectException;
 import java.util.Arrays;
@@ -105,7 +105,7 @@ public class MinePlacingProblem extends AbstractProblem {
 
     int reachScore = 1;
     for (Position neighborPosition : getValidNeighboringPositions(object, position)) {
-      for (ConveyerSubType subtype : ConveyerSubType.values()) {
+      for (ConveyorSubType subtype : ConveyorSubType.values()) {
 
         Conveyor conveyor = createConveyerFromInputPosition(neighborPosition, subtype);
         if (field.baseObjectCanBePlaced(conveyor)) {
@@ -138,7 +138,7 @@ public class MinePlacingProblem extends AbstractProblem {
     return neighbors;
   }
 
-  private Conveyor createConveyerFromInputPosition(Position inputPosition, ConveyerSubType type) {
+  private Conveyor createConveyerFromInputPosition(Position inputPosition, ConveyorSubType type) {
     int horPos = inputPosition.horPos();
     int verPos = inputPosition.verPos();
 

@@ -1,6 +1,6 @@
 package de.unimarburg.profit.model;
 
-import de.unimarburg.profit.model.enums.ConveyerSubType;
+import de.unimarburg.profit.model.enums.ConveyorSubType;
 import de.unimarburg.profit.model.enums.ResourceType;
 import de.unimarburg.profit.model.enums.TileType;
 import java.util.Map;
@@ -12,7 +12,8 @@ import java.util.Map;
  */
 public class Conveyor extends MovableObject {
 
-  private final ConveyerSubType subType;
+  private final ConveyorSubType subType;
+  private Factory connectedFactory;
 
   /**
    * Constructor of {@link Conveyor}.
@@ -22,7 +23,7 @@ public class Conveyor extends MovableObject {
    * @param tiles  Tiles, that construct the {@link Conveyor}.
    */
   private Conveyor(int horPos, int verPos, Tile[] tiles, MovableObjectType type,
-      ConveyerSubType subType) {
+      ConveyorSubType subType) {
     super(horPos, verPos, tiles, type);
     this.subType = subType;
   }
@@ -35,7 +36,7 @@ public class Conveyor extends MovableObject {
    * @param subtype Subtype of the {@link Conveyor}.
    * @return New instance of a {@link Conveyor}.
    */
-  public static Conveyor createConveyor(int horPos, int verPos, ConveyerSubType subtype) {
+  public static Conveyor createConveyor(int horPos, int verPos, ConveyorSubType subtype) {
 
     Tile[] tiles = null;
     switch (subtype) {
@@ -80,6 +81,9 @@ public class Conveyor extends MovableObject {
     return new Conveyor(horPos, verPos, tiles, MovableObjectType.CONVEYER, subtype);
   }
 
+  public Factory getConnectedFactory() {
+    return this.connectedFactory;
+  }
 
   @Override
   public Map<ResourceType, Integer> getResourcesToOutput(
@@ -87,8 +91,11 @@ public class Conveyor extends MovableObject {
     return storedResources;
   }
 
-  public ConveyerSubType getSubType() {
+  public ConveyorSubType getSubType() {
     return this.subType;
   }
 
+  public void setConnectedFactory(Factory factory) {
+    this.connectedFactory = factory;
+  }
 }
