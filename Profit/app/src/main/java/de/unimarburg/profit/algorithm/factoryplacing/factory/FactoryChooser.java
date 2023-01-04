@@ -1,9 +1,8 @@
-package de.unimarburg.profit.algorithm.factoryplacer;
+package de.unimarburg.profit.algorithm.factoryplacing.factory;
 
 import de.unimarburg.profit.model.Factory;
 import de.unimarburg.profit.model.Field;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.Optional;
 
 /**

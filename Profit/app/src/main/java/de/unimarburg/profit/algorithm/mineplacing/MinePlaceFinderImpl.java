@@ -1,17 +1,13 @@
-package de.unimarburg.profit.algorithm.mineplacer;
+package de.unimarburg.profit.algorithm.mineplacing;
 
 import de.unimarburg.profit.model.Deposit;
 import de.unimarburg.profit.model.Field;
 import de.unimarburg.profit.model.Mine;
 import de.unimarburg.profit.model.enums.MineSubType;
 import de.unimarburg.profit.model.enums.ResourceType;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 /**
  * This class is able to find all possible {@link Mine}s, that can be placed on a given Field.

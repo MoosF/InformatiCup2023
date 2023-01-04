@@ -1,4 +1,4 @@
-package de.unimarburg.profit.algorithm.mineplacer;
+package de.unimarburg.profit.algorithm.mineplacing;
 
 import de.unimarburg.profit.model.Mine;
 import de.unimarburg.profit.model.enums.ResourceType;

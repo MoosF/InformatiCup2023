@@ -1,7 +1,10 @@
 package de.unimarburg.profit.algorithm.productchooser;
 
-import de.unimarburg.profit.algorithm.mineplacer.MineWithResources;
-import de.unimarburg.profit.algorithm.mineplacer.MinePlaceFinderImpl;
+import de.unimarburg.profit.algorithm.factoryplacing.combination.CombinationFinder;
+import de.unimarburg.profit.algorithm.factoryplacing.combination.CombinationFinderImpl;
+import de.unimarburg.profit.algorithm.factoryplacing.combination.TypeAndMinesCombination;
+import de.unimarburg.profit.algorithm.mineplacing.MineWithResources;
+import de.unimarburg.profit.algorithm.mineplacing.MinePlaceFinderImpl;
 import de.unimarburg.profit.model.Deposit;
 import de.unimarburg.profit.model.Factory;
 import de.unimarburg.profit.model.Mine;

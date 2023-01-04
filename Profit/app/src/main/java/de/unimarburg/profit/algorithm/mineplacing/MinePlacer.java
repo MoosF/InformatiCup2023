@@ -1,9 +1,8 @@
-package de.unimarburg.profit.algorithm.mineplacer;
+package de.unimarburg.profit.algorithm.mineplacing;
 
 import de.unimarburg.profit.model.Deposit;
 import de.unimarburg.profit.model.Field;
 import de.unimarburg.profit.model.Mine;
-import java.util.Collection;
 import java.util.Map;
 
 /**

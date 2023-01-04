@@ -1,15 +1,16 @@
 package de.unimarburg.profit.algorithm;
 
-import de.unimarburg.profit.algorithm.connector.Connector;
-import de.unimarburg.profit.algorithm.factoryplacer.FactoryChooser;
-import de.unimarburg.profit.algorithm.factoryplacer.FactoryPlaceFinder;
-import de.unimarburg.profit.algorithm.factoryplacer.FactoryPlacer;
-import de.unimarburg.profit.algorithm.mineplacer.MinePlaceChooser;
-import de.unimarburg.profit.algorithm.mineplacer.MinePlaceFinder;
-import de.unimarburg.profit.algorithm.mineplacer.MinePlacer;
-import de.unimarburg.profit.algorithm.mineplacer.MineWithResources;
-import de.unimarburg.profit.algorithm.productchooser.CombinationFinder;
-import de.unimarburg.profit.algorithm.productchooser.TypeAndMinesCombination;
+import de.unimarburg.profit.algorithm.factoryplacing.connector.Connector;
+import de.unimarburg.profit.algorithm.factoryplacing.factory.FactoryChooser;
+import de.unimarburg.profit.algorithm.factoryplacing.factory.FactoryPlaceFinder;
+import de.unimarburg.profit.algorithm.factoryplacing.factory.FactoryPlaceFinderImpl;
+import de.unimarburg.profit.algorithm.factoryplacing.factory.FactoryPlacerImpl;
+import de.unimarburg.profit.algorithm.mineplacing.MinePlaceChooser;
+import de.unimarburg.profit.algorithm.mineplacing.MinePlaceFinder;
+import de.unimarburg.profit.algorithm.mineplacing.MinePlacer;
+import de.unimarburg.profit.algorithm.mineplacing.MineWithResources;
+import de.unimarburg.profit.algorithm.factoryplacing.combination.CombinationFinder;
+import de.unimarburg.profit.algorithm.factoryplacing.combination.TypeAndMinesCombination;
 import de.unimarburg.profit.model.Deposit;
 import de.unimarburg.profit.model.Factory;
 import de.unimarburg.profit.model.Field;
@@ -41,7 +42,7 @@ public class Algorithm {
   private final MinePlacer minePlacer;
   private final FactoryPlaceFinder factoryPlaceFinder;
   private final FactoryChooser factoryChooser;
-  private final FactoryPlacer factoryPlacer;
+  private final FactoryPlacerImpl factoryPlacer;
   private final CombinationFinder combinationFinder;
   private final Connector connector;
 
@@ -52,16 +53,16 @@ public class Algorithm {
    * @param minePlaceFinder    {@link MinePlaceFinder}
    * @param minePlaceChooser   {@link MinePlaceChooser}
    * @param minePlacer         {@link MinePlacer}
-   * @param factoryPlaceFinder {@link FactoryPlaceFinder}
+   * @param factoryPlaceFinder {@link FactoryPlaceFinderImpl}
    * @param factoryChooser     {@link FactoryChooser}
-   * @param factoryPlacer      {@link FactoryPlacer}
+   * @param factoryPlacer      {@link FactoryPlacerImpl}
    * @param combinationFinder  {@link CombinationFinder}
    * @param connector          {@link Connector}
    */
   public Algorithm(MinePlaceFinder minePlaceFinder, MinePlaceChooser minePlaceChooser,
       MinePlacer minePlacer,
       FactoryPlaceFinder factoryPlaceFinder, FactoryChooser factoryChooser,
-      FactoryPlacer factoryPlacer, CombinationFinder combinationFinder, Connector connector) {
+      FactoryPlacerImpl factoryPlacer, CombinationFinder combinationFinder, Connector connector) {
     this.minePlaceFinder = minePlaceFinder;
     this.minePlaceChooser = minePlaceChooser;
     this.minePlacer = minePlacer;
@@ -149,9 +150,6 @@ public class Algorithm {
 
         boolean connectedAll = false;
         for (TypeAndMinesCombination combination : combinations) {
-
-          System.out.println(combination);
-
           connectedAll = connector.connectMines(combination.getMines());
           if (connectedAll) {
             break;
@@ -159,8 +157,11 @@ public class Algorithm {
         }
 
         if (!connectedAll) {
-          factoryPlacer.removeFactory(field, factory);
+          boolean removed = factoryPlacer.removeFactory(field, factory);
           //connector.removeAllPlacedObjects();
+          if (!removed) {
+            throw new RuntimeException("Should be removed, but could not.");
+          }
         }
 
       }

@@ -2,6 +2,8 @@ package de.unimarburg.profit.algorithm.connector;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import de.unimarburg.profit.algorithm.factoryplacing.connector.Connector;
+import de.unimarburg.profit.algorithm.factoryplacing.connector.ConnectorImpl;
 import de.unimarburg.profit.model.Deposit;
 import de.unimarburg.profit.model.Factory;
 import de.unimarburg.profit.model.Field;

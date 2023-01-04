@@ -1,4 +1,4 @@
-package de.unimarburg.profit.algorithm.factoryplacer;
+package de.unimarburg.profit.algorithm.factoryplacing.factory;
 
 import de.unimarburg.profit.model.Factory;
 import de.unimarburg.profit.model.Field;
@@ -7,21 +7,15 @@ import de.unimarburg.profit.model.Tile;
 import de.unimarburg.profit.model.enums.TileType;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
- * This clas is responsible to find all possible {@link Factory} for a given {@link Field}.
+ * Implementation of {@link FactoryPlaceFinder}.
  *
  * @author Yevheniia Makara
  */
-public class FactoryPlaceFinder {
+public class FactoryPlaceFinderImpl implements FactoryPlaceFinder {
 
-  /**
-   * Calculates all possible {@link Factory}s, that could be placed on the given {@link Field}.
-   *
-   * @param products {@link Collection} of {@link Product}s, that exist.
-   * @return {@link Collection} of {@link Factory}s, which can be placed.
-   */
+  @Override
   public Collection<Factory> calculatePossibleFactories(Field field, Collection<Product> products) {
     // benötigte Typen von Factories bestimmen
 

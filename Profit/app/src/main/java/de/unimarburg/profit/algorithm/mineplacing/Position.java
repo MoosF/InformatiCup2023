@@ -1,4 +1,4 @@
-package de.unimarburg.profit.algorithm.mineplacer;
+package de.unimarburg.profit.algorithm.mineplacing;
 
 /**
  * This record represents a single position on a two-dimensional plane. The coordinates are

@@ -1,4 +1,4 @@
-package de.unimarburg.profit.algorithm.connector;
+package de.unimarburg.profit.algorithm.factoryplacing.connector;
 
 import de.unimarburg.profit.model.Conveyor;
 import de.unimarburg.profit.model.Factory;

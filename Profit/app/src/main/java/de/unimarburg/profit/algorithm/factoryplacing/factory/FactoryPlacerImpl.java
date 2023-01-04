@@ -1,12 +1,19 @@
-package de.unimarburg.profit.algorithm.factoryplacer;
+package de.unimarburg.profit.algorithm.factoryplacing.factory;
 
 import de.unimarburg.profit.model.Factory;
 import de.unimarburg.profit.model.Field;
 import de.unimarburg.profit.model.exceptions.CouldNotPlaceObjectException;
 import de.unimarburg.profit.model.exceptions.CouldNotRemoveObjectException;
 
-public class FactoryPlacer {
 
+/**
+ * Implementation {@link FactoryPlacer}.
+ *
+ * @author Yevheniia Makara
+ */
+public class FactoryPlacerImpl implements FactoryPlacer {
+
+  @Override
   public boolean placeFactory(Field field, Factory factory) {
     try {
       field.addBaseObject(factory);
@@ -16,11 +23,13 @@ public class FactoryPlacer {
     }
   }
 
-  public void removeFactory(Field field, Factory factory) {
+  @Override
+  public boolean removeFactory(Field field, Factory factory) {
     try {
       field.removeBaseObject(factory);
+      return true;
     } catch (CouldNotRemoveObjectException e) {
-      throw new RuntimeException(e); //Should be never thrown
+      return false;
     }
   }
 }

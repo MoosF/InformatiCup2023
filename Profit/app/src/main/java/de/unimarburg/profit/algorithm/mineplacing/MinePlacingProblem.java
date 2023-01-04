@@ -1,4 +1,4 @@
-package de.unimarburg.profit.algorithm.mineplacer;
+package de.unimarburg.profit.algorithm.mineplacing;
 
 import de.unimarburg.profit.model.BaseObject;
 import de.unimarburg.profit.model.Conveyor;

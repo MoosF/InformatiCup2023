@@ -1,6 +1,6 @@
-package de.unimarburg.profit.algorithm.productchooser;
+package de.unimarburg.profit.algorithm.factoryplacing.combination;
 
-import de.unimarburg.profit.algorithm.mineplacer.MineWithResources;
+import de.unimarburg.profit.algorithm.mineplacing.MineWithResources;
 import de.unimarburg.profit.model.Factory;
 import de.unimarburg.profit.model.Mine;
 import de.unimarburg.profit.model.Product;

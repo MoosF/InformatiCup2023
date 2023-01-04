@@ -1,14 +1,14 @@
 package de.unimarburg.profit;
 
 import de.unimarburg.profit.algorithm.Algorithm;
-import de.unimarburg.profit.algorithm.connector.ConnectorImpl;
-import de.unimarburg.profit.algorithm.factoryplacer.FactoryChooserRandom;
-import de.unimarburg.profit.algorithm.factoryplacer.FactoryPlaceFinder;
-import de.unimarburg.profit.algorithm.factoryplacer.FactoryPlacer;
-import de.unimarburg.profit.algorithm.mineplacer.MinePlaceChooserImpl;
-import de.unimarburg.profit.algorithm.mineplacer.MinePlaceFinderImpl;
-import de.unimarburg.profit.algorithm.mineplacer.MinePlacerImpl;
-import de.unimarburg.profit.algorithm.productchooser.CombinationFinderImpl;
+import de.unimarburg.profit.algorithm.factoryplacing.connector.ConnectorImpl;
+import de.unimarburg.profit.algorithm.factoryplacing.factory.FactoryChooserRandom;
+import de.unimarburg.profit.algorithm.factoryplacing.factory.FactoryPlaceFinderImpl;
+import de.unimarburg.profit.algorithm.factoryplacing.factory.FactoryPlacerImpl;
+import de.unimarburg.profit.algorithm.mineplacing.MinePlaceChooserImpl;
+import de.unimarburg.profit.algorithm.mineplacing.MinePlaceFinderImpl;
+import de.unimarburg.profit.algorithm.mineplacing.MinePlacerImpl;
+import de.unimarburg.profit.algorithm.factoryplacing.combination.CombinationFinderImpl;
 import de.unimarburg.profit.model.Field;
 import de.unimarburg.profit.model.FixedObject;
 import de.unimarburg.profit.model.exceptions.CouldNotPlaceObjectException;
@@ -54,9 +54,9 @@ public class Main {
           new MinePlaceFinderImpl(),
           new MinePlaceChooserImpl(),
           new MinePlacerImpl(),
-          new FactoryPlaceFinder(),
+          new FactoryPlaceFinderImpl(),
           new FactoryChooserRandom(),
-          new FactoryPlacer(),
+          new FactoryPlacerImpl(),
           new CombinationFinderImpl(),
           new ConnectorImpl(field)
       );
