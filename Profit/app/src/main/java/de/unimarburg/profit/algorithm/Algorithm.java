@@ -4,6 +4,7 @@ import de.unimarburg.profit.algorithm.connector.Connector;
 import de.unimarburg.profit.algorithm.factoryplacer.FactoryChooser;
 import de.unimarburg.profit.algorithm.factoryplacer.FactoryPlaceFinder;
 import de.unimarburg.profit.algorithm.factoryplacer.FactoryPlacer;
+import de.unimarburg.profit.algorithm.mineplacer.MinePlaceChooser;
 import de.unimarburg.profit.algorithm.mineplacer.MinePlaceFinder;
 import de.unimarburg.profit.algorithm.mineplacer.MinePlacer;
 import de.unimarburg.profit.algorithm.mineplacer.MineWithResources;
@@ -36,6 +37,7 @@ import java.util.concurrent.TimeoutException;
 public class Algorithm {
 
   private final MinePlaceFinder minePlaceFinder;
+  private final MinePlaceChooser minePlaceChooser;
   private final MinePlacer minePlacer;
   private final FactoryPlaceFinder factoryPlaceFinder;
   private final FactoryChooser factoryChooser;
@@ -44,10 +46,24 @@ public class Algorithm {
   private final Connector connector;
 
 
-  public Algorithm(MinePlaceFinder minePlaceFinder, MinePlacer minePlacer,
+  /**
+   * Constructor of {@link Algorithm}.
+   *
+   * @param minePlaceFinder    {@link MinePlaceFinder}
+   * @param minePlaceChooser   {@link MinePlaceChooser}
+   * @param minePlacer         {@link MinePlacer}
+   * @param factoryPlaceFinder {@link FactoryPlaceFinder}
+   * @param factoryChooser     {@link FactoryChooser}
+   * @param factoryPlacer      {@link FactoryPlacer}
+   * @param combinationFinder  {@link CombinationFinder}
+   * @param connector          {@link Connector}
+   */
+  public Algorithm(MinePlaceFinder minePlaceFinder, MinePlaceChooser minePlaceChooser,
+      MinePlacer minePlacer,
       FactoryPlaceFinder factoryPlaceFinder, FactoryChooser factoryChooser,
       FactoryPlacer factoryPlacer, CombinationFinder combinationFinder, Connector connector) {
     this.minePlaceFinder = minePlaceFinder;
+    this.minePlaceChooser = minePlaceChooser;
     this.minePlacer = minePlacer;
     this.factoryPlaceFinder = factoryPlaceFinder;
     this.factoryChooser = factoryChooser;
@@ -57,6 +73,15 @@ public class Algorithm {
   }
 
 
+  /**
+   * Starts the algorithm.
+   *
+   * @param field    Field
+   * @param time     The maximal time in seconds, that the algorithm can take.
+   * @param turns    Turns, that the {@link Field} will be simulated.
+   * @param products {@link Product}s, that exist in this instance of the problem.
+   * @return Collection of {@link MovableObject}s, that should be placed for the best solution.
+   */
   public Collection<MovableObject> runAlgorithm(Field field, int time, int turns,
       Collection<Product> products) {
 
@@ -78,7 +103,9 @@ public class Algorithm {
       //The future will be canceled five seconds before the time limit.
       future.get(time - 5, TimeUnit.SECONDS);
     } catch (InterruptedException | TimeoutException ignored) {
+      //Just ignore. These exceptions will be thrown, if the time ends.
     } catch (ExecutionException e) {
+      //If this is caught, an exception occurred in the method get from the supplier in the future.
       throw new RuntimeException(e);
     }
 
@@ -95,11 +122,14 @@ public class Algorithm {
     field = field.copy();
     field.show();
 
-    Map<Mine, Deposit> possibleMines = minePlaceFinder.calculatePossibleMines(field);
-    Map<Mine, Deposit> placedMines = minePlacer.placeMines(field, possibleMines);
-    Collection<MineWithResources> minesWithResources = minePlaceFinder.calcResourcesPerMine(
-        placedMines);
+    Collection<MineWithResources> minesWithResources = placeMines(field);
+    placeFactories(field, products, minesWithResources);
 
+    return field;
+  }
+
+  private void placeFactories(Field field, Collection<Product> products,
+      Collection<MineWithResources> minesWithResources) {
     Collection<Factory> factories = factoryPlaceFinder.calculatePossibleFactories(field, products);
 
     Optional<Factory> optionalFactory = factoryChooser.chooseFactory(field, factories);
@@ -137,7 +167,15 @@ public class Algorithm {
 
       optionalFactory = factoryChooser.chooseFactory(field, factories);
     }
-    return field;
+  }
+
+  private Collection<MineWithResources> placeMines(Field field) {
+    Map<Mine, Deposit> possibleMines = minePlaceFinder.calculatePossibleMines(field);
+    Map<Mine, Deposit> minesToBePlaced = minePlaceChooser.choosePlaces(field, possibleMines);
+    Map<Mine, Deposit> placedMines = minePlacer.placeMines(field, minesToBePlaced);
+    Collection<MineWithResources> minesWithResources = minePlaceFinder.calcResourcesPerMine(
+        placedMines);
+    return minesWithResources;
   }
 
 

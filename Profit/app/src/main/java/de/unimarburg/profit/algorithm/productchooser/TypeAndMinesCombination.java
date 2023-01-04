@@ -129,10 +129,10 @@ public class TypeAndMinesCombination {
 
   @Override
   public String toString() {
-    return "TypeAndMinesCombination{" +
-        "factory=" + factory +
-        ", product=" + product +
-        ", minesWithResources=" + minesWithResources +
-        '}';
+    return "TypeAndMinesCombination{"
+        + "factory=" + factory
+        + ", product=" + product
+        + ", minesWithResources=" + minesWithResources
+        + '}';
   }
 }

@@ -5,6 +5,7 @@ import de.unimarburg.profit.algorithm.connector.ConnectorImpl;
 import de.unimarburg.profit.algorithm.factoryplacer.FactoryChooserRandom;
 import de.unimarburg.profit.algorithm.factoryplacer.FactoryPlaceFinder;
 import de.unimarburg.profit.algorithm.factoryplacer.FactoryPlacer;
+import de.unimarburg.profit.algorithm.mineplacer.MinePlaceChooserImpl;
 import de.unimarburg.profit.algorithm.mineplacer.MinePlaceFinderImpl;
 import de.unimarburg.profit.algorithm.mineplacer.MinePlacerImpl;
 import de.unimarburg.profit.algorithm.productchooser.CombinationFinderImpl;
@@ -89,6 +90,7 @@ public class IoSystem {
 
     Algorithm algorithm = new Algorithm(
         new MinePlaceFinderImpl(),
+        new MinePlaceChooserImpl(),
         new MinePlacerImpl(),
         new FactoryPlaceFinder(),
         new FactoryChooserRandom(),
