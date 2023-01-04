@@ -20,7 +20,7 @@ public interface FactoryChooser {
    *
    * @return Optional of {@link Factory}. Empty, if no {@link Factory} could be found.
    */
-  public abstract Optional<Factory> chooseFactory(Field field, Collection<Factory> possibleFactories);
+  Optional<Factory> chooseFactory(Field field, Collection<Factory> possibleFactories);
 
 
 }

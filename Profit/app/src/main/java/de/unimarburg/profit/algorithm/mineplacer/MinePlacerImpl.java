@@ -7,6 +7,7 @@ import de.unimarburg.profit.model.exceptions.CouldNotPlaceObjectException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import org.moeaframework.Executor;
 import org.moeaframework.core.NondominatedPopulation;
 import org.moeaframework.core.Solution;
@@ -19,37 +20,19 @@ import org.moeaframework.core.variable.EncodingUtils;
  */
 public class MinePlacerImpl implements MinePlacer {
 
-  private static final int SEARCH_DEPTH = 50;
 
   @Override
   public Map<Mine, Deposit> placeMines(Field field, Map<Mine, Deposit> possibleMines) {
 
-    Mine[] mines = possibleMines.keySet().toArray(new Mine[0]);
-
-    NondominatedPopulation population = new Executor()
-        .withProblemClass(MinePlacingProblem.class, field, mines, SEARCH_DEPTH)
-        .withAlgorithm("PESA2")
-        .withMaxTime(5 * 1000)
-        .run();
-
-    Solution solution = population.iterator().next();
-
-    boolean[] binary = EncodingUtils.getBinary(solution.getVariable(0));
-
     Map<Mine, Deposit> placedMines = new HashMap<>();
-    for (int i = 0; i < binary.length; i++) {
-      boolean shouldBePlaced = binary[i];
-      Mine mine = mines[i];
 
-      if (shouldBePlaced) {
-        try {
-          field.addBaseObject(mine);
-          placedMines.put(mine, possibleMines.get(mine));
-        } catch (CouldNotPlaceObjectException ignore) {
-          //Ignore
-        }
+    possibleMines.forEach((mine, deposit) -> {
+      try {
+        field.addBaseObject(mine);
+      } catch (CouldNotPlaceObjectException ignored) {
+        //If a single Mines can not be placed. It will just be ignored.
       }
-    }
+    });
 
     return placedMines;
   }

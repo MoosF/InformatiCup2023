@@ -17,7 +17,7 @@ public interface MinePlacer {
    * Places {@link Mine}s on the given Field.
    *
    * @param field         Field, on which the {@link Mine}s should be placed.
-   * @param possibleMines All possible {@link Mine}s, that can be placed.
+   * @param possibleMines {@link Mine}s, that should be placed.
    * @return Collection of placed {@link Mine}s.
    */
   Map<Mine, Deposit> placeMines(Field field, Map<Mine, Deposit> possibleMines);
