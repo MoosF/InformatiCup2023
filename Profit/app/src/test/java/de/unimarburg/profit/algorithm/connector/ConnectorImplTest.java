@@ -12,11 +12,9 @@ import de.unimarburg.profit.model.enums.MineSubType;
 import de.unimarburg.profit.model.enums.ProductType;
 import de.unimarburg.profit.model.enums.ResourceType;
 import de.unimarburg.profit.model.exceptions.CouldNotPlaceObjectException;
-import de.unimarburg.profit.service.InputOutputException;
 import de.unimarburg.profit.simulation.SimulateException;
 import de.unimarburg.profit.simulation.Simulator;
-import java.util.HashMap;
-import org.junit.jupiter.api.BeforeEach;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -24,110 +22,131 @@ import org.junit.jupiter.api.Test;
  */
 class ConnectorImplTest {
 
-  Connector connector = null;
-  Field field = null;
-  Factory factoryToConnect = null;
-
-  @BeforeEach
-  void createBasicTestField() throws CouldNotPlaceObjectException, InputOutputException {
-    this.field = new Field(100, 100);
-    var requiredResources = new HashMap<ResourceType, Integer>();
-    requiredResources.put(ResourceType.ZERO, 1);
-    requiredResources.put(ResourceType.ONE, 1);
-    requiredResources.put(ResourceType.TWO, 0);
-    requiredResources.put(ResourceType.THREE, 0);
-    requiredResources.put(ResourceType.FOUR, 0);
-    requiredResources.put(ResourceType.FIVE, 0);
-    requiredResources.put(ResourceType.SIX, 0);
-    requiredResources.put(ResourceType.SEVEN, 0);
-    this.factoryToConnect = Factory.createFactoryWithProduct(5, 6,
-        new Product(1, ProductType.ZERO, requiredResources));
-    this.field.addBaseObject(Deposit.createDeposit(ResourceType.ZERO, 0, 0, 3, 3));
-    this.field.addBaseObject(Deposit.createDeposit(ResourceType.ONE, 97, 97, 3, 3));
-    this.field.addBaseObject(factoryToConnect);
-    this.connector = new ConnectorImpl(this.field);
-  }
-
   @Test
-  void connectorTest1() throws SimulateException {
-    // Find reachable mines
-    var reachableMines = this.connector.getReachableMines(this.factoryToConnect);
-    assertNotEquals(null, reachableMines);
+  void connectorTest1() throws SimulateException, CouldNotPlaceObjectException {
+    // Prepare field *******************************************************************************
+    var field = new Field(100, 100);
+    // Create product ******************************************************************************
+    var product = new Product(1, ProductType.ZERO,
+        Map.of(ResourceType.ZERO, 1, ResourceType.ONE, 1));
+    // Create factory ******************************************************************************
+    var factoryToConnect = Factory.createFactoryWithProduct(5, 6, product);
+    // Add deposits ********************************************************************************
+    field.addBaseObject(Deposit.createDeposit(ResourceType.ZERO, 0, 0, 3, 3));
+    field.addBaseObject(Deposit.createDeposit(ResourceType.ONE, 97, 97, 3, 3));
+    // Add factory *********************************************************************************
+    field.addBaseObject(factoryToConnect);
+    // Create connector ****************************************************************************
+    var connector = new ConnectorImpl(field);
+    // Find reachable mines ************************************************************************
+    var reachableMines = connector.getReachableMines(factoryToConnect);
+    assertNotNull(reachableMines);
     assertTrue(reachableMines.isEmpty());
-    // Try to connect reachable mines (Depends on previous method "getReachableMines")
-    assertTrue(this.connector.connectMines(reachableMines));
+    // Try to connect reachable mines (Depends on previous method "getReachableMines") *************
+    assertTrue(connector.connectMines(reachableMines));
     var simulator = Simulator.getInstance();
-    assertEquals(0, simulator.simulate(this.field, 60));
+    assertEquals(0, simulator.simulate(field, 60));
   }
 
   @Test
   void connectorTest2() throws CouldNotPlaceObjectException, SimulateException {
-    // Find reachable mines
-    this.field.addBaseObject(Obstacle.createObstacle(0, 7, 5, 1));
-    this.field.addBaseObject(Obstacle.createObstacle(6, 0, 1, 6));
+    // Prepare field *******************************************************************************
+    var field = new Field(100, 100);
+    // Create product ******************************************************************************
+    var product = new Product(1, ProductType.ZERO,
+        Map.of(ResourceType.ZERO, 1, ResourceType.ONE, 1));
+    // Create factory ******************************************************************************
+    var factoryToConnect = Factory.createFactoryWithProduct(5, 6, product);
+    // Create mines ********************************************************************************
     var mine1 = Mine.createMine(0, 4, MineSubType.OUTPUT_SOUTH);
     var mine2 = Mine.createMine(94, 98, MineSubType.OUTPUT_WEST);
-    this.field.addBaseObject(mine1);
-    this.field.addBaseObject(mine2);
-
-    var reachableMines = this.connector.getReachableMines(this.factoryToConnect);
-
+    // Create obstacles ****************************************************************************
+    field.addBaseObject(Obstacle.createObstacle(0, 7, 5, 1));
+    field.addBaseObject(Obstacle.createObstacle(6, 0, 1, 6));
+    // Add objects *********************************************************************************
+    field.addBaseObject(Deposit.createDeposit(ResourceType.ZERO, 0, 0, 3, 3));
+    field.addBaseObject(Deposit.createDeposit(ResourceType.ONE, 97, 97, 3, 3));
+    field.addBaseObject(mine1);
+    field.addBaseObject(mine2);
+    // Add factory *********************************************************************************
+    field.addBaseObject(factoryToConnect);
+    // Create connector with field *****************************************************************
+    var connector = new ConnectorImpl(field);
+    // Find reachableMines *************************************************************************
+    var reachableMines = connector.getReachableMines(factoryToConnect);
     assertNotEquals(null, reachableMines);
     assertEquals(2, reachableMines.size());
     assertTrue(reachableMines.contains(mine1));
     assertTrue(reachableMines.contains(mine2));
-
-    // Try to connect reachable mines (Depends on previous method "getReachableMines")
-    assertTrue(this.connector.connectMines(reachableMines));
+    // Try to connect reachable mines (Depends on previous method "getReachableMines") *************
+    assertTrue(connector.connectMines(reachableMines));
     var simulator = Simulator.getInstance();
-    assertEquals(45, simulator.simulate(this.field, 60), 1);
+    assertEquals(45, simulator.simulate(field, 60), 1);
   }
 
   @Test
   void connectorTest3() throws CouldNotPlaceObjectException, SimulateException {
-    // Find reachable mines
-    this.field.addBaseObject(Obstacle.createObstacle(1, 7, 4, 1));
-    this.field.addBaseObject(Obstacle.createObstacle(6, 1, 1, 5));
+    var field = new Field(100, 100);
+    var product = new Product(1, ProductType.ZERO,
+        Map.of(ResourceType.ZERO, 1, ResourceType.ONE, 1));
     var mine1 = Mine.createMine(0, 4, MineSubType.OUTPUT_SOUTH);
     var mine2 = Mine.createMine(94, 98, MineSubType.OUTPUT_WEST);
-    this.field.addBaseObject(mine1);
-    this.field.addBaseObject(mine2);
+    var factoryToConnect = Factory.createFactoryWithProduct(5, 6, product);
+    field.addBaseObject(Deposit.createDeposit(ResourceType.ZERO, 0, 0, 3, 3));
+    field.addBaseObject(Deposit.createDeposit(ResourceType.ONE, 97, 97, 3, 3));
+    field.addBaseObject(factoryToConnect);
+    field.addBaseObject(Obstacle.createObstacle(1, 7, 4, 1));
+    field.addBaseObject(Obstacle.createObstacle(6, 1, 1, 5));
+    field.addBaseObject(mine1);
+    field.addBaseObject(mine2);
 
-    var reachableMines = this.connector.getReachableMines(this.factoryToConnect);
+    // Find reachable mines
+    var connector = new ConnectorImpl(field);
 
-    assertNotEquals(null, reachableMines);
+    var reachableMines = connector.getReachableMines(factoryToConnect);
+
+    assertNotNull(reachableMines);
     assertEquals(2, reachableMines.size());
     assertTrue(reachableMines.contains(mine1));
     assertTrue(reachableMines.contains(mine2));
 
     // Try to connect reachable mines (Depends on previous method "getReachableMines")
-    assertTrue(this.connector.connectMines(reachableMines));
+    var allPlaced = connector.connectMines(reachableMines);
+    assertTrue(allPlaced);
     var simulator = Simulator.getInstance();
-    assertEquals(45, simulator.simulate(this.field, 60), 1);
+    assertEquals(45, simulator.simulate(field, 60), 1);
   }
 
   @Test
   void connectorTest4() throws CouldNotPlaceObjectException, SimulateException {
-    // Find reachable mines
-    this.field.addBaseObject(Obstacle.createObstacle(0, 27, 13, 3));
-    this.field.addBaseObject(Obstacle.createObstacle(13, 0, 3, 30));
-    this.field.addBaseObject(Obstacle.createObstacle(1, 7, 4, 1));
-    this.field.addBaseObject(Obstacle.createObstacle(6, 1, 1, 5));
+    var field = new Field(100, 100);
+    var product = new Product(1, ProductType.ZERO,
+        Map.of(ResourceType.ZERO, 1, ResourceType.ONE, 1));
+    var factoryToConnect = Factory.createFactoryWithProduct(5, 6, product);
     var mine1 = Mine.createMine(0, 4, MineSubType.OUTPUT_SOUTH);
     var mine2 = Mine.createMine(94, 98, MineSubType.OUTPUT_WEST);
-    this.field.addBaseObject(mine1);
-    this.field.addBaseObject(mine2);
+    field.addBaseObject(mine1);
+    field.addBaseObject(mine2);
+    field.addBaseObject(Deposit.createDeposit(ResourceType.ZERO, 0, 0, 3, 3));
+    field.addBaseObject(Deposit.createDeposit(ResourceType.ONE, 97, 97, 3, 3));
+    field.addBaseObject(factoryToConnect);
+    field.addBaseObject(Obstacle.createObstacle(0, 27, 13, 3));
+    field.addBaseObject(Obstacle.createObstacle(13, 0, 3, 30));
+    field.addBaseObject(Obstacle.createObstacle(1, 7, 4, 1));
+    field.addBaseObject(Obstacle.createObstacle(6, 1, 1, 5));
 
-    var reachableMines = this.connector.getReachableMines(this.factoryToConnect);
+    // Find reachable mines
+    var connector = new ConnectorImpl(field);
+    var reachableMines = connector.getReachableMines(factoryToConnect);
 
-    assertNotEquals(null, reachableMines);
+    assertNotNull(reachableMines);
     assertEquals(1, reachableMines.size());
     assertTrue(reachableMines.contains(mine1));
     assertFalse(reachableMines.contains(mine2));
 
     // Try to connect reachable mines (Depends on previous method "getReachableMines")
-    assertTrue(this.connector.connectMines(reachableMines));
+    assertTrue(connector.connectMines(reachableMines));
     var simulator = Simulator.getInstance();
-    assertEquals(0, simulator.simulate(this.field, 60));
+    assertEquals(0, simulator.simulate(field, 60));
   }
 }

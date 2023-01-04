@@ -7,7 +7,7 @@ import de.unimarburg.profit.model.Conveyor;
  *
  * @author Yannick Kraml
  */
-public enum ConveyerSubType {
+public enum ConveyorSubType {
   SHORT_OUTPUT_EAST,
   SHORT_OUTPUT_SOUTH,
   SHORT_OUTPUT_WEST,
