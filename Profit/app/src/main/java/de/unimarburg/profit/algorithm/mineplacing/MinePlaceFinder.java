@@ -34,7 +34,7 @@ public interface MinePlaceFinder {
    *                      as value.
    * @return Map, that contains {@link Deposit}s as keys and Collections of {@link Mine}s as values.
    */
-  default Map<Deposit, Collection<Mine>> getMinesFromDeposits(Map<Mine, Deposit> possibleMines) {
+  private Map<Deposit, Collection<Mine>> getMinesFromDeposits(Map<Mine, Deposit> possibleMines) {
     Map<Deposit, Collection<Mine>> depositsWithMines = new HashMap<>();
     possibleMines.values().forEach(deposit -> depositsWithMines.put(deposit, new LinkedList<>()));
 

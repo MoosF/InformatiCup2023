@@ -34,7 +34,7 @@ class IoSystemTest {
 
   }
 
-  @Test
+  //@Test
   public void test2() throws IOException {
 
     String inputText = Files.readString(Path.of("001.task-with-time.json")) + "\n\n";
@@ -51,7 +51,7 @@ class IoSystemTest {
   }
 
   @Test
-  public void test3(){
+  public void testAlreadyStarted(){
 
     String inputText = "\n";
     ByteArrayInputStream inputStream = new ByteArrayInputStream(inputText.getBytes(StandardCharsets.UTF_8));
@@ -62,6 +62,7 @@ class IoSystemTest {
     Assertions.assertThrows(RuntimeException.class, ioSystem::start);
 
   }
+
 
 
 

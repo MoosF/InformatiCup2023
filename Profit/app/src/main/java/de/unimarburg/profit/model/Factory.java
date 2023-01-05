@@ -14,7 +14,6 @@ import java.util.Map.Entry;
 public class Factory extends MovableObject {
 
   private Product product;
-  private ProductType productType;
 
   /**
    * Constructor of {@link Factory}.
@@ -27,21 +26,6 @@ public class Factory extends MovableObject {
   private Factory(int horPos, int verPos, Tile[] tiles, Product product, MovableObjectType type) {
     super(horPos, verPos, tiles, type);
     this.product = product;
-    productType = product.getType();
-  }
-
-  private Factory(int horPos, int verPos, Tile[] tiles, int subtype, MovableObjectType type) {
-    super(horPos, verPos, tiles, type);
-    switch (subtype) {
-      case 0 -> productType = ProductType.ZERO;
-      case 1 -> productType = ProductType.ONE;
-      case 2 -> productType = ProductType.TWO;
-      case 3 -> productType = ProductType.THREE;
-      case 4 -> productType = ProductType.FOUR;
-      case 5 -> productType = ProductType.FIVE;
-      case 6 -> productType = ProductType.SIX;
-      default -> productType = ProductType.SEVEN;
-    }
   }
 
   public Factory(int horPos, int verPos, Tile[] tiles, MovableObjectType type) {
@@ -51,10 +35,6 @@ public class Factory extends MovableObject {
 
   public void setProduct(Product product) {
     this.product = product;
-  }
-
-  public void setProductType(ProductType productType) {
-    this.productType = productType;
   }
 
   /**

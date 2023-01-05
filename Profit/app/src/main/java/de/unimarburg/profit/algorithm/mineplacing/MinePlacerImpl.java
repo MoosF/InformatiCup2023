@@ -6,6 +6,7 @@ import de.unimarburg.profit.model.Mine;
 import de.unimarburg.profit.model.exceptions.CouldNotPlaceObjectException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Implementation of {@link MinePlacer}. It works with evolutionary algorithms.
@@ -20,13 +21,16 @@ public class MinePlacerImpl implements MinePlacer {
 
     Map<Mine, Deposit> placedMines = new HashMap<>();
 
-    possibleMines.forEach((mine, deposit) -> {
+    for (Entry<Mine, Deposit> entry : possibleMines.entrySet()) {
+      Mine mine = entry.getKey();
+      Deposit deposit = entry.getValue();
       try {
         field.addBaseObject(mine);
+        placedMines.put(mine, deposit);
       } catch (CouldNotPlaceObjectException ignored) {
         //If a single Mines can not be placed. It will just be ignored.
       }
-    });
+    }
 
     return placedMines;
   }
