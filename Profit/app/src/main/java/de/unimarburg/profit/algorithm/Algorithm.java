@@ -121,7 +121,6 @@ public class Algorithm {
 
   private Field createNewSolution(Field field, Collection<Product> products) {
     field = field.copy();
-    field.show();
 
     Collection<MineWithResources> minesWithResources = placeMines(field);
     placeFactories(field, products, minesWithResources);
