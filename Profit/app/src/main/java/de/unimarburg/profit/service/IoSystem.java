@@ -58,6 +58,7 @@ public class IoSystem {
     isReading = true;
 
     while (isReading) {
+
       String line = scanner.nextLine();
       if (line.isEmpty()) {
         isReading = false;

@@ -1,68 +1,27 @@
 package de.unimarburg.profit;
 
-import de.unimarburg.profit.algorithm.Algorithm;
-import de.unimarburg.profit.algorithm.factoryplacing.connector.ConnectorImpl;
-import de.unimarburg.profit.algorithm.factoryplacing.factory.FactoryChooserRandom;
-import de.unimarburg.profit.algorithm.factoryplacing.factory.FactoryPlaceFinderImpl;
-import de.unimarburg.profit.algorithm.factoryplacing.factory.FactoryPlacerImpl;
-import de.unimarburg.profit.algorithm.mineplacing.MinePlaceChooserImpl;
-import de.unimarburg.profit.algorithm.mineplacing.MinePlaceFinderImpl;
-import de.unimarburg.profit.algorithm.mineplacing.MinePlacerImpl;
-import de.unimarburg.profit.algorithm.factoryplacing.combination.CombinationFinderImpl;
-import de.unimarburg.profit.model.Field;
-import de.unimarburg.profit.model.FixedObject;
-import de.unimarburg.profit.model.exceptions.CouldNotPlaceObjectException;
-import de.unimarburg.profit.service.Input;
-import de.unimarburg.profit.service.InputOutputException;
-import de.unimarburg.profit.service.InputOutputHandle;
-import de.unimarburg.profit.service.InputOutputHandle.FileType;
-import de.unimarburg.profit.service.Settings;
+import de.unimarburg.profit.service.IoSystem;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Scanner;
 
 /**
- * This class only contains the main method.
+ * Second temporary main method to test the {@link IoSystem}.
  *
- * @author Yannick Kraml
+ * @author Yannick Kraml.
  */
 public class Main {
 
-  /**
-   * Main method.
-   *
-   * @param args Arguments. Should be an empty array.
-   */
-  public static void main(String[] args) throws InputOutputException {
 
-    var settings = Settings.getInstance();
-    settings.updateImportTarget(false);
-    settings.updateImportFileType(FileType.JSON);
+  public static void main(String[] args) {
 
-    for (String file : args) {
-      Input input = InputOutputHandle.readInputFrom(file);
+    InputStream inputStream = System.in;
+    OutputStream outputStream = System.out;
 
-      Field field = new Field(input.getWidth(), input.getHeight());
+    IoSystem ioSystem = new IoSystem(inputStream, outputStream);
 
-
-      for (FixedObject obj : input.getInputObjects()) {
-        try {
-          field.addBaseObject(obj);
-        } catch (CouldNotPlaceObjectException e) {
-          throw new RuntimeException(e);
-        }
-      }
-
-      Algorithm algorithm = new Algorithm(
-          new MinePlaceFinderImpl(),
-          new MinePlaceChooserImpl(),
-          new MinePlacerImpl(),
-          new FactoryPlaceFinderImpl(),
-          new FactoryChooserRandom(),
-          new FactoryPlacerImpl(),
-          new CombinationFinderImpl(),
-          new ConnectorImpl(field)
-      );
-
-      algorithm.runAlgorithm(field, input.getTime(), input.getTurns(), input.getProducts());
-    }
+    ioSystem.start();
 
   }
 

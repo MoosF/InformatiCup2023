@@ -139,8 +139,6 @@ public class Algorithm {
       Factory factory = optionalFactory.get();
       factories.remove(factory);
 
-      System.out.println(factory);
-
       boolean placed = factoryPlacer.placeFactory(field, factory);
       if (placed) {
 
