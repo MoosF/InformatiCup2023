@@ -196,8 +196,6 @@ public class ConnectorImpl implements Connector {
       try {
         this.field.addBaseObject(conveyor);
       } catch (CouldNotPlaceObjectException e) {
-        System.out.println(e.getMessage());
-        System.out.println(Arrays.toString(e.getStackTrace()));
         hasBeenPlaced = false;
       }
     } else {
@@ -436,8 +434,6 @@ public class ConnectorImpl implements Connector {
       try {
         this.field.removeBaseObject(object);
       } catch (CouldNotRemoveObjectException e) {
-        System.out.println(e.getMessage());
-        System.out.println(Arrays.toString(e.getStackTrace()));
       }
     }
   }

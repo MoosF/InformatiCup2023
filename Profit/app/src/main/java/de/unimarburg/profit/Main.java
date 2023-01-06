@@ -53,7 +53,8 @@ public class Main {
     settings.updateImportTarget(false);
     settings.updateImportFileType(FileType.JSON);
 
-    for (String file : args) {
+    for (int i = 0, argsLength = args.length; i < argsLength; i++) {
+      String file = args[i];
       Input input = InputOutputHandle.readInputFrom(file);
 
       Field field = new Field(input.getWidth(), input.getHeight());

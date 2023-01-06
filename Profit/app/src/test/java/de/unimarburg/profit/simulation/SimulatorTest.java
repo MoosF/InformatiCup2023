@@ -142,4 +142,40 @@ class SimulatorTest {
 
   }
 
+
+  @Test
+  public void test5() throws SimulateException, CouldNotPlaceObjectException {
+
+    Field field = new Field(30,20);
+
+    field.addBaseObject(Deposit.createDeposit(ResourceType.ZERO,1,1,5,5));
+    field.addBaseObject(Deposit.createDeposit(ResourceType.ONE, 1,14,5,5));
+    field.addBaseObject(Deposit.createDeposit(ResourceType.TWO, 22,1,7,7));
+
+    field.addBaseObject(Mine.createMine(19,2,MineSubType.OUTPUT_WEST));
+    field.addBaseObject(Mine.createMine(7,3,MineSubType.OUTPUT_EAST));
+    field.addBaseObject(Mine.createMine(6,12,MineSubType.OUTPUT_EAST));
+    field.addBaseObject(Mine.createMine(7,16,MineSubType.OUTPUT_EAST));
+
+    field.addBaseObject(Factory.createFactoryWithProduct(18,15, new Product(10, ProductType.ZERO, Map.of(ResourceType.ZERO,3,ResourceType.ONE,3,ResourceType.TWO,3))));
+
+    field.addBaseObject(Conveyer.createConveyor(17,3, ConveyorSubType.SHORT_OUTPUT_WEST));
+    field.addBaseObject(Conveyer.createConveyor(15,1, ConveyorSubType.LONG_OUTPUT_NORTH));
+    field.addBaseObject(Conveyer.createConveyor(12,0, ConveyorSubType.LONG_OUTPUT_WEST));
+    field.addBaseObject(Conveyer.createConveyor(10,1, ConveyorSubType.LONG_OUTPUT_SOUTH));
+    field.addBaseObject(Conveyer.createConveyor(10,5, ConveyorSubType.LONG_OUTPUT_SOUTH));
+    field.addBaseObject(Conveyer.createConveyor(10,9, ConveyorSubType.LONG_OUTPUT_SOUTH));
+    field.addBaseObject(Conveyer.createConveyor(12,11, ConveyorSubType.LONG_OUTPUT_EAST));
+    field.addBaseObject(Conveyer.createConveyor(16,11, ConveyorSubType.LONG_OUTPUT_EAST));
+    field.addBaseObject(Conveyer.createConveyor(19,12, ConveyorSubType.LONG_OUTPUT_SOUTH));
+    field.addBaseObject(Conveyer.createConveyor(10,13, ConveyorSubType.LONG_OUTPUT_EAST));
+    field.addBaseObject(Conveyer.createConveyor(14,13, ConveyorSubType.LONG_OUTPUT_EAST));
+    field.addBaseObject(Conveyer.createConveyor(11,17, ConveyorSubType.LONG_OUTPUT_EAST));
+    field.addBaseObject(Conveyer.createConveyor(17,14, ConveyorSubType.LONG_OUTPUT_SOUTH));
+    field.addBaseObject(Conveyer.createConveyor(15,17, ConveyorSubType.LONG_OUTPUT_EAST));
+
+    Assertions.assertEquals(390, Simulator.getInstance().simulate(field, 50));
+
+  }
+
 }

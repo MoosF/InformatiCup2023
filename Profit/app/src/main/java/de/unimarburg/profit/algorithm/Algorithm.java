@@ -94,7 +94,10 @@ public class Algorithm {
       while (true) {
         Field solution = createNewSolution(field, products);
         try {
-          solutions.put(Simulator.getInstance().simulate(solution, turns), solution);
+          solution.show();
+          int points = Simulator.getInstance().simulate(solution, turns);
+          System.out.println(points);
+          solutions.put(points, solution);
         } catch (SimulateException ignored) {
           throw new RuntimeException("Exception while simulated");
         }
@@ -122,7 +125,6 @@ public class Algorithm {
 
   private Field createNewSolution(Field field, Collection<Product> products) {
     field = field.copy();
-    field.show();
 
     Collection<MineWithResources> minesWithResources = placeMines(field);
     placeFactories(field, products, minesWithResources);
@@ -153,6 +155,7 @@ public class Algorithm {
         for (TypeAndMinesCombination combination : combinations) {
           connectedAll = connector.connectMines(combination.getMines());
           if (connectedAll) {
+            factory.setProduct(combination.getProduct());
             break;
           }
         }

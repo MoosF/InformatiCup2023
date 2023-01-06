@@ -62,4 +62,13 @@ public class Product {
     equality = equality && this.neededResourcesMap.equals(rhs.neededResourcesMap);
     return equality;
   }
+
+  @Override
+  public String toString() {
+    return "Product{" +
+        "type=" + type +
+        ", neededResourcesMap=" + neededResourcesMap +
+        ", points=" + points +
+        '}';
+  }
 }

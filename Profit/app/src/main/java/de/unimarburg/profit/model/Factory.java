@@ -3,8 +3,11 @@ package de.unimarburg.profit.model;
 import de.unimarburg.profit.model.enums.ProductType;
 import de.unimarburg.profit.model.enums.ResourceType;
 import de.unimarburg.profit.model.enums.TileType;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.BiConsumer;
+import java.util.function.Predicate;
 
 /**
  * This class models a {@link Factory}.
@@ -62,6 +65,10 @@ public class Factory extends MovableObject {
     return new Factory(horPos, verPos, tiles, MovableObjectType.FACTORY);
   }
 
+  public Product getProduct() {
+    return product;
+  }
+
   @Override
   public int doWorkForPoints(Map<ResourceType, Integer> storedResources) {
     int points = 0;
@@ -70,7 +77,12 @@ public class Factory extends MovableObject {
     while (addedPoints) {
       addedPoints = false;
 
-      Map<ResourceType, Integer> neededResourcesMap = product.getNeededResources();
+      Map<ResourceType, Integer> neededResourcesMap = new HashMap<>();
+      product.getNeededResources().forEach((resourceType, integer) -> {
+        if (integer != 0) {
+          neededResourcesMap.put(resourceType, integer);
+        }
+      });
 
       //Check if neededResources are present.
       boolean willProduce = true;
@@ -96,6 +108,7 @@ public class Factory extends MovableObject {
         for (Entry<ResourceType, Integer> entry : neededResourcesMap.entrySet()) {
           Integer amountNeeded = entry.getValue();
           ResourceType typeNeeded = entry.getKey();
+
           Integer oldAmount = storedResources.get(typeNeeded);
           storedResources.put(typeNeeded, oldAmount - amountNeeded);
         }
