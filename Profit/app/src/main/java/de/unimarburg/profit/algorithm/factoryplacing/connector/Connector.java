@@ -1,6 +1,6 @@
 package de.unimarburg.profit.algorithm.factoryplacing.connector;
 
-import de.unimarburg.profit.model.Conveyor;
+import de.unimarburg.profit.model.Conveyer;
 import de.unimarburg.profit.model.Factory;
 import de.unimarburg.profit.model.Field;
 import de.unimarburg.profit.model.Mine;
@@ -38,7 +38,7 @@ public interface Connector {
    *
    * @param factory The factory that is reachable from the returned {@link Mine}s.
    * @return a {@link Collection} of {@link Mine}s that can be connected to the given
-   * {@link Factory} by using {@link Conveyor}s.
+   * {@link Factory} by using {@link Conveyer}s.
    */
   Collection<Mine> getReachableMines(Factory factory);
 

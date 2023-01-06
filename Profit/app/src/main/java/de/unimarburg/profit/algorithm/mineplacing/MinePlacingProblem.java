@@ -1,7 +1,7 @@
 package de.unimarburg.profit.algorithm.mineplacing;
 
 import de.unimarburg.profit.model.BaseObject;
-import de.unimarburg.profit.model.Conveyor;
+import de.unimarburg.profit.model.Conveyer;
 import de.unimarburg.profit.model.Field;
 import de.unimarburg.profit.model.Mine;
 import de.unimarburg.profit.model.MovableObject;
@@ -107,9 +107,9 @@ public class MinePlacingProblem extends AbstractProblem {
     for (Position neighborPosition : getValidNeighboringPositions(object, position)) {
       for (ConveyorSubType subtype : ConveyorSubType.values()) {
 
-        Conveyor conveyor = createConveyerFromInputPosition(neighborPosition, subtype);
-        if (field.baseObjectCanBePlaced(conveyor)) {
-          reachScore += calcReachScore(field, conveyor, reachablePositions, turns - 1);
+        Conveyer conveyer = createConveyerFromInputPosition(neighborPosition, subtype);
+        if (field.baseObjectCanBePlaced(conveyer)) {
+          reachScore += calcReachScore(field, conveyer, reachablePositions, turns - 1);
         }
 
       }
@@ -138,23 +138,23 @@ public class MinePlacingProblem extends AbstractProblem {
     return neighbors;
   }
 
-  private Conveyor createConveyerFromInputPosition(Position inputPosition, ConveyorSubType type) {
+  private Conveyer createConveyerFromInputPosition(Position inputPosition, ConveyorSubType type) {
     int horPos = inputPosition.horPos();
     int verPos = inputPosition.verPos();
 
-    Conveyor conveyor;
+    Conveyer conveyer;
     switch (type) {
       case SHORT_OUTPUT_EAST, LONG_OUTPUT_EAST ->
-          conveyor = Conveyor.createConveyor(horPos + 1, verPos, type);
+          conveyer = Conveyer.createConveyor(horPos + 1, verPos, type);
       case SHORT_OUTPUT_SOUTH, LONG_OUTPUT_SOUTH ->
-          conveyor = Conveyor.createConveyor(horPos, verPos + 1, type);
-      case SHORT_OUTPUT_WEST -> conveyor = Conveyor.createConveyor(horPos - 1, verPos, type);
-      case LONG_OUTPUT_WEST -> conveyor = Conveyor.createConveyor(horPos - 2, verPos, type);
-      case SHORT_OUTPUT_NORTH -> conveyor = Conveyor.createConveyor(horPos, verPos - 1, type);
-      case LONG_OUTPUT_NORTH -> conveyor = Conveyor.createConveyor(horPos, verPos - 2, type);
+          conveyer = Conveyer.createConveyor(horPos, verPos + 1, type);
+      case SHORT_OUTPUT_WEST -> conveyer = Conveyer.createConveyor(horPos - 1, verPos, type);
+      case LONG_OUTPUT_WEST -> conveyer = Conveyer.createConveyor(horPos - 2, verPos, type);
+      case SHORT_OUTPUT_NORTH -> conveyer = Conveyer.createConveyor(horPos, verPos - 1, type);
+      case LONG_OUTPUT_NORTH -> conveyer = Conveyer.createConveyor(horPos, verPos - 2, type);
       default -> throw new IllegalStateException("Unexpected value: " + type);
     }
-    return conveyor;
+    return conveyer;
   }
 
 

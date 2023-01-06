@@ -1,6 +1,7 @@
 package de.unimarburg.profit.view;
 
 import de.unimarburg.profit.model.BaseObject;
+import de.unimarburg.profit.model.Conveyer;
 import de.unimarburg.profit.model.Field;
 import de.unimarburg.profit.model.Tile;
 import java.awt.Color;

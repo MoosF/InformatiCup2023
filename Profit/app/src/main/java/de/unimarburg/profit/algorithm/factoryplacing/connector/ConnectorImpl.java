@@ -1,6 +1,6 @@
 package de.unimarburg.profit.algorithm.factoryplacing.connector;
 
-import de.unimarburg.profit.model.Conveyor;
+import de.unimarburg.profit.model.Conveyer;
 import de.unimarburg.profit.model.Factory;
 import de.unimarburg.profit.model.Field;
 import de.unimarburg.profit.model.Mine;
@@ -61,14 +61,14 @@ public class ConnectorImpl implements Connector {
    */
   private Factory currentFactory = null;
   /**
-   * The current distance from the factory in {@link Conveyor} jumps.
+   * The current distance from the factory in {@link Conveyer} jumps.
    */
   private int jumpCount;
   /**
    * The queue of next {@link Point}s in the current BFS.
    */
   private Deque<Point> queue;
-  private Stack<Conveyor> placedConveyorsStack;
+  private Stack<Conveyer> placedConveyorsStack;
   /**
    * The maximum output count of a {@link Factory}. If the size of the factory grows, this value
    * must be adjusted. Otherwise, calling this classes methods will lead to
@@ -133,8 +133,8 @@ public class ConnectorImpl implements Connector {
       successfullyConnected = successfullyConnected && connectMineToFactory(output);
     }
 
-    for (Conveyor conveyor : this.placedConveyorsStack) {
-      conveyor.setConnectedFactory(this.currentFactory);
+    for (Conveyer conveyer : this.placedConveyorsStack) {
+      conveyer.setConnectedFactory(this.currentFactory);
     }
 
     return successfullyConnected;
@@ -143,7 +143,7 @@ public class ConnectorImpl implements Connector {
   /**
    * Connects a {@link Mine} to the {@code currentFactory}.
    *
-   * @param output An output of a {@link Mine} or {@link Conveyor}.
+   * @param output An output of a {@link Mine} or {@link Conveyer}.
    * @return true if the {@link Mine} is connected, when the method returns, false otherwise.
    */
   private boolean connectMineToFactory(Point output) {
@@ -169,11 +169,11 @@ public class ConnectorImpl implements Connector {
   }
 
   /**
-   * Removes the top of the stack of recently placed {@link Conveyor}s.
+   * Removes the top of the stack of recently placed {@link Conveyer}s.
    */
   private void removeTopOfConveyorStack() {
     if (!this.placedConveyorsStack.isEmpty()) {
-      Conveyor topOfStack = this.placedConveyorsStack.pop();
+      Conveyer topOfStack = this.placedConveyorsStack.pop();
       try {
         this.field.removeBaseObject(topOfStack);
       } catch (CouldNotRemoveObjectException e) {
@@ -184,10 +184,10 @@ public class ConnectorImpl implements Connector {
   }
 
   /**
-   * Places a {@link Conveyor} on the {@link Field}.
+   * Places a {@link Conveyer} on the {@link Field}.
    *
    * @param conveyorTriple A description of the conveyor that is supposed to be placed.
-   * @return true if the {@link Conveyor} has been placed successfully, false otherwise.
+   * @return true if the {@link Conveyer} has been placed successfully, false otherwise.
    */
   private boolean placeConveyor(ConveyorTriple conveyorTriple) {
     var conveyor = createNewConveyorFrom(conveyorTriple);
@@ -210,43 +210,43 @@ public class ConnectorImpl implements Connector {
   }
 
   /**
-   * Creates a new {@link Conveyor}-object from a given {@link ConveyorTriple}.
+   * Creates a new {@link Conveyer}-object from a given {@link ConveyorTriple}.
    *
-   * @param conveyorTriple The {@link ConveyorTriple} the {@link Conveyor} is created from.
-   * @return The created {@link Conveyor} if it could be created, {@code null} otherwise.
+   * @param conveyorTriple The {@link ConveyorTriple} the {@link Conveyer} is created from.
+   * @return The created {@link Conveyer} if it could be created, {@code null} otherwise.
    */
-  private Conveyor createNewConveyorFrom(ConveyorTriple conveyorTriple) {
+  private Conveyer createNewConveyorFrom(ConveyorTriple conveyorTriple) {
     return switch (conveyorTriple.input.x - conveyorTriple.output.x) {
       case 0 -> switch (conveyorTriple.input.y - conveyorTriple.output.y) {
         case -2 -> // SUBTYPE 1
-            Conveyor.createConveyor(conveyorTriple.input.x,
+            Conveyer.createConveyor(conveyorTriple.input.x,
                 (conveyorTriple.input.y + conveyorTriple.output.y) / 2,
                 ConveyorSubType.SHORT_OUTPUT_SOUTH);
         case 2 -> // SUBTYPE 3
-            Conveyor.createConveyor(conveyorTriple.input.x,
+            Conveyer.createConveyor(conveyorTriple.input.x,
                 (conveyorTriple.input.y + conveyorTriple.output.y) / 2,
                 ConveyorSubType.SHORT_OUTPUT_NORTH);
         case -3 -> // SUBTYPE 5
-            Conveyor.createConveyor(conveyorTriple.input.x,
+            Conveyer.createConveyor(conveyorTriple.input.x,
                 (conveyorTriple.input.y + conveyorTriple.output.y) / 2,
                 ConveyorSubType.LONG_OUTPUT_SOUTH);
         case 3 -> // SUBTYPE 7
-            Conveyor.createConveyor(conveyorTriple.input.x,
+            Conveyer.createConveyor(conveyorTriple.input.x,
                 (conveyorTriple.input.y + conveyorTriple.output.y) / 2,
                 ConveyorSubType.LONG_OUTPUT_NORTH);
         default -> null;
       };
       case -2 -> // SUBTYPE 0
-          Conveyor.createConveyor((conveyorTriple.input.x + conveyorTriple.output.x) / 2,
+          Conveyer.createConveyor((conveyorTriple.input.x + conveyorTriple.output.x) / 2,
               conveyorTriple.input.y, ConveyorSubType.SHORT_OUTPUT_EAST);
       case 2 -> // SUBTYPE 2
-          Conveyor.createConveyor((conveyorTriple.input.x + conveyorTriple.output.x) / 2,
+          Conveyer.createConveyor((conveyorTriple.input.x + conveyorTriple.output.x) / 2,
               conveyorTriple.input.y, ConveyorSubType.SHORT_OUTPUT_WEST);
       case -3 -> // SUBTYPE 4
-          Conveyor.createConveyor((conveyorTriple.input.x + conveyorTriple.output.x) / 2,
+          Conveyer.createConveyor((conveyorTriple.input.x + conveyorTriple.output.x) / 2,
               conveyorTriple.input.y, ConveyorSubType.LONG_OUTPUT_EAST);
       case 3 -> // SUBTYPE 6
-          Conveyor.createConveyor((conveyorTriple.input.x + conveyorTriple.output.x) / 2,
+          Conveyer.createConveyor((conveyorTriple.input.x + conveyorTriple.output.x) / 2,
               conveyorTriple.input.y, ConveyorSubType.LONG_OUTPUT_WEST);
       default -> null;
     };
@@ -258,7 +258,7 @@ public class ConnectorImpl implements Connector {
    * {@link ConveyorTriple}s.
    *
    * @param output The output the inputs are related to.
-   * @return A queue of {@link ConveyorTriple}s for every {@link Conveyor} that can be placed with
+   * @return A queue of {@link ConveyorTriple}s for every {@link Conveyer} that can be placed with
    * the given output.
    */
   private Queue<ConveyorTriple> gatherInputsInQueue(Point output) {
@@ -306,7 +306,7 @@ public class ConnectorImpl implements Connector {
   }
 
   /**
-   * Checks if a {@link Point} is adjacent to a factory or to the input of a {@link Conveyor} that
+   * Checks if a {@link Point} is adjacent to a factory or to the input of a {@link Conveyer} that
    * is transitive adjacent to the {@code currentFactory}.
    *
    * @param output The coordinates that are checked for being adjacent to a factory- or
@@ -340,18 +340,18 @@ public class ConnectorImpl implements Connector {
   }
 
   /**
-   * Checks if the input of a {@link Conveyor} is transitively connected to the input of a
+   * Checks if the input of a {@link Conveyer} is transitively connected to the input of a
    * {@link Factory}.
    *
-   * @param x The x-coordinate of the input of a {@link Conveyor}.
-   * @param y The y-coordinate of the input of a {@link Conveyor}.
+   * @param x The x-coordinate of the input of a {@link Conveyer}.
+   * @param y The y-coordinate of the input of a {@link Conveyer}.
    * @return {@code true] if the input defined by the given x- and y-coordinates is transitive
    * connected to a {@link Factory}, {@code false} otherwise.
    */
   private boolean isFactoryConnectedConveyorInput(int x, int y) {
     var object = this.fieldTiles[x][y].getObject().orElse(null);
-    var isConnectedConveyor = object != null && object.getClass().equals(Conveyor.class) &&
-        this.placedConveyorsStack.contains((Conveyor) object);
+    var isConnectedConveyor = object != null && object.getClass().equals(Conveyer.class) &&
+        this.placedConveyorsStack.contains((Conveyer) object);
     return this.fieldTiles[x][y].getType() == TileType.INPUT && isConnectedConveyor;
   }
 
@@ -691,13 +691,13 @@ public class ConnectorImpl implements Connector {
   }
 
   /**
-   * Determines the {@link Orientation} of the {@link Conveyor} defined by {@code output} and
+   * Determines the {@link Orientation} of the {@link Conveyer} defined by {@code output} and
    * {@code input} and writes it to the {@code current2DConnectionMatrix}. No check is performed for
-   * validity of the placed {@link Conveyor}, because only valid conveyors are expected by this
+   * validity of the placed {@link Conveyer}, because only valid conveyors are expected by this
    * method.
    *
-   * @param output The coordinates of the output of the placed {@link Conveyor}.
-   * @param input  The coordinates of the input of the placed {@link Conveyor}.
+   * @param output The coordinates of the output of the placed {@link Conveyer}.
+   * @param input  The coordinates of the input of the placed {@link Conveyer}.
    */
   private void writeConveyorPositionToConnectionMatrix(Point output, Point input) {
     var orientation = output.x - input.x < 0 ? Orientation.EAST :
@@ -771,7 +771,7 @@ public class ConnectorImpl implements Connector {
      */
     LinkedList<Point> connectedNodes;
     /**
-     * The amount of {@link Conveyor} jumps that must be performed from this tile to reach the
+     * The amount of {@link Conveyer} jumps that must be performed from this tile to reach the
      * {@code currentFactory}.
      */
     int jumpCount;
@@ -791,15 +791,15 @@ public class ConnectorImpl implements Connector {
    */
   private enum NodeType {
     /**
-     * The input of a {@link Conveyor} can be placed here.
+     * The input of a {@link Conveyer} can be placed here.
      */
     INPUT,
     /**
-     * The output of a {@link Conveyor} can be placed here.
+     * The output of a {@link Conveyer} can be placed here.
      */
     OUTPUT,
     /**
-     * The passable part of a {@link Conveyor} can be placed here.
+     * The passable part of a {@link Conveyer} can be placed here.
      */
     IN_BETWEEN,
   }
@@ -842,7 +842,7 @@ public class ConnectorImpl implements Connector {
   }
 
   /**
-   * A {@link Conveyor} described by an input an output and the number of jumps that are required
+   * A {@link Conveyer} described by an input an output and the number of jumps that are required
    * from the respective conveyor to reach the {@code currentFactory}.
    */
   private static class ConveyorTriple {

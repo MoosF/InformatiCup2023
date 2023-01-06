@@ -52,7 +52,7 @@ class MinePlaceFinderImplTest {
     placedMines.put(Mine.createMine(0, 0, MineSubType.OUTPUT_EAST), d2);
     placedMines.put(Mine.createMine(0, 0, MineSubType.OUTPUT_EAST), d2);
 
-    Collection<MineWithResources> minesWithResources = minePlaceFinder.calcResourcesPerMine(
+    Collection<MineWithResources> minesWithResources = minePlaceFinder.calcResourcesFromMines(
         placedMines);
 
     Assertions.assertEquals(5, minesWithResources.size());

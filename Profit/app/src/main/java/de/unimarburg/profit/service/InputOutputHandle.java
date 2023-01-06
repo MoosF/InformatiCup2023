@@ -1,7 +1,7 @@
 package de.unimarburg.profit.service;
 
 import de.unimarburg.profit.model.Combiner;
-import de.unimarburg.profit.model.Conveyor;
+import de.unimarburg.profit.model.Conveyer;
 import de.unimarburg.profit.model.Factory;
 import de.unimarburg.profit.model.Field;
 import de.unimarburg.profit.model.FixedObject;
@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  * Class for handling input of {@link Field} parameters and output of calculated {@link Mine}-,
- * {@link Conveyor}-, {@link Combiner}- and {@link Factory}-objects.
+ * {@link Conveyer}-, {@link Combiner}- and {@link Factory}-objects.
  *
  * @author Fabian Moos
  * @see Input

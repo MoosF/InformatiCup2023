@@ -41,7 +41,7 @@ class CombinationFinderImplTest {
     connectableMines.put(Mine.createMine(10, 10, MineSubType.OUTPUT_NORTH), deposit3);
     connectableMines.put(Mine.createMine(10, 10, MineSubType.OUTPUT_NORTH), deposit4);
 
-    Collection<MineWithResources> mineWithResources = new MinePlaceFinderImpl().calcResourcesPerMine(
+    Collection<MineWithResources> mineWithResources = new MinePlaceFinderImpl().calcResourcesFromMines(
         connectableMines);
 
     Factory factory = Factory.createFactoryWithoutProduct(18,18);

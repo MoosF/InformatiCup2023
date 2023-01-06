@@ -50,7 +50,7 @@ public interface MinePlaceFinder {
    *                    {@link Deposit}s as values.
    * @return Collection of {@link MineWithResources}.
    */
-  default Collection<MineWithResources> calcResourcesPerMine(Map<Mine, Deposit> placedMines) {
+  default Collection<MineWithResources> calcResourcesFromMines(Map<Mine, Deposit> placedMines) {
     Map<Deposit, Collection<Mine>> minesFromDeposits = getMinesFromDeposits(placedMines);
 
     Collection<MineWithResources> amounts = new HashSet<>();

@@ -1,6 +1,7 @@
 package de.unimarburg.profit.algorithm;
 
 import de.unimarburg.profit.algorithm.factoryplacing.connector.Connector;
+import de.unimarburg.profit.algorithm.factoryplacing.connector.ConnectorImpl;
 import de.unimarburg.profit.algorithm.factoryplacing.factory.FactoryChooser;
 import de.unimarburg.profit.algorithm.factoryplacing.factory.FactoryPlaceFinder;
 import de.unimarburg.profit.algorithm.factoryplacing.factory.FactoryPlaceFinderImpl;
@@ -44,7 +45,7 @@ public class Algorithm {
   private final FactoryChooser factoryChooser;
   private final FactoryPlacerImpl factoryPlacer;
   private final CombinationFinder combinationFinder;
-  private final Connector connector;
+  private Connector connector;
 
 
   /**
@@ -121,6 +122,7 @@ public class Algorithm {
 
   private Field createNewSolution(Field field, Collection<Product> products) {
     field = field.copy();
+    field.show();
 
     Collection<MineWithResources> minesWithResources = placeMines(field);
     placeFactories(field, products, minesWithResources);
@@ -141,7 +143,9 @@ public class Algorithm {
       boolean placed = factoryPlacer.placeFactory(field, factory);
       if (placed) {
 
+        connector = new ConnectorImpl(field);
         Collection<Mine> reachableMines = connector.getReachableMines(factory);
+
         Collection<TypeAndMinesCombination> combinations = combinationFinder.findCombinations(
             reachableMines, minesWithResources, products, factory);
 
@@ -155,7 +159,7 @@ public class Algorithm {
 
         if (!connectedAll) {
           boolean removed = factoryPlacer.removeFactory(field, factory);
-          //connector.removeAllPlacedObjects();
+          connector.removeAllPlacedObjects();
           if (!removed) {
             throw new RuntimeException("Should be removed, but could not.");
           }
@@ -171,9 +175,7 @@ public class Algorithm {
     Map<Mine, Deposit> possibleMines = minePlaceFinder.calculatePossibleMines(field);
     Map<Mine, Deposit> minesToBePlaced = minePlaceChooser.choosePlaces(field, possibleMines);
     Map<Mine, Deposit> placedMines = minePlacer.placeMines(field, minesToBePlaced);
-    Collection<MineWithResources> minesWithResources = minePlaceFinder.calcResourcesPerMine(
-        placedMines);
-    return minesWithResources;
+    return minePlaceFinder.calcResourcesFromMines(placedMines);
   }
 
 
