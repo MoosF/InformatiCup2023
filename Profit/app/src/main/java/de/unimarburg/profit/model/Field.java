@@ -140,7 +140,7 @@ public class Field {
     if (!objects.containsKey(clazz)) {
       objects.put(clazz, new HashSet<>());
     }
-    return (Collection<K>) objects.get(clazz);
+    return new LinkedList<>((Collection<K>) objects.get(clazz));
   }
 
 

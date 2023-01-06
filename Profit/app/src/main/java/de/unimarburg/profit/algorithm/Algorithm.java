@@ -12,12 +12,14 @@ import de.unimarburg.profit.algorithm.mineplacing.MinePlacer;
 import de.unimarburg.profit.algorithm.mineplacing.MineWithResources;
 import de.unimarburg.profit.algorithm.factoryplacing.combination.CombinationFinder;
 import de.unimarburg.profit.algorithm.factoryplacing.combination.TypeAndMinesCombination;
+import de.unimarburg.profit.model.Conveyer;
 import de.unimarburg.profit.model.Deposit;
 import de.unimarburg.profit.model.Factory;
 import de.unimarburg.profit.model.Field;
 import de.unimarburg.profit.model.Mine;
 import de.unimarburg.profit.model.MovableObject;
 import de.unimarburg.profit.model.Product;
+import de.unimarburg.profit.model.exceptions.CouldNotRemoveObjectException;
 import de.unimarburg.profit.simulation.SimulateException;
 import de.unimarburg.profit.simulation.Simulator;
 import java.util.Collection;
@@ -30,6 +32,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * Implementation of the Algorithm.
@@ -94,7 +98,6 @@ public class Algorithm {
       while (true) {
         Field solution = createNewSolution(field, products);
         try {
-          solution.show();
           int points = Simulator.getInstance().simulate(solution, turns);
           System.out.println(points);
           solutions.put(points, solution);
@@ -125,6 +128,7 @@ public class Algorithm {
 
   private Field createNewSolution(Field field, Collection<Product> products) {
     field = field.copy();
+    field.show();
 
     Collection<MineWithResources> minesWithResources = placeMines(field);
     placeFactories(field, products, minesWithResources);
@@ -152,20 +156,31 @@ public class Algorithm {
             reachableMines, minesWithResources, products, factory);
 
         boolean connectedAll = false;
+        Collection<Conveyer> beforeConveyers = field.getObjectsOfClass(Conveyer.class);
         for (TypeAndMinesCombination combination : combinations) {
           connectedAll = connector.connectMines(combination.getMines());
+
           if (connectedAll) {
+            System.out.println("connected");
             factory.setProduct(combination.getProduct());
             break;
           }
+
+          Collection<Conveyer> afterConveyers = field.getObjectsOfClass(Conveyer.class);
+          for (Conveyer conveyer : afterConveyers) {
+            if (!beforeConveyers.contains(conveyer)) {
+              try {
+                field.removeBaseObject(conveyer);
+              } catch (CouldNotRemoveObjectException e) {
+                throw new RuntimeException(e);
+              }
+            }
+          }
+
         }
 
         if (!connectedAll) {
-          boolean removed = factoryPlacer.removeFactory(field, factory);
-          connector.removeAllPlacedObjects();
-          if (!removed) {
-            throw new RuntimeException("Should be removed, but could not.");
-          }
+          factoryPlacer.removeFactory(field, factory);
         }
 
       }
