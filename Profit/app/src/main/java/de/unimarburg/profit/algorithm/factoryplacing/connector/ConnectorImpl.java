@@ -125,7 +125,7 @@ public class ConnectorImpl implements Connector {
    * otherwise.
    */
   @Override
-  public boolean connectMines(Collection<Mine> minesToConnect) {
+  public synchronized boolean connectMines(Collection<Mine> minesToConnect) {
     this.placedConveyorsStack = (new Stack<>());
     var mineOutputs = gatherMineOutputs(minesToConnect);
     var successfullyConnected = true;

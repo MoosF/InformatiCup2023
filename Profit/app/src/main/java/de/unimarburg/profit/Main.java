@@ -3,6 +3,7 @@ package de.unimarburg.profit;
 import de.unimarburg.profit.algorithm.Algorithm;
 import de.unimarburg.profit.algorithm.factoryplacing.combination.CombinationFinderImpl;
 import de.unimarburg.profit.algorithm.factoryplacing.connector.ConnectorImpl;
+import de.unimarburg.profit.algorithm.factoryplacing.factory.FactoryChooserDistance;
 import de.unimarburg.profit.algorithm.factoryplacing.factory.FactoryChooserRandom;
 import de.unimarburg.profit.algorithm.factoryplacing.factory.FactoryPlaceFinderImpl;
 import de.unimarburg.profit.algorithm.factoryplacing.factory.FactoryPlacerImpl;
@@ -53,7 +54,7 @@ public class Main {
     settings.updateImportTarget(false);
     settings.updateImportFileType(FileType.JSON);
 
-    for (int i = 3; i < args.length; i++) {
+    for (int i = 0; i < args.length; i++) {
       String file = args[i];
       Input input = InputOutputHandle.readInputFrom(file);
 
@@ -74,8 +75,7 @@ public class Main {
           new FactoryPlaceFinderImpl(),
           new FactoryChooserRandom(),
           new FactoryPlacerImpl(),
-          new CombinationFinderImpl(),
-          new ConnectorImpl(field)
+          new CombinationFinderImpl()
       );
 
       algorithm.runAlgorithm(field, input.getTime(), input.getTurns(), input.getProducts());

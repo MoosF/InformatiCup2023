@@ -21,4 +21,5 @@ public interface MinePlacer {
    */
   Map<Mine, Deposit> placeMines(Field field, Map<Mine, Deposit> possibleMines);
 
+  void removeUselessMines(Field field);
 }

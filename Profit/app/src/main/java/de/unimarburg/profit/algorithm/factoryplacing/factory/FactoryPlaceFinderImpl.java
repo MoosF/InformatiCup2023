@@ -16,11 +16,11 @@ import java.util.LinkedList;
 public class FactoryPlaceFinderImpl implements FactoryPlaceFinder {
 
   @Override
-  public Collection<Factory> calculatePossibleFactories(Field field, Collection<Product> products) {
+  public Collection<Factory> calculatePossibleFactories(Field field) {
     // benötigte Typen von Factories bestimmen
 
     // mögliche Plätze für Fabriken bestimmen
-    Collection<Factory> result = new LinkedList<>();
+    Collection<Factory> factories = new LinkedList<>();
     Tile[][] tiles = field.getTiles();
     for (int i = 0; i < field.getWidth(); i++) {
       for (int j = 0; j < field.getWidth(); j++) {
@@ -39,15 +39,12 @@ public class FactoryPlaceFinderImpl implements FactoryPlaceFinder {
         }
 
         if (possiblePlace) {
-          int finalJ = j;
-          int finalI = i;
-          products.forEach(product -> result.add(
-              Factory.createFactoryWithProduct(finalI, finalJ, product)));
+          factories.add(Factory.createFactoryWithoutProduct(i, j));
         }
       }
     }
 
-    return result;
+    return factories;
   }
 
 }

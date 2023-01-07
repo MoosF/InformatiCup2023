@@ -4,6 +4,7 @@ import de.unimarburg.profit.model.Conveyer;
 import de.unimarburg.profit.model.Factory;
 import de.unimarburg.profit.model.Field;
 import de.unimarburg.profit.model.Mine;
+import de.unimarburg.profit.model.exceptions.CouldNotRemoveObjectException;
 import java.util.Collection;
 
 /**
@@ -47,4 +48,17 @@ public interface Connector {
    * {@code connectMines(Collection<Mine> minesToConnect)}.
    */
   void removeAllPlacedObjects();
+
+  default void removePlacedConveyers(Field field, Collection<Conveyer> beforeConveyers) {
+    Collection<Conveyer> afterConveyers = field.getObjectsOfClass(Conveyer.class);
+    for (Conveyer conveyer : afterConveyers) {
+      if (!beforeConveyers.contains(conveyer)) {
+        try {
+          field.removeBaseObject(conveyer);
+        } catch (CouldNotRemoveObjectException e) {
+          throw new RuntimeException(e);
+        }
+      }
+    }
+  }
 }

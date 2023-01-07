@@ -96,8 +96,7 @@ public class IoSystem {
         new FactoryPlaceFinderImpl(),
         new FactoryChooserRandom(),
         new FactoryPlacerImpl(),
-        new CombinationFinderImpl(),
-        new ConnectorImpl(field)
+        new CombinationFinderImpl()
     );
 
     Collection<MovableObject> movableObjects = algorithm.runAlgorithm(field, input.getTime(),

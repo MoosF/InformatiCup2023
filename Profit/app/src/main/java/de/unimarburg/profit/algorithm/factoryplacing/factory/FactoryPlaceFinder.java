@@ -16,8 +16,7 @@ public interface FactoryPlaceFinder {
   /**
    * Calculates all possible {@link Factory}s, that could be placed on the given {@link Field}.
    *
-   * @param products {@link Collection} of {@link Product}s, that exist.
    * @return {@link Collection} of {@link Factory}s, which can be placed.
    */
-  Collection<Factory> calculatePossibleFactories(Field field, Collection<Product> products);
+  Collection<Factory> calculatePossibleFactories(Field field);
 }

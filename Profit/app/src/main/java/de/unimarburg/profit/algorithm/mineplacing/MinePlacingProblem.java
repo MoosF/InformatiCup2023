@@ -116,9 +116,10 @@ public class MinePlacingProblem extends AbstractProblem {
 
         Conveyer conveyer = createConveyerFromInputPosition(neighborPosition, subtype);
         if (field.baseObjectCanBePlaced(conveyer) && !intersect(path, conveyer)) {
-          Collection<Conveyer> newPath = new HashSet<>(path);
-          newPath.add(conveyer);
-          reachScore += calcReachScore(field, newPath, conveyer, turns - 1);
+          //Collection<Conveyer> newPath = new HashSet<>(path);
+          //newPath.add(conveyer);
+          path.add(conveyer);
+          reachScore += calcReachScore(field, path, conveyer, turns - 1);
         }
 
       }

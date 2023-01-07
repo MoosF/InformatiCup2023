@@ -317,4 +317,13 @@ public class Field {
 
     return movableObjects;
   }
+
+
+  @Override
+  public String toString() {
+    return "Field{" +
+        "width=" + width +
+        ", height=" + height +
+        '}';
+  }
 }

@@ -19,19 +19,21 @@ import de.unimarburg.profit.model.Field;
 import de.unimarburg.profit.model.Mine;
 import de.unimarburg.profit.model.MovableObject;
 import de.unimarburg.profit.model.Product;
-import de.unimarburg.profit.model.exceptions.CouldNotRemoveObjectException;
 import de.unimarburg.profit.simulation.SimulateException;
 import de.unimarburg.profit.simulation.Simulator;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -42,6 +44,9 @@ import java.util.concurrent.TimeoutException;
  */
 public class Algorithm {
 
+  private static final int NUMBER_OF_FACTORY_PLACEMENT_TRIES = 10;
+  private static final int MAX_NUMBER_OF_WAITING_FUTURES = 25;
+  private static final int MAX_PLACED_FACTORIES_TRIES = 200;
   private final MinePlaceFinder minePlaceFinder;
   private final MinePlaceChooser minePlaceChooser;
   private final MinePlacer minePlacer;
@@ -49,9 +54,12 @@ public class Algorithm {
   private final FactoryChooser factoryChooser;
   private final FactoryPlacerImpl factoryPlacer;
   private final CombinationFinder combinationFinder;
-  private Connector connector;
 
-  private final Map<String, Boolean> futures;
+  private final Map<String, Boolean> uuids;
+
+
+  private final Collection<CompletableFuture<Void>> futures;
+  private final ExecutorService executorService;
 
   /**
    * Constructor of {@link Algorithm}.
@@ -63,12 +71,10 @@ public class Algorithm {
    * @param factoryChooser     {@link FactoryChooser}
    * @param factoryPlacer      {@link FactoryPlacerImpl}
    * @param combinationFinder  {@link CombinationFinder}
-   * @param connector          {@link Connector}
    */
   public Algorithm(MinePlaceFinder minePlaceFinder, MinePlaceChooser minePlaceChooser,
-      MinePlacer minePlacer,
-      FactoryPlaceFinder factoryPlaceFinder, FactoryChooser factoryChooser,
-      FactoryPlacerImpl factoryPlacer, CombinationFinder combinationFinder, Connector connector) {
+      MinePlacer minePlacer, FactoryPlaceFinder factoryPlaceFinder, FactoryChooser factoryChooser,
+      FactoryPlacerImpl factoryPlacer, CombinationFinder combinationFinder) {
     this.minePlaceFinder = minePlaceFinder;
     this.minePlaceChooser = minePlaceChooser;
     this.minePlacer = minePlacer;
@@ -76,8 +82,9 @@ public class Algorithm {
     this.factoryChooser = factoryChooser;
     this.factoryPlacer = factoryPlacer;
     this.combinationFinder = combinationFinder;
-    this.connector = connector;
-    futures = new HashMap<>();
+    uuids = new HashMap<>();
+    futures = new HashSet<>();
+    executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
   }
 
 
@@ -96,11 +103,11 @@ public class Algorithm {
     Map<Integer, Field> solutions = new HashMap<>();
 
     String uuid = UUID.randomUUID().toString();
-    futures.put(uuid, true);
+    uuids.put(uuid, true);
     CompletableFuture<Void> future = CompletableFuture.supplyAsync(() -> {
       while (true) {
-        createAndAddNewSolutions(uuid, solutions, turns, field, products);
-        if (!futures.get(uuid)) {
+        createAndAddNewSolutions(solutions, turns, field, products, uuid);
+        if (!uuids.get(uuid)) {
           return null;
         }
       }
@@ -112,16 +119,19 @@ public class Algorithm {
     } catch (InterruptedException | TimeoutException ignored) {
       //Just ignore. These exceptions will be thrown, if the time ends.
     } catch (ExecutionException e) {
-      //If this is caught, an exception occurred in the method "get()" from the supplier in the future.
+      //If this is caught, an exception occurred in the method "get()"
+      // from the supplier in the future.
       throw new RuntimeException(e);
     }
 
-    futures.put(uuid, false);
+    uuids.put(uuid, false);
 
     Optional<Integer> maxPoints = solutions.keySet().stream().max(Comparator.naturalOrder());
     if (maxPoints.isPresent()) {
       Integer bestPoints = maxPoints.get();
       Field bestField = solutions.get(bestPoints);
+      bestField.show();
+      //System.out.println(bestField + " " + bestPoints);
       return bestField.getMovableObjects();
     } else {
       return new LinkedList<>();
@@ -129,52 +139,83 @@ public class Algorithm {
 
   }
 
-  private void createAndAddNewSolutions(String uuid, Map<Integer, Field> solutions, int turns,
-      Field field,
-      Collection<Product> products) {
-    Field copy1 = field.copy();
+  private void createAndAddNewSolutions(Map<Integer, Field> solutions, int turns, Field field,
+      Collection<Product> products, String uuid) {
 
-    Map<Mine, Deposit> possibleMines = minePlaceFinder.calculatePossibleMines(copy1);
-    Collection<Map<Mine, Deposit>> placements = minePlaceChooser.choosePlacements(copy1,
-        possibleMines);
-
+    List<Map<Mine, Deposit>> placements = findMinePlacements(field);
     for (Map<Mine, Deposit> placement : placements) {
-      Field copy2 = copy1.copy();
+      Field copy1 = field.copy();
 
-      Map<Mine, Deposit> placedMines = minePlacer.placeMines(copy2, placement);
-      Collection<MineWithResources> minesWithResources = minePlaceFinder.calcResourcesFromMines(
-          placedMines);
+      Collection<MineWithResources> minesWithResources = placeMines(copy1, placement);
 
-      for (int i = 0; i < 25; i++) {
-        Field copy3 = copy2.copy();
+      for (int i = 0; i < NUMBER_OF_FACTORY_PLACEMENT_TRIES; i++) {
 
-        if (!futures.get(uuid)) {
+        waitHere();
+
+        //Checks if time is up
+        if (!uuids.get(uuid)) {
           return;
         }
 
-        placeFactories(copy3, products, minesWithResources);
+        Runnable runnable = () -> {
+          Field copy2 = copy1.copy();
+          Algorithm.this.placeFactories(copy2, products, minesWithResources);
+          minePlacer.removeUselessMines(copy2);
+          evaluateAndAddSolution(solutions, turns, copy2);
+        };
 
-        try {
-          int points = Simulator.getInstance().simulate(copy3, turns);
-          solutions.put(points, copy3);
-        } catch (SimulateException e) {
-          throw new RuntimeException(e);
-        }
-
+        CompletableFuture<Void> future = CompletableFuture.runAsync(runnable, executorService);
+        futures.add(future);
+        future.whenComplete((unused, throwable) -> futures.remove(future));
       }
-
 
     }
 
+  }
 
+  private void waitHere() {
+    while (futures.size() > MAX_NUMBER_OF_WAITING_FUTURES) {
+      try {
+        CompletableFuture.anyOf(futures.toArray(new CompletableFuture[0])).get();
+      } catch (InterruptedException | ExecutionException | NullPointerException e) {
+        //Ignore
+      }
+    }
+  }
+
+  private static void evaluateAndAddSolution(Map<Integer, Field> solutions, int turns,
+      Field field) {
+    try {
+      int points = Simulator.getInstance().simulate(field, turns);
+      //System.out.println(field + " | " + points);
+      solutions.put(points, field);
+    } catch (SimulateException ignored) {
+      //Ignore. The Solution just won't be put in the map.
+    }
+  }
+
+  private Collection<MineWithResources> placeMines(Field field, Map<Mine, Deposit> placement) {
+    Map<Mine, Deposit> placedMines = minePlacer.placeMines(field, placement);
+    return minePlaceFinder.calcResourcesFromMines(placedMines);
+  }
+
+  private List<Map<Mine, Deposit>> findMinePlacements(Field field) {
+    Map<Mine, Deposit> possibleMines = minePlaceFinder.calculatePossibleMines(field);
+    Comparator<Map<Mine, Deposit>> comp = Comparator.comparingInt(mines -> -mines.size());
+    return minePlaceChooser.choosePlacements(field, possibleMines).stream().sorted(comp).toList();
   }
 
   private void placeFactories(Field field, Collection<Product> products,
       Collection<MineWithResources> minesWithResources) {
-    Collection<Factory> factories = factoryPlaceFinder.calculatePossibleFactories(field, products);
+    Collection<Factory> factories = factoryPlaceFinder.calculatePossibleFactories(field);
 
     Optional<Factory> optionalFactory = factoryChooser.chooseFactory(field, factories);
+    int i = 0;
     while (optionalFactory.isPresent()) {
+      i++;
+      if(i > MAX_PLACED_FACTORIES_TRIES){
+        return;
+      }
 
       Factory factory = optionalFactory.get();
       factories.remove(factory);
@@ -182,15 +223,17 @@ public class Algorithm {
       boolean placed = factoryPlacer.placeFactory(field, factory);
       if (placed) {
 
-        connector = new ConnectorImpl(field);
+        Connector connector = new ConnectorImpl(field);
         Collection<Mine> reachableMines = connector.getReachableMines(factory);
 
         Collection<TypeAndMinesCombination> combinations = combinationFinder.findCombinations(
-            reachableMines, minesWithResources, products, factory);
+            reachableMines, minesWithResources, products, factory).stream().sorted(
+            (o1, o2) -> -(int) (o1.getValue() - o2.getValue())).toList();
 
         boolean connectedAll = false;
         Collection<Conveyer> beforeConveyers = field.getObjectsOfClass(Conveyer.class);
         for (TypeAndMinesCombination combination : combinations) {
+
           connectedAll = connector.connectMines(combination.getMines());
 
           if (connectedAll) {
@@ -198,17 +241,7 @@ public class Algorithm {
             break;
           }
 
-          Collection<Conveyer> afterConveyers = field.getObjectsOfClass(Conveyer.class);
-          for (Conveyer conveyer : afterConveyers) {
-            if (!beforeConveyers.contains(conveyer)) {
-              try {
-                field.removeBaseObject(conveyer);
-              } catch (CouldNotRemoveObjectException e) {
-                throw new RuntimeException(e);
-              }
-            }
-          }
-
+          connector.removePlacedConveyers(field, beforeConveyers);
         }
 
         if (!connectedAll) {
