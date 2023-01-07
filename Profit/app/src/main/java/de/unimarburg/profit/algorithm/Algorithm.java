@@ -152,12 +152,10 @@ public class Algorithm {
           return;
         }
 
-        System.out.println("hallo");
         placeFactories(copy3, products, minesWithResources);
 
         try {
           int points = Simulator.getInstance().simulate(copy3, turns);
-          System.out.println(field + " " + points);
           solutions.put(points, copy3);
         } catch (SimulateException e) {
           throw new RuntimeException(e);
