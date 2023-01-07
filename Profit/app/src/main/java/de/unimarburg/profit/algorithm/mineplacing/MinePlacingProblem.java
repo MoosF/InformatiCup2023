@@ -2,6 +2,7 @@ package de.unimarburg.profit.algorithm.mineplacing;
 
 import de.unimarburg.profit.model.BaseObject;
 import de.unimarburg.profit.model.Conveyer;
+import de.unimarburg.profit.model.Deposit;
 import de.unimarburg.profit.model.Field;
 import de.unimarburg.profit.model.Mine;
 import de.unimarburg.profit.model.MovableObject;
@@ -11,8 +12,10 @@ import de.unimarburg.profit.model.enums.TileType;
 import de.unimarburg.profit.model.exceptions.CouldNotPlaceObjectException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import org.moeaframework.core.Solution;
@@ -27,9 +30,10 @@ import org.moeaframework.problem.AbstractProblem;
  */
 public class MinePlacingProblem extends AbstractProblem {
 
-  private final Mine[] possibleMines;
+  private final Mine[] possibleMinesArray;
   private final Field field;
   private final int turns;
+  private final Map<Mine, Deposit> possibleMines;
 
   /**
    * Constructor of {@link MinePlacingProblem}.
@@ -39,11 +43,13 @@ public class MinePlacingProblem extends AbstractProblem {
    *                      be placed.
    * @param turns         The amount of turns, that the field will be simulated in the future.
    */
-  public MinePlacingProblem(Field field, Mine[] possibleMines, int turns) {
-    super(1, 1, 0);
-    this.possibleMines = possibleMines;
+  public MinePlacingProblem(Field field, int turns, Map<Mine, Deposit> possibleMines,
+      Mine[] possibleMinesArray) {
+    super(1, 3, 0);
+    this.possibleMinesArray = possibleMinesArray;
     this.field = field;
-    this.turns = turns;
+    this.turns = 5;
+    this.possibleMines = possibleMines;
   }
 
   @Override
@@ -54,7 +60,7 @@ public class MinePlacingProblem extends AbstractProblem {
     for (int i = 0; i < shouldBePlaced.length; i++) {
       if (shouldBePlaced[i]) {
         try {
-          copy.addBaseObject(possibleMines[i]);
+          copy.addBaseObject(possibleMinesArray[i]);
         } catch (CouldNotPlaceObjectException ignored) {
           //Ignore
         }
@@ -62,11 +68,88 @@ public class MinePlacingProblem extends AbstractProblem {
     }
 
     int reachingScore = 0;
-    for (Mine mine : copy.getObjectsOfClass(Mine.class)) {
-      reachingScore += calcReachScore(copy, mine, new HashSet<>(), turns);
+    Map<Mine, Deposit> placedMines = new HashMap<>();
+    copy.getObjectsOfClass(Mine.class)
+        .forEach(mine -> placedMines.put(mine, possibleMines.get(mine)));
+    for (Mine mine : placedMines.keySet()) {
+      reachingScore += calcReachScore(copy, new LinkedList<>(), mine, turns);
+      //reachingScore += calcReachScore(copy, mine, new HashSet<>(), turns);
+    }
+
+    Collection<MineWithResources> minesWithResources = new MinePlaceFinderImpl().calcResourcesFromMines(
+        placedMines);
+    int minedResourcesSum = 0;
+    for (MineWithResources minesWithResource : minesWithResources) {
+      minedResourcesSum += minesWithResource.getAmount();
     }
 
     solution.setObjective(0, -reachingScore);
+    solution.setObjective(1, -minedResourcesSum);
+    solution.setObjective(2, placedMines.size());
+  }
+
+  private int calcReachScore(
+      Field field,
+      Collection<Conveyer> path,
+      BaseObject lastPlacedObject,
+      int turns) {
+
+    if (turns <= 0) {
+      return 0;
+    }
+
+    Optional<Tile> optionalOutputTile = Arrays.stream(lastPlacedObject.getTiles())
+        .filter(tile -> tile.getType().equals(TileType.OUTPUT)).findFirst();
+
+    if (optionalOutputTile.isEmpty()) {
+      return 0;
+    }
+
+    int outputHorPos = lastPlacedObject.getX() + optionalOutputTile.get().getRelHorPos();
+    int outputVerPos = lastPlacedObject.getY() + optionalOutputTile.get().getRelVerPos();
+    Position position = new Position(outputHorPos, outputVerPos);
+
+    int reachScore = 1;
+    for (Position neighborPosition : getValidNeighboringPositions(lastPlacedObject, position)) {
+
+      for (ConveyorSubType subtype : ConveyorSubType.values()) {
+
+        Conveyer conveyer = createConveyerFromInputPosition(neighborPosition, subtype);
+        if (field.baseObjectCanBePlaced(conveyer) && !intersect(path, conveyer)) {
+          Collection<Conveyer> newPath = new HashSet<>(path);
+          newPath.add(conveyer);
+          reachScore += calcReachScore(field, newPath, conveyer, turns - 1);
+        }
+
+      }
+    }
+
+    return reachScore;
+  }
+
+  private boolean intersect(Collection<Conveyer> path, Conveyer conveyer) {
+    for (Conveyer pathConveyor : path) {
+      for (Tile pathConveyerTile : pathConveyor.getTiles()) {
+        int x1 = pathConveyor.getX() + pathConveyerTile.getRelHorPos();
+        int y1 = pathConveyor.getY() + pathConveyerTile.getRelVerPos();
+
+        for (Tile conveyerTile : conveyer.getTiles()) {
+
+          int x2 = conveyer.getX() + conveyerTile.getRelHorPos();
+          int y2 = conveyer.getY() + conveyerTile.getRelVerPos();
+
+          boolean bothAreCrossable =
+              pathConveyerTile.getType().equals(TileType.CROSSABLE) && conveyerTile.getType()
+                  .equals(TileType.CROSSABLE);
+          boolean atTheSameLocation = x1 == x2 && y1 == y2;
+          if (atTheSameLocation && !bothAreCrossable) {
+            return true;
+          }
+
+        }
+      }
+    }
+    return false;
   }
 
   /**
@@ -105,6 +188,7 @@ public class MinePlacingProblem extends AbstractProblem {
 
     int reachScore = 1;
     for (Position neighborPosition : getValidNeighboringPositions(object, position)) {
+
       for (ConveyorSubType subtype : ConveyorSubType.values()) {
 
         Conveyer conveyer = createConveyerFromInputPosition(neighborPosition, subtype);
@@ -161,7 +245,7 @@ public class MinePlacingProblem extends AbstractProblem {
   @Override
   public Solution newSolution() {
     Solution solution = new Solution(numberOfVariables, numberOfObjectives, numberOfConstraints);
-    solution.setVariable(0, EncodingUtils.newBinary(possibleMines.length));
+    solution.setVariable(0, EncodingUtils.newBinary(possibleMinesArray.length));
     return solution;
   }
 }

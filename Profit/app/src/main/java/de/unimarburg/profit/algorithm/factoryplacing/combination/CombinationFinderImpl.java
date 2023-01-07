@@ -5,6 +5,7 @@ import de.unimarburg.profit.model.Factory;
 import de.unimarburg.profit.model.Mine;
 import de.unimarburg.profit.model.Product;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import org.moeaframework.Executor;
 import org.moeaframework.core.NondominatedPopulation;

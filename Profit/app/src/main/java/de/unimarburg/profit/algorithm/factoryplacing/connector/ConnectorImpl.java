@@ -14,6 +14,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
@@ -125,7 +126,7 @@ public class ConnectorImpl implements Connector {
    */
   @Override
   public boolean connectMines(Collection<Mine> minesToConnect) {
-    this.placedConveyorsStack = new Stack<>();
+    this.placedConveyorsStack = (new Stack<>());
     var mineOutputs = gatherMineOutputs(minesToConnect);
     var successfullyConnected = true;
 

@@ -1,5 +1,7 @@
 package de.unimarburg.profit.algorithm;
 
+import de.unimarburg.profit.algorithm.factoryplacing.combination.CombinationFinder;
+import de.unimarburg.profit.algorithm.factoryplacing.combination.TypeAndMinesCombination;
 import de.unimarburg.profit.algorithm.factoryplacing.connector.Connector;
 import de.unimarburg.profit.algorithm.factoryplacing.connector.ConnectorImpl;
 import de.unimarburg.profit.algorithm.factoryplacing.factory.FactoryChooser;
@@ -10,8 +12,6 @@ import de.unimarburg.profit.algorithm.mineplacing.MinePlaceChooser;
 import de.unimarburg.profit.algorithm.mineplacing.MinePlaceFinder;
 import de.unimarburg.profit.algorithm.mineplacing.MinePlacer;
 import de.unimarburg.profit.algorithm.mineplacing.MineWithResources;
-import de.unimarburg.profit.algorithm.factoryplacing.combination.CombinationFinder;
-import de.unimarburg.profit.algorithm.factoryplacing.combination.TypeAndMinesCombination;
 import de.unimarburg.profit.model.Conveyer;
 import de.unimarburg.profit.model.Deposit;
 import de.unimarburg.profit.model.Factory;
@@ -23,17 +23,17 @@ import de.unimarburg.profit.model.exceptions.CouldNotRemoveObjectException;
 import de.unimarburg.profit.simulation.SimulateException;
 import de.unimarburg.profit.simulation.Simulator;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 /**
  * Implementation of the Algorithm.
@@ -51,6 +51,7 @@ public class Algorithm {
   private final CombinationFinder combinationFinder;
   private Connector connector;
 
+  private final Map<String, Boolean> futures;
 
   /**
    * Constructor of {@link Algorithm}.
@@ -76,6 +77,7 @@ public class Algorithm {
     this.factoryPlacer = factoryPlacer;
     this.combinationFinder = combinationFinder;
     this.connector = connector;
+    futures = new HashMap<>();
   }
 
 
@@ -93,47 +95,80 @@ public class Algorithm {
 
     Map<Integer, Field> solutions = new HashMap<>();
 
+    String uuid = UUID.randomUUID().toString();
+    futures.put(uuid, true);
     CompletableFuture<Void> future = CompletableFuture.supplyAsync(() -> {
-      //At the moment the algorithm will start completely from scratch everytime it has finished.
       while (true) {
-        Field solution = createNewSolution(field, products);
-        try {
-          int points = Simulator.getInstance().simulate(solution, turns);
-          System.out.println(points);
-          solutions.put(points, solution);
-        } catch (SimulateException ignored) {
-          throw new RuntimeException("Exception while simulated");
+        createAndAddNewSolutions(uuid, solutions, turns, field, products);
+        if (!futures.get(uuid)) {
+          return null;
         }
       }
     });
 
     try {
       //The future will be canceled five seconds before the time limit.
-      future.get(time - 5, TimeUnit.SECONDS);
+      future.get(time - 10, TimeUnit.SECONDS);
     } catch (InterruptedException | TimeoutException ignored) {
       //Just ignore. These exceptions will be thrown, if the time ends.
     } catch (ExecutionException e) {
-      //If this is caught, an exception occurred in the method get from the supplier in the future.
+      //If this is caught, an exception occurred in the method "get()" from the supplier in the future.
       throw new RuntimeException(e);
     }
 
+    futures.put(uuid, false);
+
     Optional<Integer> maxPoints = solutions.keySet().stream().max(Comparator.naturalOrder());
     if (maxPoints.isPresent()) {
-      return solutions.get(maxPoints.get()).getMovableObjects();
+      Integer bestPoints = maxPoints.get();
+      Field bestField = solutions.get(bestPoints);
+      return bestField.getMovableObjects();
     } else {
       return new LinkedList<>();
     }
 
   }
 
-  private Field createNewSolution(Field field, Collection<Product> products) {
-    field = field.copy();
-    field.show();
+  private void createAndAddNewSolutions(String uuid, Map<Integer, Field> solutions, int turns,
+      Field field,
+      Collection<Product> products) {
+    Field copy1 = field.copy();
 
-    Collection<MineWithResources> minesWithResources = placeMines(field);
-    placeFactories(field, products, minesWithResources);
+    Map<Mine, Deposit> possibleMines = minePlaceFinder.calculatePossibleMines(copy1);
+    Collection<Map<Mine, Deposit>> placements = minePlaceChooser.choosePlacements(copy1,
+        possibleMines);
 
-    return field;
+    for (Map<Mine, Deposit> placement : placements) {
+      Field copy2 = copy1.copy();
+
+      Map<Mine, Deposit> placedMines = minePlacer.placeMines(copy2, placement);
+      Collection<MineWithResources> minesWithResources = minePlaceFinder.calcResourcesFromMines(
+          placedMines);
+
+      for (int i = 0; i < 25; i++) {
+        Field copy3 = copy2.copy();
+
+        if (!futures.get(uuid)) {
+          return;
+        }
+
+        System.out.println("hallo");
+        placeFactories(copy3, products, minesWithResources);
+
+        try {
+          int points = Simulator.getInstance().simulate(copy3, turns);
+          System.out.println(field + " " + points);
+          solutions.put(points, copy3);
+        } catch (SimulateException e) {
+          throw new RuntimeException(e);
+        }
+
+      }
+
+
+    }
+
+
   }
 
   private void placeFactories(Field field, Collection<Product> products,
@@ -161,7 +196,6 @@ public class Algorithm {
           connectedAll = connector.connectMines(combination.getMines());
 
           if (connectedAll) {
-            System.out.println("connected");
             factory.setProduct(combination.getProduct());
             break;
           }
@@ -187,13 +221,6 @@ public class Algorithm {
 
       optionalFactory = factoryChooser.chooseFactory(field, factories);
     }
-  }
-
-  private Collection<MineWithResources> placeMines(Field field) {
-    Map<Mine, Deposit> possibleMines = minePlaceFinder.calculatePossibleMines(field);
-    Map<Mine, Deposit> minesToBePlaced = minePlaceChooser.choosePlaces(field, possibleMines);
-    Map<Mine, Deposit> placedMines = minePlacer.placeMines(field, minesToBePlaced);
-    return minePlaceFinder.calcResourcesFromMines(placedMines);
   }
 
 

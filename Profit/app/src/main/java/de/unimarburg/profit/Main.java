@@ -33,9 +33,9 @@ public class Main {
 
   public static void main(String[] args) throws InputOutputException {
 
-    testMain(args);
+    //testMain(args);
 
-    //startIo();
+    startIo();
 
   }
 
@@ -53,7 +53,7 @@ public class Main {
     settings.updateImportTarget(false);
     settings.updateImportFileType(FileType.JSON);
 
-    for (int i = 0, argsLength = args.length; i < argsLength; i++) {
+    for (int i = 3; i < args.length; i++) {
       String file = args[i];
       Input input = InputOutputHandle.readInputFrom(file);
 

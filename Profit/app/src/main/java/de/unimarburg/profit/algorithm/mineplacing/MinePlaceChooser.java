@@ -3,6 +3,7 @@ package de.unimarburg.profit.algorithm.mineplacing;
 import de.unimarburg.profit.model.Deposit;
 import de.unimarburg.profit.model.Field;
 import de.unimarburg.profit.model.Mine;
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -22,6 +23,6 @@ public interface MinePlaceChooser {
    *                      that are connected to the {@link Mine}s as values.
    * @return {@link Map}, that contains the {@link Mine}s, that should be placed on the field.
    */
-  Map<Mine, Deposit> choosePlaces(Field field, Map<Mine, Deposit> possibleMines);
+  Collection<Map<Mine, Deposit>> choosePlacements(Field field, Map<Mine, Deposit> possibleMines);
 
 }
