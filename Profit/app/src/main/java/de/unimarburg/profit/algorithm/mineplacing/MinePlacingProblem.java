@@ -76,10 +76,9 @@ public class MinePlacingProblem extends AbstractProblem {
       //reachingScore += calcReachScore(copy, mine, new HashSet<>(), turns);
     }
 
-    Collection<MineWithResources> minesWithResources = new MinePlaceFinderImpl().calcResourcesFromMines(
-        placedMines);
     int minedResourcesSum = 0;
-    for (MineWithResources minesWithResource : minesWithResources) {
+    for (MineWithResources minesWithResource : new MinePlaceFinderImpl().calcResourcesFromMines(
+        placedMines)) {
       minedResourcesSum += minesWithResource.getAmount();
     }
 
@@ -88,10 +87,7 @@ public class MinePlacingProblem extends AbstractProblem {
     solution.setObjective(2, placedMines.size());
   }
 
-  private int calcReachScore(
-      Field field,
-      Collection<Conveyer> path,
-      BaseObject lastPlacedObject,
+  private int calcReachScore(Field field, Collection<Conveyer> path, BaseObject lastPlacedObject,
       int turns) {
 
     if (turns <= 0) {
@@ -151,56 +147,6 @@ public class MinePlacingProblem extends AbstractProblem {
       }
     }
     return false;
-  }
-
-  /**
-   * Calculates the reachability score for a given {@link MovableObject}. The reachability score
-   * says, how many tiles can be reached from this {@link MovableObject} with the help of
-   * conveyors.
-   *
-   * @param field              Field, where the {@link BaseObject} will be placed.
-   * @param object             {@link BaseObject}, from wich the reach score should be calculated.
-   * @param reachablePositions Collection of {@link Position}s, that are already reached by a before
-   *                           connected {@link BaseObject}.
-   * @param turns              Amount of turns, that the {@link Field} will be calculated later.
-   * @return Reachability score
-   */
-  private int calcReachScore(Field field, MovableObject object, Set<Position> reachablePositions,
-      int turns) {
-
-    if (turns <= 0) {
-      return 0;
-    }
-
-    Optional<Tile> optionalOutputTile = Arrays.stream(object.getTiles())
-        .filter(tile -> tile.getType().equals(TileType.OUTPUT)).findFirst();
-
-    if (optionalOutputTile.isEmpty()) {
-      return 0;
-    }
-
-    int outputHorPos = object.getX() + optionalOutputTile.get().getRelHorPos();
-    int outputVerPos = object.getY() + optionalOutputTile.get().getRelVerPos();
-    Position position = new Position(outputHorPos, outputVerPos);
-    if (reachablePositions.contains(position)) {
-      return 0;
-    }
-    reachablePositions.add(position);
-
-    int reachScore = 1;
-    for (Position neighborPosition : getValidNeighboringPositions(object, position)) {
-
-      for (ConveyorSubType subtype : ConveyorSubType.values()) {
-
-        Conveyer conveyer = createConveyerFromInputPosition(neighborPosition, subtype);
-        if (field.baseObjectCanBePlaced(conveyer)) {
-          reachScore += calcReachScore(field, conveyer, reachablePositions, turns - 1);
-        }
-
-      }
-    }
-
-    return reachScore;
   }
 
   private Collection<Position> getValidNeighboringPositions(BaseObject object, Position position) {

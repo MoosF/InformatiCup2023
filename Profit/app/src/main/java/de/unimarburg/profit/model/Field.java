@@ -153,8 +153,7 @@ public class Field {
   public Field copy() {
     Field copy = new Field(getWidth(), getHeight());
 
-    objects.forEach(
-        (clazz, baseObjects) -> copy.objects.put(clazz, new LinkedList<>(baseObjects)));
+    objects.forEach((clazz, baseObjects) -> copy.objects.put(clazz, new LinkedList<>(baseObjects)));
 
     for (int i = 0; i < tiles.length; i++) {
       System.arraycopy(tiles[i], 0, copy.tiles[i], 0, tiles[i].length);
@@ -321,9 +320,6 @@ public class Field {
 
   @Override
   public String toString() {
-    return "Field{" +
-        "width=" + width +
-        ", height=" + height +
-        '}';
+    return "Field{" + "width=" + width + ", height=" + height + '}';
   }
 }

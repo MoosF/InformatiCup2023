@@ -1,6 +1,7 @@
 package de.unimarburg.profit.service;
 
 import de.unimarburg.profit.algorithm.Algorithm;
+import de.unimarburg.profit.algorithm.factoryplacing.combination.CombinationFinderImpl;
 import de.unimarburg.profit.algorithm.factoryplacing.connector.ConnectorImpl;
 import de.unimarburg.profit.algorithm.factoryplacing.factory.FactoryChooserRandom;
 import de.unimarburg.profit.algorithm.factoryplacing.factory.FactoryPlaceFinderImpl;
@@ -8,7 +9,6 @@ import de.unimarburg.profit.algorithm.factoryplacing.factory.FactoryPlacerImpl;
 import de.unimarburg.profit.algorithm.mineplacing.MinePlaceChooserImpl;
 import de.unimarburg.profit.algorithm.mineplacing.MinePlaceFinderImpl;
 import de.unimarburg.profit.algorithm.mineplacing.MinePlacerImpl;
-import de.unimarburg.profit.algorithm.factoryplacing.combination.CombinationFinderImpl;
 import de.unimarburg.profit.model.Field;
 import de.unimarburg.profit.model.FixedObject;
 import de.unimarburg.profit.model.MovableObject;
@@ -89,15 +89,9 @@ public class IoSystem {
       }
     }
 
-    Algorithm algorithm = new Algorithm(
-        new MinePlaceFinderImpl(),
-        new MinePlaceChooserImpl(),
-        new MinePlacerImpl(),
-        new FactoryPlaceFinderImpl(),
-        new FactoryChooserRandom(),
-        new FactoryPlacerImpl(),
-        new CombinationFinderImpl()
-    );
+    Algorithm algorithm = new Algorithm(new MinePlaceFinderImpl(), new MinePlaceChooserImpl(),
+        new MinePlacerImpl(), new FactoryPlaceFinderImpl(), new FactoryChooserRandom(),
+        new FactoryPlacerImpl(), new CombinationFinderImpl());
 
     Collection<MovableObject> movableObjects = algorithm.runAlgorithm(field, input.getTime(),
         input.getTurns(), input.getProducts());

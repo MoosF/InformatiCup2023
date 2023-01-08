@@ -2,8 +2,6 @@ package de.unimarburg.profit;
 
 import de.unimarburg.profit.algorithm.Algorithm;
 import de.unimarburg.profit.algorithm.factoryplacing.combination.CombinationFinderImpl;
-import de.unimarburg.profit.algorithm.factoryplacing.connector.ConnectorImpl;
-import de.unimarburg.profit.algorithm.factoryplacing.factory.FactoryChooserDistance;
 import de.unimarburg.profit.algorithm.factoryplacing.factory.FactoryChooserRandom;
 import de.unimarburg.profit.algorithm.factoryplacing.factory.FactoryPlaceFinderImpl;
 import de.unimarburg.profit.algorithm.factoryplacing.factory.FactoryPlacerImpl;
@@ -19,10 +17,8 @@ import de.unimarburg.profit.service.InputOutputHandle;
 import de.unimarburg.profit.service.InputOutputHandle.FileType;
 import de.unimarburg.profit.service.IoSystem;
 import de.unimarburg.profit.service.Settings;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Scanner;
 
 /**
  * Second temporary main method to test the {@link IoSystem}.
@@ -32,12 +28,14 @@ import java.util.Scanner;
 public class Main {
 
 
-  public static void main(String[] args) throws InputOutputException {
-
+  /**
+   * Main method.
+   *
+   * @param args Arguments
+   */
+  public static void main(String[] args) {
     //testMain(args);
-
     startIo();
-
   }
 
   private static void startIo() {

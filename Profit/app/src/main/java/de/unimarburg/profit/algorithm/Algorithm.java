@@ -46,7 +46,7 @@ public class Algorithm {
 
   private static final int NUMBER_OF_FACTORY_PLACEMENT_TRIES = 10;
   private static final int MAX_NUMBER_OF_WAITING_FUTURES = 25;
-  private static final int MAX_PLACED_FACTORIES_TRIES = 200;
+  private static final int MAX_PLACED_FACTORIES_TRIES = 100;
   private final MinePlaceFinder minePlaceFinder;
   private final MinePlaceChooser minePlaceChooser;
   private final MinePlacer minePlacer;
@@ -130,8 +130,6 @@ public class Algorithm {
     if (maxPoints.isPresent()) {
       Integer bestPoints = maxPoints.get();
       Field bestField = solutions.get(bestPoints);
-      bestField.show();
-      //System.out.println(bestField + " " + bestPoints);
       return bestField.getMovableObjects();
     } else {
       return new LinkedList<>();
@@ -187,7 +185,6 @@ public class Algorithm {
       Field field) {
     try {
       int points = Simulator.getInstance().simulate(field, turns);
-      //System.out.println(field + " | " + points);
       solutions.put(points, field);
     } catch (SimulateException ignored) {
       //Ignore. The Solution just won't be put in the map.
@@ -213,7 +210,7 @@ public class Algorithm {
     int i = 0;
     while (optionalFactory.isPresent()) {
       i++;
-      if(i > MAX_PLACED_FACTORIES_TRIES){
+      if (i > MAX_PLACED_FACTORIES_TRIES) {
         return;
       }
 
@@ -227,8 +224,8 @@ public class Algorithm {
         Collection<Mine> reachableMines = connector.getReachableMines(factory);
 
         Collection<TypeAndMinesCombination> combinations = combinationFinder.findCombinations(
-            reachableMines, minesWithResources, products, factory).stream().sorted(
-            (o1, o2) -> -(int) (o1.getValue() - o2.getValue())).toList();
+                reachableMines, minesWithResources, products, factory).stream()
+            .sorted((o1, o2) -> -(int) (o1.getValue() - o2.getValue())).toList();
 
         boolean connectedAll = false;
         Collection<Conveyer> beforeConveyers = field.getObjectsOfClass(Conveyer.class);
@@ -238,6 +235,7 @@ public class Algorithm {
 
           if (connectedAll) {
             factory.setProduct(combination.getProduct());
+            i = 0;
             break;
           }
 

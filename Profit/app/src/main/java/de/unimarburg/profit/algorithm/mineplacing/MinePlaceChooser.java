@@ -21,7 +21,7 @@ public interface MinePlaceChooser {
    * @param field         {@link Field}, on which the {@link Mine}s should be placed.
    * @param possibleMines {@link Map}, that contains {@link Mine}s as keys and the {@link Deposit},
    *                      that are connected to the {@link Mine}s as values.
-   * @return {@link Map}, that contains the {@link Mine}s, that should be placed on the field.
+   * @return Collection, that contains possible placements of {@link Mine}s.
    */
   Collection<Map<Mine, Deposit>> choosePlacements(Field field, Map<Mine, Deposit> possibleMines);
 
