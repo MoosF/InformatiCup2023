@@ -65,10 +65,7 @@ public class Product {
 
   @Override
   public String toString() {
-    return "Product{" +
-        "type=" + type +
-        ", neededResourcesMap=" + neededResourcesMap +
-        ", points=" + points +
-        '}';
+    return "Product{" + "type=" + type + ", neededResourcesMap=" + neededResourcesMap + ", points="
+        + points + '}';
   }
 }

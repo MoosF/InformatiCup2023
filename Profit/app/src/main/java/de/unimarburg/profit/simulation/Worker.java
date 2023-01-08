@@ -40,10 +40,8 @@ public interface Worker {
    * @param storedResources Map, which contains the current resources
    * @return Map, which contains all resources, which should be outputted next
    */
-  default Map<ResourceType, Integer> getResourcesToOutput(
-      Map<ResourceType, Integer> storedResources) {
-    return new HashMap<>();
-  }
+  Map<ResourceType, Integer> getResourcesToOutput(
+      Map<ResourceType, Integer> storedResources);
 
   /**
    * Returns all {@link Tile} from this {@link Worker}.

@@ -34,22 +34,6 @@ class IoSystemTest {
 
   }
 
-  //@Test
-  public void test2() throws IOException {
-
-    String inputText = Files.readString(Path.of("001.task-with-time.json")) + "\n\n";
-    ByteArrayInputStream inputStream = new ByteArrayInputStream(inputText.getBytes(StandardCharsets.UTF_8));
-    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    IoSystem ioSystem = new IoSystem(inputStream, outputStream);
-    ioSystem.start();
-
-    String outputText = outputStream.toString(StandardCharsets.UTF_8);
-    String[] outputLines = outputText.split("\n");
-
-    Assertions.assertFalse(outputLines[0].contains("Could not"));
-
-  }
-
   @Test
   public void testAlreadyStarted(){
 

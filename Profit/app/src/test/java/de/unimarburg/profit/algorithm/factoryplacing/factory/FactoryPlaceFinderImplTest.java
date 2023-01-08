@@ -27,9 +27,7 @@ class FactoryPlaceFinderImplTest {
   @Test
   public void testIfFactoriesArePlaceable() {
 
-    Collection<Factory> factories = factoryPlaceFinder.calculatePossibleFactories(field,
-        List.of(new Product(0, ProductType.ZERO,
-            Map.of())));
+    Collection<Factory> factories = factoryPlaceFinder.calculatePossibleFactories(field);
 
     Assertions.assertEquals(156, factories.size());
     factories.forEach(factory -> Assertions.assertTrue(field.baseObjectCanBePlaced(factory)));
