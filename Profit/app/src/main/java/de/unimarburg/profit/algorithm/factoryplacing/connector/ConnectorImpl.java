@@ -667,10 +667,17 @@ public class ConnectorImpl implements Connector {
    * @param output The coordinates of the output of the placed {@link Conveyer}.
    * @param input  The coordinates of the input of the placed {@link Conveyer}.
    */
+<<<<<<< HEAD
   private void writeConveyorPositionToConnectionMatrix(Point output, Point input) {
     var orientation = output.x - input.x < 0 ? Orientation.EAST
         : output.x - input.x > 0 ? Orientation.WEST
             : output.y - input.y < 0 ? Orientation.SOUTH : Orientation.NORTH;
+=======
+  private synchronized void writeConveyorPositionToConnectionMatrix(Point output, Point input) {
+    var orientation = output.x - input.x < 0 ? Orientation.EAST :
+        output.x - input.x > 0 ? Orientation.WEST :
+            output.y - input.y < 0 ? Orientation.SOUTH : Orientation.NORTH;
+>>>>>>> e2844156fd0c73e7b066813d2c2fbd496de01d19
     // Input node handling.
     // In this function the input tile can only be of type input or equal to null.
     if (this.current2DConnectionMatrix[input.y][input.x] == null) {
