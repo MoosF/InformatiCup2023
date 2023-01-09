@@ -696,7 +696,7 @@ public class ConnectorImpl implements Connector {
    * @param output The coordinates of the output of the placed {@link Conveyer}.
    * @param input  The coordinates of the input of the placed {@link Conveyer}.
    */
-  private void writeConveyorPositionToConnectionMatrix(Point output, Point input) {
+  private synchronized void writeConveyorPositionToConnectionMatrix(Point output, Point input) {
     var orientation = output.x - input.x < 0 ? Orientation.EAST :
         output.x - input.x > 0 ? Orientation.WEST :
             output.y - input.y < 0 ? Orientation.SOUTH : Orientation.NORTH;
