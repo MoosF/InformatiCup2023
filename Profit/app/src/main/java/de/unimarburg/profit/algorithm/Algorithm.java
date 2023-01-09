@@ -45,7 +45,7 @@ import java.util.concurrent.TimeoutException;
 public class Algorithm {
 
   private static final int NUMBER_OF_FACTORY_PLACEMENT_TRIES = 10;
-  private static final int MAX_NUMBER_OF_WAITING_FUTURES = 25;
+  private static final int MAX_NUMBER_OF_WAITING_FUTURES = 20;
   private static final int MAX_PLACED_FACTORIES_TRIES = 100;
   private final MinePlaceFinder minePlaceFinder;
   private final MinePlaceChooser minePlaceChooser;

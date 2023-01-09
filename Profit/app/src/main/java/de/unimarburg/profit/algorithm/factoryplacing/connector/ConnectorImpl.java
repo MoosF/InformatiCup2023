@@ -4,7 +4,6 @@ import de.unimarburg.profit.model.Conveyer;
 import de.unimarburg.profit.model.Factory;
 import de.unimarburg.profit.model.Field;
 import de.unimarburg.profit.model.Mine;
-import de.unimarburg.profit.model.MovableObject;
 import de.unimarburg.profit.model.Tile;
 import de.unimarburg.profit.model.enums.ConveyorSubType;
 import de.unimarburg.profit.model.enums.TileType;
@@ -14,7 +13,6 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
@@ -86,24 +84,12 @@ public class ConnectorImpl implements Connector {
   public ConnectorImpl(Field field) {
     this.field = field;
     this.fieldTiles = field.getTiles();
-    this.connectionMatrix3D =
-        new TileConnectionInfo[FACTORY_OUTPUT_COUNT][this.field.getHeight()][this.field.getWidth()];
+    this.connectionMatrix3D = new TileConnectionInfo[FACTORY_OUTPUT_COUNT][this.field.getHeight()][this.field.getWidth()];
     for (TileConnectionInfo[][] rows : this.connectionMatrix3D) {
       for (TileConnectionInfo[] columns : rows) {
         Arrays.fill(columns, null);
       }
     }
-  }
-
-  /**
-   * TODO
-   *
-   * @param mines TODO
-   * @param field TODO
-   */
-  @Override
-  public void connect(Collection<Mine> mines, Field field) {
-    /* */
   }
 
   /**
@@ -317,23 +303,24 @@ public class ConnectorImpl implements Connector {
     var factoryInputFound = false;
     // NORTH SIDE
     if (output.y - 1 >= 0) {
-      factoryInputFound = isFactoryInput(output.x, output.y - 1) ||
-          isFactoryConnectedConveyorInput(output.x, output.y - 1);
+      factoryInputFound =
+          isFactoryInput(output.x, output.y - 1) || isFactoryConnectedConveyorInput(output.x,
+              output.y - 1);
     }
     // EAST SIDE
     if (output.x + 1 < this.field.getWidth()) {
-      factoryInputFound = factoryInputFound || isFactoryInput(output.x + 1, output.y) ||
-          isFactoryConnectedConveyorInput(output.x + 1, output.y);
+      factoryInputFound = factoryInputFound || isFactoryInput(output.x + 1, output.y)
+          || isFactoryConnectedConveyorInput(output.x + 1, output.y);
     }
     // SOUTH SIDE
     if (output.y + 1 < this.field.getHeight()) {
-      factoryInputFound = factoryInputFound || isFactoryInput(output.x, output.y + 1) ||
-          isFactoryConnectedConveyorInput(output.x, output.y + 1);
+      factoryInputFound = factoryInputFound || isFactoryInput(output.x, output.y + 1)
+          || isFactoryConnectedConveyorInput(output.x, output.y + 1);
     }
     // WEST SIDE
     if (output.x - 1 >= 0) {
-      factoryInputFound = factoryInputFound || isFactoryInput(output.x - 1, output.y) ||
-          isFactoryConnectedConveyorInput(output.x - 1, output.y);
+      factoryInputFound = factoryInputFound || isFactoryInput(output.x - 1, output.y)
+          || isFactoryConnectedConveyorInput(output.x - 1, output.y);
     }
     return factoryInputFound;
   }
@@ -349,8 +336,8 @@ public class ConnectorImpl implements Connector {
    */
   private boolean isFactoryConnectedConveyorInput(int x, int y) {
     var object = this.fieldTiles[x][y].getObject().orElse(null);
-    var isConnectedConveyor = object != null && object.getClass().equals(Conveyer.class) &&
-        this.placedConveyorsStack.contains((Conveyer) object);
+    var isConnectedConveyor = object != null && object.getClass().equals(Conveyer.class)
+        && this.placedConveyorsStack.contains((Conveyer) object);
     return this.fieldTiles[x][y].getType() == TileType.INPUT && isConnectedConveyor;
   }
 
@@ -426,20 +413,6 @@ public class ConnectorImpl implements Connector {
   }
 
   /**
-   * Removes all objects that have been placed by the last call to
-   * {@code connectMines(Collection<Mine> minesToConnect)}.
-   */
-  @Override
-  public void removeAllPlacedObjects() {
-    for (MovableObject object : this.placedConveyorsStack) {
-      try {
-        this.field.removeBaseObject(object);
-      } catch (CouldNotRemoveObjectException e) {
-      }
-    }
-  }
-
-  /**
    * Takes a {@link Collection} of output {@link Point}s and determines coordinates for all possible
    * {@code NodeType.INPUT}s for every output.
    *
@@ -472,8 +445,8 @@ public class ConnectorImpl implements Connector {
 
     for (int y = factoryY; y < factoryY + 5; ++y) {
       for (int x = factoryX; x < factoryX + 5; ++x) {
-        if ((x == factoryX || y == factoryY || x == factoryX + 4 || y == factoryY + 4) &&
-            count < factoryOutputs.length) {
+        if ((x == factoryX || y == factoryY || x == factoryX + 4 || y == factoryY + 4)
+            && count < factoryOutputs.length) {
           factoryOutputs[count] = new Point(x, y, NodeType.INPUT);
           ++count;
         }
@@ -496,17 +469,17 @@ public class ConnectorImpl implements Connector {
     // NORTH POINTING CONVEYOR
     boolean conveyorCanBePlaced = output.y - 3 >= 0;
     if (conveyorCanBePlaced) {
-      if (tileIsVacant(output.x, output.y - 1, NodeType.IN_BETWEEN) &&
-          tileIsVacant(output.x, output.y - 2, NodeType.IN_BETWEEN) &&
-          tileIsVacant(output.x, output.y - 3, NodeType.INPUT)) {
+      if (tileIsVacant(output.x, output.y - 1, NodeType.IN_BETWEEN) && tileIsVacant(output.x,
+          output.y - 2, NodeType.IN_BETWEEN) && tileIsVacant(output.x, output.y - 3,
+          NodeType.INPUT)) {
         inputDeque.add(new Point(output.x, output.y - 3, NodeType.INPUT));
       } else {
         conveyorCanBePlaced = false;
       }
     }
     if (!conveyorCanBePlaced && output.y - 2 >= 0) {
-      if (tileIsVacant(output.x, output.y - 1, NodeType.IN_BETWEEN) &&
-          tileIsVacant(output.x, output.y - 2, NodeType.INPUT)) {
+      if (tileIsVacant(output.x, output.y - 1, NodeType.IN_BETWEEN) && tileIsVacant(output.x,
+          output.y - 2, NodeType.INPUT)) {
         inputDeque.add(new Point(output.x, output.y - 2, NodeType.INPUT));
       }
     }
@@ -514,17 +487,16 @@ public class ConnectorImpl implements Connector {
     // EAST POINTING CONVEYOR
     conveyorCanBePlaced = output.x + 3 < this.field.getWidth();
     if (conveyorCanBePlaced) {
-      if (tileIsVacant(output.x + 1, output.y, NodeType.IN_BETWEEN) &&
-          tileIsVacant(output.x + 2, output.y, NodeType.IN_BETWEEN) &&
-          tileIsVacant(output.x + 3, output.y, NodeType.INPUT)) {
+      if (tileIsVacant(output.x + 1, output.y, NodeType.IN_BETWEEN) && tileIsVacant(output.x + 2,
+          output.y, NodeType.IN_BETWEEN) && tileIsVacant(output.x + 3, output.y, NodeType.INPUT)) {
         inputDeque.add(new Point(output.x + 3, output.y, NodeType.INPUT));
       } else {
         conveyorCanBePlaced = false;
       }
     }
     if (!conveyorCanBePlaced && output.x + 2 < this.field.getWidth()) {
-      if (tileIsVacant(output.x + 1, output.y, NodeType.IN_BETWEEN) &&
-          tileIsVacant(output.x + 2, output.y, NodeType.INPUT)) {
+      if (tileIsVacant(output.x + 1, output.y, NodeType.IN_BETWEEN) && tileIsVacant(output.x + 2,
+          output.y, NodeType.INPUT)) {
         inputDeque.add(new Point(output.x + 2, output.y, NodeType.INPUT));
       }
     }
@@ -532,17 +504,17 @@ public class ConnectorImpl implements Connector {
     // SOUTH POINTING CONVEYOR
     conveyorCanBePlaced = output.y + 3 < this.field.getHeight();
     if (conveyorCanBePlaced) {
-      if (tileIsVacant(output.x, output.y + 1, NodeType.IN_BETWEEN) &&
-          tileIsVacant(output.x, output.y + 2, NodeType.IN_BETWEEN) &&
-          tileIsVacant(output.x, output.y + 3, NodeType.INPUT)) {
+      if (tileIsVacant(output.x, output.y + 1, NodeType.IN_BETWEEN) && tileIsVacant(output.x,
+          output.y + 2, NodeType.IN_BETWEEN) && tileIsVacant(output.x, output.y + 3,
+          NodeType.INPUT)) {
         inputDeque.add(new Point(output.x, output.y + 3, NodeType.INPUT));
       } else {
         conveyorCanBePlaced = false;
       }
     }
     if (!conveyorCanBePlaced && output.y + 2 < this.field.getHeight()) {
-      if (tileIsVacant(output.x, output.y + 1, NodeType.IN_BETWEEN) &&
-          tileIsVacant(output.x, output.y + 2, NodeType.INPUT)) {
+      if (tileIsVacant(output.x, output.y + 1, NodeType.IN_BETWEEN) && tileIsVacant(output.x,
+          output.y + 2, NodeType.INPUT)) {
         inputDeque.add(new Point(output.x, output.y + 2, NodeType.IN_BETWEEN));
       }
     }
@@ -550,17 +522,16 @@ public class ConnectorImpl implements Connector {
     // WEST POINTING CONVEYOR
     conveyorCanBePlaced = output.x - 3 >= 0;
     if (conveyorCanBePlaced) {
-      if (tileIsVacant(output.x - 1, output.y, NodeType.IN_BETWEEN) &&
-          tileIsVacant(output.x - 2, output.y, NodeType.IN_BETWEEN) &&
-          tileIsVacant(output.x - 3, output.y, NodeType.INPUT)) {
+      if (tileIsVacant(output.x - 1, output.y, NodeType.IN_BETWEEN) && tileIsVacant(output.x - 2,
+          output.y, NodeType.IN_BETWEEN) && tileIsVacant(output.x - 3, output.y, NodeType.INPUT)) {
         inputDeque.add(new Point(output.x - 3, output.y, NodeType.INPUT));
       } else {
         conveyorCanBePlaced = false;
       }
     }
     if (!conveyorCanBePlaced && output.x - 2 >= 0) {
-      if (tileIsVacant(output.x - 1, output.y, NodeType.IN_BETWEEN) &&
-          tileIsVacant(output.x - 2, output.y, NodeType.IN_BETWEEN)) {
+      if (tileIsVacant(output.x - 1, output.y, NodeType.IN_BETWEEN) && tileIsVacant(output.x - 2,
+          output.y, NodeType.IN_BETWEEN)) {
         inputDeque.add(new Point(output.x - 2, output.y, NodeType.INPUT));
       }
     }
@@ -583,14 +554,14 @@ public class ConnectorImpl implements Connector {
     if (center.y - 1 >= 0) {
       var currTile = this.field.getTiles()[center.x][center.y - 1];
       var baseObject = currTile.getObject().orElse(null);
-      if (baseObject != null && baseObject.getClass() == Mine.class &&
-          currTile.getType() == TileType.OUTPUT) {
+      if (baseObject != null && baseObject.getClass() == Mine.class
+          && currTile.getType() == TileType.OUTPUT) {
         if (!reachableMines.contains((Mine) baseObject)) {
           reachableMines.add((Mine) baseObject);
         }
       } else {
-        if (currTile.getType() == TileType.EMPTY &&
-            this.current2DConnectionMatrix[center.y - 1][center.x] == null) {
+        if (currTile.getType() == TileType.EMPTY
+            && this.current2DConnectionMatrix[center.y - 1][center.x] == null) {
           possibleOutputCoords.add(new Point(center.x, center.y - 1, NodeType.OUTPUT));
         }
       }
@@ -599,14 +570,14 @@ public class ConnectorImpl implements Connector {
     if (center.x + 1 < this.field.getWidth()) {
       var currTile = this.field.getTiles()[center.x + 1][center.y];
       var baseObject = currTile.getObject().orElse(null);
-      if (baseObject != null && baseObject.getClass() == Mine.class &&
-          currTile.getType() == TileType.OUTPUT) {
+      if (baseObject != null && baseObject.getClass() == Mine.class
+          && currTile.getType() == TileType.OUTPUT) {
         if (!reachableMines.contains((Mine) baseObject)) {
           reachableMines.add((Mine) baseObject);
         }
       } else {
-        if (currTile.getType() == TileType.EMPTY &&
-            this.current2DConnectionMatrix[center.y][center.x + 1] == null) {
+        if (currTile.getType() == TileType.EMPTY
+            && this.current2DConnectionMatrix[center.y][center.x + 1] == null) {
           possibleOutputCoords.add(new Point(center.x + 1, center.y, NodeType.OUTPUT));
         }
       }
@@ -615,14 +586,14 @@ public class ConnectorImpl implements Connector {
     if (center.y + 1 < this.field.getHeight()) {
       var currTile = this.field.getTiles()[center.x][center.y + 1];
       var baseObject = currTile.getObject().orElse(null);
-      if (baseObject != null && baseObject.getClass() == Mine.class &&
-          currTile.getType() == TileType.OUTPUT) {
+      if (baseObject != null && baseObject.getClass() == Mine.class
+          && currTile.getType() == TileType.OUTPUT) {
         if (!reachableMines.contains((Mine) baseObject)) {
           reachableMines.add((Mine) baseObject);
         }
       } else {
-        if (currTile.getType() == TileType.EMPTY &&
-            this.current2DConnectionMatrix[center.y + 1][center.x] == null) {
+        if (currTile.getType() == TileType.EMPTY
+            && this.current2DConnectionMatrix[center.y + 1][center.x] == null) {
           possibleOutputCoords.add(new Point(center.x, center.y + 1, NodeType.OUTPUT));
         }
       }
@@ -631,14 +602,14 @@ public class ConnectorImpl implements Connector {
     if (center.x - 1 >= 0) {
       var currTile = this.field.getTiles()[center.x - 1][center.y];
       var baseObject = currTile.getObject().orElse(null);
-      if (baseObject != null && baseObject.getClass() == Mine.class &&
-          currTile.getType() == TileType.OUTPUT) {
+      if (baseObject != null && baseObject.getClass() == Mine.class
+          && currTile.getType() == TileType.OUTPUT) {
         if (!reachableMines.contains((Mine) baseObject)) {
           reachableMines.add((Mine) baseObject);
         }
       } else {
-        if (currTile.getType() == TileType.EMPTY &&
-            this.current2DConnectionMatrix[center.y][center.x - 1] == null) {
+        if (currTile.getType() == TileType.EMPTY
+            && this.current2DConnectionMatrix[center.y][center.x - 1] == null) {
           possibleOutputCoords.add(new Point(center.x - 1, center.y, NodeType.OUTPUT));
         }
       }
@@ -659,13 +630,13 @@ public class ConnectorImpl implements Connector {
    */
   private boolean tileIsVacant(int xPos, int yPos, NodeType requiredType) {
     if (requiredType == NodeType.INPUT) {
-      return this.fieldTiles[xPos][yPos].getType() == TileType.EMPTY &&
-          (this.current2DConnectionMatrix[yPos][xPos] == null ||
-              this.current2DConnectionMatrix[yPos][xPos].type == NodeType.INPUT);
+      return this.fieldTiles[xPos][yPos].getType() == TileType.EMPTY && (
+          this.current2DConnectionMatrix[yPos][xPos] == null
+              || this.current2DConnectionMatrix[yPos][xPos].type == NodeType.INPUT);
     } else {
-      return (this.fieldTiles[xPos][yPos].getType() == TileType.EMPTY ||
-          this.fieldTiles[xPos][yPos].getType() == TileType.CROSSABLE) &&
-          this.current2DConnectionMatrix[yPos][xPos] == null;
+      return (this.fieldTiles[xPos][yPos].getType() == TileType.EMPTY
+          || this.fieldTiles[xPos][yPos].getType() == TileType.CROSSABLE)
+          && this.current2DConnectionMatrix[yPos][xPos] == null;
     }
   }
 
@@ -697,14 +668,14 @@ public class ConnectorImpl implements Connector {
    * @param input  The coordinates of the input of the placed {@link Conveyer}.
    */
   private void writeConveyorPositionToConnectionMatrix(Point output, Point input) {
-    var orientation = output.x - input.x < 0 ? Orientation.EAST :
-        output.x - input.x > 0 ? Orientation.WEST :
-            output.y - input.y < 0 ? Orientation.SOUTH : Orientation.NORTH;
+    var orientation = output.x - input.x < 0 ? Orientation.EAST
+        : output.x - input.x > 0 ? Orientation.WEST
+            : output.y - input.y < 0 ? Orientation.SOUTH : Orientation.NORTH;
     // Input node handling.
     // In this function the input tile can only be of type input or equal to null.
     if (this.current2DConnectionMatrix[input.y][input.x] == null) {
-      this.current2DConnectionMatrix[input.y][input.x] =
-          new TileConnectionInfo(NodeType.INPUT, this.jumpCount, new LinkedList<>());
+      this.current2DConnectionMatrix[input.y][input.x] = new TileConnectionInfo(NodeType.INPUT,
+          this.jumpCount, new LinkedList<>());
       this.current2DConnectionMatrix[input.y][input.x].connectedNodes.addLast(output);
       this.queue.add(input);
     } else if (this.current2DConnectionMatrix[input.y][input.x].type == NodeType.INPUT) {
@@ -715,42 +686,42 @@ public class ConnectorImpl implements Connector {
     }
     // Output node.
     if (this.current2DConnectionMatrix[output.y][output.x] == null) {
-      this.current2DConnectionMatrix[output.y][output.x] =
-          new TileConnectionInfo(NodeType.OUTPUT, this.jumpCount, new LinkedList<>());
+      this.current2DConnectionMatrix[output.y][output.x] = new TileConnectionInfo(NodeType.OUTPUT,
+          this.jumpCount, new LinkedList<>());
     }
     this.current2DConnectionMatrix[output.y][output.x].connectedNodes.addLast(input);
     // HANDLE NODES IN BETWEEN.
     switch (orientation) {
       case NORTH -> {
-        this.current2DConnectionMatrix[output.y - 1][output.x] =
-            new TileConnectionInfo(NodeType.IN_BETWEEN, this.jumpCount, null);
+        this.current2DConnectionMatrix[output.y - 1][output.x] = new TileConnectionInfo(
+            NodeType.IN_BETWEEN, this.jumpCount, null);
         if (output.y - input.y > 2) {
-          this.current2DConnectionMatrix[output.y - 2][output.x] =
-              new TileConnectionInfo(NodeType.IN_BETWEEN, this.jumpCount, null);
+          this.current2DConnectionMatrix[output.y - 2][output.x] = new TileConnectionInfo(
+              NodeType.IN_BETWEEN, this.jumpCount, null);
         }
       }
       case EAST -> {
-        this.current2DConnectionMatrix[output.y][output.x + 1] =
-            new TileConnectionInfo(NodeType.IN_BETWEEN, this.jumpCount, null);
+        this.current2DConnectionMatrix[output.y][output.x + 1] = new TileConnectionInfo(
+            NodeType.IN_BETWEEN, this.jumpCount, null);
         if (input.x - output.x > 2) {
-          this.current2DConnectionMatrix[output.y][output.x + 2] =
-              new TileConnectionInfo(NodeType.IN_BETWEEN, this.jumpCount, null);
+          this.current2DConnectionMatrix[output.y][output.x + 2] = new TileConnectionInfo(
+              NodeType.IN_BETWEEN, this.jumpCount, null);
         }
       }
       case SOUTH -> {
-        this.current2DConnectionMatrix[output.y + 1][output.x] =
-            new TileConnectionInfo(NodeType.IN_BETWEEN, this.jumpCount, null);
+        this.current2DConnectionMatrix[output.y + 1][output.x] = new TileConnectionInfo(
+            NodeType.IN_BETWEEN, this.jumpCount, null);
         if (input.y - output.y > 2) {
-          this.current2DConnectionMatrix[output.y + 2][output.x] =
-              new TileConnectionInfo(NodeType.IN_BETWEEN, this.jumpCount, null);
+          this.current2DConnectionMatrix[output.y + 2][output.x] = new TileConnectionInfo(
+              NodeType.IN_BETWEEN, this.jumpCount, null);
         }
       }
       case WEST -> {
-        this.current2DConnectionMatrix[output.y][output.x - 1] =
-            new TileConnectionInfo(NodeType.IN_BETWEEN, this.jumpCount, null);
+        this.current2DConnectionMatrix[output.y][output.x - 1] = new TileConnectionInfo(
+            NodeType.IN_BETWEEN, this.jumpCount, null);
         if (output.x - input.x > 2) {
-          this.current2DConnectionMatrix[output.y][output.x - 2] =
-              new TileConnectionInfo(NodeType.IN_BETWEEN, this.jumpCount, null);
+          this.current2DConnectionMatrix[output.y][output.x - 2] = new TileConnectionInfo(
+              NodeType.IN_BETWEEN, this.jumpCount, null);
         }
       }
     }
@@ -805,10 +776,7 @@ public class ConnectorImpl implements Connector {
    * The orientation of a conveyor defined by input- and output-coordinates.
    */
   private enum Orientation {
-    NORTH,
-    EAST,
-    SOUTH,
-    WEST,
+    NORTH, EAST, SOUTH, WEST,
   }
 
   /**

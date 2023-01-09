@@ -122,24 +122,24 @@ final class Json extends InputOutputHandle {
 
     for (MovableObject movableObject : output) {
       JsonObject jsonObject = new JsonObject();
-      jsonObject.add(KEY_TYPE, new JsonPrimitive(
-          switch (movableObject.getType()) {
-            case COMBINER -> VALUE_COMBINER;
-            case CONVEYER -> VALUE_CONVEYER;
-            case FACTORY -> VALUE_FACTORY;
-            case MINE -> VALUE_MINE;
-          }));
+      String string = switch (movableObject.getType()) {
+        case COMBINER -> VALUE_COMBINER;
+        case CONVEYER -> VALUE_CONVEYER;
+        case FACTORY -> VALUE_FACTORY;
+        case MINE -> VALUE_MINE;
+      };
+      jsonObject.add(KEY_TYPE, new JsonPrimitive(string));
 
       jsonObject.add(KEY_X, new JsonPrimitive(movableObject.getX()));
       jsonObject.add(KEY_Y, new JsonPrimitive(movableObject.getY()));
 
-      jsonObject.add(KEY_SUBTYPE, new JsonPrimitive(
-          switch (movableObject.getType()) {
-            case COMBINER -> ((Combiner) movableObject).getSubType().ordinal();
-            case CONVEYER -> ((Conveyer) movableObject).getSubType().ordinal();
-            case FACTORY -> ((Factory) movableObject).getSubType().ordinal();
-            case MINE -> ((Mine) movableObject).getSubType().ordinal();
-          }));
+      Number number = switch (movableObject.getType()) {
+        case COMBINER -> ((Combiner) movableObject).getSubType().ordinal();
+        case CONVEYER -> ((Conveyer) movableObject).getSubType().ordinal();
+        case FACTORY -> ((Factory) movableObject).getSubType().ordinal();
+        case MINE -> ((Mine) movableObject).getSubType().ordinal();
+      };
+      jsonObject.add(KEY_SUBTYPE, new JsonPrimitive(number));
 
       outputArray.add(jsonObject);
     }

@@ -16,21 +16,13 @@ import java.util.Collection;
 public interface Connector {
 
   /**
-   * TODO
-   *
-   * @param mines TODO
-   * @param field TODO
-   */
-  void connect(Collection<Mine> mines, Field field);
-
-  /**
    * Connect the given collection of {@link Mine}s to the factory used by
    * {@code getReachableMines(Factory factory)}..
    *
    * @param minesToConnect A set of {@link Mine}s that must be connected to the given
    *                       {@link Factory}.
    * @return {@code true} if all mines of {@code minesToConnect} can be connected, {@code false}
-   * otherwise.
+   *         otherwise.
    */
   boolean connectMines(Collection<Mine> minesToConnect);
 
@@ -39,16 +31,17 @@ public interface Connector {
    *
    * @param factory The factory that is reachable from the returned {@link Mine}s.
    * @return a {@link Collection} of {@link Mine}s that can be connected to the given
-   * {@link Factory} by using {@link Conveyer}s.
+   *         {@link Factory} by using {@link Conveyer}s.
    */
   Collection<Mine> getReachableMines(Factory factory);
 
   /**
-   * Removes all objects that have been placed by
-   * {@code connectMines(Collection<Mine> minesToConnect)}.
+   * Removes all {@link Conveyer}s from a {@link Field}, that are placed since a specified time.
+   * The time is indirectly given by the beforeConveyers.
+   *
+   * @param field {@link Field}, from which the {@link Conveyer}s should be removed.
+   * @param beforeConveyers {@link Conveyer}s, that are placed before the specified time.
    */
-  void removeAllPlacedObjects();
-
   default void removePlacedConveyers(Field field, Collection<Conveyer> beforeConveyers) {
     Collection<Conveyer> afterConveyers = field.getObjectsOfClass(Conveyer.class);
     for (Conveyer conveyer : afterConveyers) {
