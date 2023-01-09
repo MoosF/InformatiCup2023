@@ -7,6 +7,7 @@ import de.unimarburg.profit.model.Product;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.function.Predicate;
 import org.moeaframework.Executor;
 import org.moeaframework.core.NondominatedPopulation;
 import org.moeaframework.core.Solution;
@@ -20,9 +21,9 @@ public class CombinationFinderImpl implements CombinationFinder {
 
 
   @Override
-  public Collection<TypeAndMinesCombination> findCombinations(
-      Collection<Mine> connectableMines, Collection<MineWithResources> mineWithResources,
-      Collection<Product> products, Factory factory) {
+  public Collection<TypeAndMinesCombination> findCombinations(Collection<Mine> connectableMines,
+      Collection<MineWithResources> mineWithResources, Collection<Product> products,
+      Factory factory) {
 
     MineWithResources[] connectableMinesArray = mineWithResources.stream()
         .filter(mineResourceAmount -> connectableMines.contains(mineResourceAmount.getMine()))
@@ -31,24 +32,19 @@ public class CombinationFinderImpl implements CombinationFinder {
     Collection<TypeAndMinesCombination> combinations = new HashSet<>();
     for (Product product : products) {
 
-      NondominatedPopulation population = new Executor()
-          .withProblemClass(MineConnectionsChoosingProblem.class, factory, connectableMinesArray,
-              product)
-          .withAlgorithm("NSGAII")
-          .withMaxEvaluations(500)
-          .distributeOnAllCores()
-          .run();
+      NondominatedPopulation population = new Executor().withProblemClass(
+              MineConnectionsChoosingProblem.class, factory, connectableMinesArray, product)
+          .withAlgorithm("NSGAII").withMaxEvaluations(500).distributeOnAllCores().run();
 
       for (Solution solution : population) {
         combinations.add(
             MineConnectionsChoosingProblem.convertSolutionToCombination(solution, factory,
-                connectableMinesArray,
-                product));
+                connectableMinesArray, product));
       }
     }
 
-    combinations.removeIf(
-        typeAndMinesCombination -> typeAndMinesCombination.getMinesWithResources().isEmpty());
+    combinations.removeIf(combination -> combination.getMinesWithResources().isEmpty());
+    combinations.removeIf(combination -> combination.getValue() == 0);
 
     return combinations;
   }
