@@ -1,6 +1,7 @@
 package de.unimarburg.profit;
 
 import de.unimarburg.profit.algorithm.Algorithm;
+import de.unimarburg.profit.algorithm.AlgorithmImpl;
 import de.unimarburg.profit.algorithm.factoryplacing.combination.CombinationFinderImpl;
 import de.unimarburg.profit.algorithm.factoryplacing.factory.FactoryChooserRandom;
 import de.unimarburg.profit.algorithm.factoryplacing.factory.FactoryPlaceFinderImpl;
@@ -66,7 +67,7 @@ public class Main {
         }
       }
 
-      Algorithm algorithm = new Algorithm(
+      Algorithm algorithm = new AlgorithmImpl(
           new MinePlaceFinderImpl(),
           new MinePlaceChooserImpl(),
           new MinePlacerImpl(),

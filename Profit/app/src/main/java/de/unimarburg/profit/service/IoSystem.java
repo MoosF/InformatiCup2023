@@ -1,8 +1,8 @@
 package de.unimarburg.profit.service;
 
 import de.unimarburg.profit.algorithm.Algorithm;
+import de.unimarburg.profit.algorithm.AlgorithmImpl;
 import de.unimarburg.profit.algorithm.factoryplacing.combination.CombinationFinderImpl;
-import de.unimarburg.profit.algorithm.factoryplacing.connector.ConnectorImpl;
 import de.unimarburg.profit.algorithm.factoryplacing.factory.FactoryChooserRandom;
 import de.unimarburg.profit.algorithm.factoryplacing.factory.FactoryPlaceFinderImpl;
 import de.unimarburg.profit.algorithm.factoryplacing.factory.FactoryPlacerImpl;
@@ -89,7 +89,7 @@ public class IoSystem {
       }
     }
 
-    Algorithm algorithm = new Algorithm(new MinePlaceFinderImpl(), new MinePlaceChooserImpl(),
+    Algorithm algorithm = new AlgorithmImpl(new MinePlaceFinderImpl(), new MinePlaceChooserImpl(),
         new MinePlacerImpl(), new FactoryPlaceFinderImpl(), new FactoryChooserRandom(),
         new FactoryPlacerImpl(), new CombinationFinderImpl());
 
