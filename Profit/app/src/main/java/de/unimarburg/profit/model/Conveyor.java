@@ -6,37 +6,36 @@ import de.unimarburg.profit.model.enums.TileType;
 import java.util.Map;
 
 /**
- * This class models a {@link Conveyer}.
+ * This class models a {@link Conveyor}.
  *
  * @author Yannick Kraml
  */
-public class Conveyer extends MovableObject {
+public class Conveyor extends MovableObject {
 
   private final ConveyorSubType subType;
-  private Factory connectedFactory;
 
   /**
-   * Constructor of {@link Conveyer}.
+   * Constructor of {@link Conveyor}.
    *
-   * @param horPos X-Coordinate of the {@link Conveyer}.
-   * @param verPos Y-Coordinate of the {@link Conveyer}.
-   * @param tiles  Tiles, that construct the {@link Conveyer}.
+   * @param horPos X-Coordinate of the {@link Conveyor}.
+   * @param verPos Y-Coordinate of the {@link Conveyor}.
+   * @param tiles  Tiles, that construct the {@link Conveyor}.
    */
-  private Conveyer(int horPos, int verPos, Tile[] tiles, MovableObjectType type,
+  private Conveyor(int horPos, int verPos, Tile[] tiles, MovableObjectType type,
       ConveyorSubType subType) {
     super(horPos, verPos, tiles, type);
     this.subType = subType;
   }
 
   /**
-   * Creates an instance of a {@link Conveyer}.
+   * Creates an instance of a {@link Conveyor}.
    *
-   * @param horPos  X-Coordinate of the {@link Conveyer}.
-   * @param verPos  Y-Coordinate of the {@link Conveyer}.
-   * @param subtype Subtype of the {@link Conveyer}.
-   * @return New instance of a {@link Conveyer}.
+   * @param horPos  X-Coordinate of the {@link Conveyor}.
+   * @param verPos  Y-Coordinate of the {@link Conveyor}.
+   * @param subtype Subtype of the {@link Conveyor}.
+   * @return New instance of a {@link Conveyor}.
    */
-  public static Conveyer createConveyor(int horPos, int verPos, ConveyorSubType subtype) {
+  public static Conveyor createConveyor(int horPos, int verPos, ConveyorSubType subtype) {
 
     Tile[] tiles = null;
     switch (subtype) {
@@ -78,11 +77,7 @@ public class Conveyer extends MovableObject {
       }
     }
 
-    return new Conveyer(horPos, verPos, tiles, MovableObjectType.CONVEYER, subtype);
-  }
-
-  public Factory getConnectedFactory() {
-    return this.connectedFactory;
+    return new Conveyor(horPos, verPos, tiles, MovableObjectType.CONVEYER, subtype);
   }
 
   @Override
@@ -93,9 +88,5 @@ public class Conveyer extends MovableObject {
 
   public ConveyorSubType getSubType() {
     return this.subType;
-  }
-
-  public void setConnectedFactory(Factory factory) {
-    this.connectedFactory = factory;
   }
 }

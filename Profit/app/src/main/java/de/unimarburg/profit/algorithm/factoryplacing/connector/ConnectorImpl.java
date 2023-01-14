@@ -1,6 +1,6 @@
 package de.unimarburg.profit.algorithm.factoryplacing.connector;
 
-import de.unimarburg.profit.model.Conveyer;
+import de.unimarburg.profit.model.Conveyor;
 import de.unimarburg.profit.model.Factory;
 import de.unimarburg.profit.model.Field;
 import de.unimarburg.profit.model.Mine;
@@ -54,21 +54,21 @@ public class ConnectorImpl implements Connector {
   /**
    * The current layer for the current loop of {@code getReachableMines(Factory factory)}.
    */
-  private TileConnectionInfo[][] current2DConnectionMatrix = null;
+  private TileConnectionInfo[][] currentLayer = null;
   /**
    * The current factory the {@link Connector} is working on. Is always set when calling
    * {@code getReachableMines(Factory factory)}.
    */
   private Factory currentFactory = null;
   /**
-   * The current distance from the factory in {@link Conveyer} jumps.
+   * The current distance from the factory in {@link Conveyor} jumps.
    */
   private int jumpCount;
   /**
    * The queue of next {@link Point}s in the current BFS.
    */
   private Deque<Point> queue;
-  private Stack<Conveyer> placedConveyorsStack;
+  private Stack<Conveyor> placedConveyorsStack;
   /**
    * The maximum input count of a {@link Factory}. If the size of the factory grows, this value must
    * be adjusted. Otherwise, calling this classes methods will lead to
@@ -90,7 +90,8 @@ public class ConnectorImpl implements Connector {
   public ConnectorImpl(Field field) {
     this.field = field;
     this.fieldTiles = field.getTiles();
-    this.connectionMatrix3D = new TileConnectionInfo[LAYER_COUNT][this.field.getHeight()][this.field.getWidth()];
+    this.connectionMatrix3D =
+        new TileConnectionInfo[LAYER_COUNT][this.field.getHeight()][this.field.getWidth()];
     for (TileConnectionInfo[][] rows : this.connectionMatrix3D) {
       for (TileConnectionInfo[] columns : rows) {
         Arrays.fill(columns, null);
@@ -114,7 +115,7 @@ public class ConnectorImpl implements Connector {
    * @param minesToConnect The {@link Mine}s that are supposed to be connected to the given
    *                       {@link Factory}.
    * @return {@code true} if all mines in the {@link Collection} could be connected, false
-   * otherwise.
+   *         otherwise.
    */
   @Override
   public synchronized boolean connectMines(Collection<Mine> minesToConnect) {
@@ -126,17 +127,13 @@ public class ConnectorImpl implements Connector {
       successfullyConnected = successfullyConnected && connectMineToFactory(output);
     }
 
-    for (Conveyer conveyer : this.placedConveyorsStack) {
-      conveyer.setConnectedFactory(this.currentFactory);
-    }
-
     return successfullyConnected;
   }
 
   /**
    * Connects a {@link Mine} to the {@code currentFactory}.
    *
-   * @param output An output of a {@link Mine} or {@link Conveyer}.
+   * @param output An output of a {@link Mine} or {@link Conveyor}.
    * @return true if the {@link Mine} is connected, when the method returns, false otherwise.
    */
   private boolean connectMineToFactory(Point output) {
@@ -162,11 +159,11 @@ public class ConnectorImpl implements Connector {
   }
 
   /**
-   * Removes the top of the stack of recently placed {@link Conveyer}s.
+   * Removes the top of the stack of recently placed {@link Conveyor}s.
    */
   private void removeTopOfConveyorStack() {
     if (!this.placedConveyorsStack.isEmpty()) {
-      Conveyer topOfStack = this.placedConveyorsStack.pop();
+      Conveyor topOfStack = this.placedConveyorsStack.pop();
       try {
         this.field.removeBaseObject(topOfStack);
       } catch (CouldNotRemoveObjectException e) {
@@ -177,10 +174,10 @@ public class ConnectorImpl implements Connector {
   }
 
   /**
-   * Places a {@link Conveyer} on the {@link Field}.
+   * Places a {@link Conveyor} on the {@link Field}.
    *
    * @param conveyorTriple A description of the conveyor that is supposed to be placed.
-   * @return true if the {@link Conveyer} has been placed successfully, false otherwise.
+   * @return true if the {@link Conveyor} has been placed successfully, false otherwise.
    */
   private boolean placeConveyor(ConveyorTriple conveyorTriple) {
     var conveyor = createNewConveyorFrom(conveyorTriple);
@@ -201,44 +198,54 @@ public class ConnectorImpl implements Connector {
   }
 
   /**
-   * Creates a new {@link Conveyer}-object from a given {@link ConveyorTriple}.
+   * Creates a new {@link Conveyor}-object from a given {@link ConveyorTriple}.
    *
-   * @param conveyorTriple The {@link ConveyorTriple} the {@link Conveyer} is created from.
-   * @return The created {@link Conveyer} if it could be created, {@code null} otherwise.
+   * @param conveyorTriple The {@link ConveyorTriple} the {@link Conveyor} is created from.
+   * @return The created {@link Conveyor} if it could be created, {@code null} otherwise.
    */
-  private Conveyer createNewConveyorFrom(ConveyorTriple conveyorTriple) {
-    return switch (conveyorTriple.input.x - conveyorTriple.output.x) {
-      case 0 -> switch (conveyorTriple.input.y - conveyorTriple.output.y) {
+  private Conveyor createNewConveyorFrom(ConveyorTriple conveyorTriple) {
+    return switch (conveyorTriple.input.coordinateA
+        - conveyorTriple.output.coordinateA) {
+      case 0 -> switch (conveyorTriple.input.coordinateB
+          - conveyorTriple.output.coordinateB) {
         case -2 -> // SUBTYPE 1
-            Conveyer.createConveyor(conveyorTriple.input.x,
-                (conveyorTriple.input.y + conveyorTriple.output.y) / 2,
+            Conveyor.createConveyor(conveyorTriple.input.coordinateA,
+                (conveyorTriple.input.coordinateB
+                    + conveyorTriple.output.coordinateB) / 2,
                 ConveyorSubType.SHORT_OUTPUT_SOUTH);
         case 2 -> // SUBTYPE 3
-            Conveyer.createConveyor(conveyorTriple.input.x,
-                (conveyorTriple.input.y + conveyorTriple.output.y) / 2,
+            Conveyor.createConveyor(conveyorTriple.input.coordinateA,
+                (conveyorTriple.input.coordinateB
+                    + conveyorTriple.output.coordinateB) / 2,
                 ConveyorSubType.SHORT_OUTPUT_NORTH);
         case -3 -> // SUBTYPE 5
-            Conveyer.createConveyor(conveyorTriple.input.x,
-                (conveyorTriple.input.y + conveyorTriple.output.y) / 2,
+            Conveyor.createConveyor(conveyorTriple.input.coordinateA,
+                (conveyorTriple.input.coordinateB
+                    + conveyorTriple.output.coordinateB) / 2,
                 ConveyorSubType.LONG_OUTPUT_SOUTH);
         case 3 -> // SUBTYPE 7
-            Conveyer.createConveyor(conveyorTriple.input.x,
-                (conveyorTriple.input.y + conveyorTriple.output.y) / 2,
+            Conveyor.createConveyor(conveyorTriple.input.coordinateA,
+                (conveyorTriple.input.coordinateB
+                    + conveyorTriple.output.coordinateB) / 2,
                 ConveyorSubType.LONG_OUTPUT_NORTH);
         default -> null;
       };
       case -2 -> // SUBTYPE 0
-          Conveyer.createConveyor((conveyorTriple.input.x + conveyorTriple.output.x) / 2,
-              conveyorTriple.input.y, ConveyorSubType.SHORT_OUTPUT_EAST);
+          Conveyor.createConveyor((conveyorTriple.input.coordinateA
+                  + conveyorTriple.output.coordinateA) / 2,
+              conveyorTriple.input.coordinateB, ConveyorSubType.SHORT_OUTPUT_EAST);
       case 2 -> // SUBTYPE 2
-          Conveyer.createConveyor((conveyorTriple.input.x + conveyorTriple.output.x) / 2,
-              conveyorTriple.input.y, ConveyorSubType.SHORT_OUTPUT_WEST);
+          Conveyor.createConveyor((conveyorTriple.input.coordinateA
+                  + conveyorTriple.output.coordinateA) / 2,
+              conveyorTriple.input.coordinateB, ConveyorSubType.SHORT_OUTPUT_WEST);
       case -3 -> // SUBTYPE 4
-          Conveyer.createConveyor((conveyorTriple.input.x + conveyorTriple.output.x) / 2,
-              conveyorTriple.input.y, ConveyorSubType.LONG_OUTPUT_EAST);
+          Conveyor.createConveyor((conveyorTriple.input.coordinateA
+                  + conveyorTriple.output.coordinateA) / 2,
+              conveyorTriple.input.coordinateB, ConveyorSubType.LONG_OUTPUT_EAST);
       case 3 -> // SUBTYPE 6
-          Conveyer.createConveyor((conveyorTriple.input.x + conveyorTriple.output.x) / 2,
-              conveyorTriple.input.y, ConveyorSubType.LONG_OUTPUT_WEST);
+          Conveyor.createConveyor((conveyorTriple.input.coordinateA
+                  + conveyorTriple.output.coordinateA) / 2,
+              conveyorTriple.input.coordinateB, ConveyorSubType.LONG_OUTPUT_WEST);
       default -> null;
     };
   }
@@ -249,28 +256,30 @@ public class ConnectorImpl implements Connector {
    * {@link ConveyorTriple}s.
    *
    * @param output The output the inputs are related to.
-   * @return A queue of {@link ConveyorTriple}s for every {@link Conveyer} that can be placed with
-   * the given output.
+   * @return A queue of {@link ConveyorTriple}s for every {@link Conveyor} that can be placed with
+   *         the given output.
    */
   private Queue<ConveyorTriple> gatherInputsInQueue(Point output) {
     var conveyorQueue = new PriorityQueue<ConveyorTriple>(
         Comparator.comparingInt(a -> a.jumpCount));
     for (TileConnectionInfo[][] layer : this.connectionMatrix3D) {
       // NORTH TILE
-      if (output.y - 1 >= 0) {
-        addConnectionTriples(conveyorQueue, layer, output.x, output.y - 1);
+      if (output.coordinateB - 1 >= 0) {
+        addConnectionTriples(conveyorQueue, layer, output.coordinateA, output.coordinateB
+            - 1);
       }
       // EAST TILE
-      if (output.x + 1 < this.field.getWidth()) {
-        addConnectionTriples(conveyorQueue, layer, output.x + 1, output.y);
+      if (output.coordinateA + 1 < this.field.getWidth()) {
+        addConnectionTriples(conveyorQueue, layer, output.coordinateA + 1, output.coordinateB);
       }
       // SOUTH TILE
-      if (output.y + 1 < this.field.getHeight()) {
-        addConnectionTriples(conveyorQueue, layer, output.x, output.y + 1);
+      if (output.coordinateB + 1 < this.field.getHeight()) {
+        addConnectionTriples(conveyorQueue, layer, output.coordinateA, output.coordinateB
+            + 1);
       }
       // WEST TILE
-      if (output.x - 1 >= 0) {
-        addConnectionTriples(conveyorQueue, layer, output.x - 1, output.y);
+      if (output.coordinateA - 1 >= 0) {
+        addConnectionTriples(conveyorQueue, layer, output.coordinateA - 1, output.coordinateB);
       }
     }
     return conveyorQueue;
@@ -291,59 +300,64 @@ public class ConnectorImpl implements Connector {
     if (tile != null && tile.type == NodeType.INPUT) {
       for (Point output : tile.connectedNodes) {
         queue.add(new ConveyorTriple(new Point(x, y, NodeType.INPUT), output,
-            layer[output.y][output.x].jumpCount));
+            layer[output.coordinateB][output.coordinateA].jumpCount));
       }
     }
   }
 
   /**
-   * Checks if a {@link Point} is adjacent to a factory or to the input of a {@link Conveyer} that
+   * Checks if a {@link Point} is adjacent to a factory or to the input of a {@link Conveyor} that
    * is transitive adjacent to the {@code currentFactory}.
    *
    * @param output The coordinates that are checked for being adjacent to a factory- or
    *               conveyor-input
    * @return {@code true} if the given coordinates are adjacent to a factory- or conveyor-input,
-   * false otherwise.
+   *         false otherwise.
    */
   private boolean isAdjacentToFactory(Point output) {
     var factoryInputFound = false;
     // NORTH SIDE
-    if (output.y - 1 >= 0) {
+    if (output.coordinateB - 1 >= 0) {
       factoryInputFound =
-          isFactoryInput(output.x, output.y - 1) || isFactoryConnectedConveyorInput(output.x,
-              output.y - 1);
+          isFactoryInput(output.coordinateA, output.coordinateB
+              - 1) || isFactoryConnectedConveyorInput(output.coordinateA,
+              output.coordinateB - 1);
     }
     // EAST SIDE
-    if (output.x + 1 < this.field.getWidth()) {
-      factoryInputFound = factoryInputFound || isFactoryInput(output.x + 1, output.y)
-          || isFactoryConnectedConveyorInput(output.x + 1, output.y);
+    if (output.coordinateA + 1 < this.field.getWidth()) {
+      factoryInputFound = factoryInputFound || isFactoryInput(output.coordinateA
+          + 1, output.coordinateB)
+          || isFactoryConnectedConveyorInput(output.coordinateA + 1, output.coordinateB);
     }
     // SOUTH SIDE
-    if (output.y + 1 < this.field.getHeight()) {
-      factoryInputFound = factoryInputFound || isFactoryInput(output.x, output.y + 1)
-          || isFactoryConnectedConveyorInput(output.x, output.y + 1);
+    if (output.coordinateB + 1 < this.field.getHeight()) {
+      factoryInputFound = factoryInputFound || isFactoryInput(output.coordinateA, output.coordinateB
+          + 1)
+          || isFactoryConnectedConveyorInput(output.coordinateA, output.coordinateB
+          + 1);
     }
     // WEST SIDE
-    if (output.x - 1 >= 0) {
-      factoryInputFound = factoryInputFound || isFactoryInput(output.x - 1, output.y)
-          || isFactoryConnectedConveyorInput(output.x - 1, output.y);
+    if (output.coordinateA - 1 >= 0) {
+      factoryInputFound = factoryInputFound || isFactoryInput(output.coordinateA
+          - 1, output.coordinateB)
+          || isFactoryConnectedConveyorInput(output.coordinateA - 1, output.coordinateB);
     }
     return factoryInputFound;
   }
 
   /**
-   * Checks if the input of a {@link Conveyer} is transitively connected to the input of a
+   * Checks if the input of a {@link Conveyor} is transitively connected to the input of a
    * {@link Factory}.
    *
-   * @param x The x-coordinate of the input of a {@link Conveyer}.
-   * @param y The y-coordinate of the input of a {@link Conveyer}.
-   * @return {@code true] if the input defined by the given x- and y-coordinates is transitive
-   * connected to a {@link Factory}, {@code false} otherwise.
+   * @param x The x-coordinate of the input of a {@link Conveyor}.
+   * @param y The y-coordinate of the input of a {@link Conveyor}.
+   * @return {@code true} if the input defined by the given x- and y-coordinates is transitive
+   *         connected to a {@link Factory}, {@code false} otherwise.
    */
   private boolean isFactoryConnectedConveyorInput(int x, int y) {
     var object = this.fieldTiles[x][y].getObject().orElse(null);
-    var isConnectedConveyor = object != null && object.getClass().equals(Conveyer.class)
-        && this.placedConveyorsStack.contains((Conveyer) object);
+    var isConnectedConveyor = object != null && object.getClass().equals(Conveyor.class)
+        && this.placedConveyorsStack.contains((Conveyor) object);
     return this.fieldTiles[x][y].getType() == TileType.INPUT && isConnectedConveyor;
   }
 
@@ -353,7 +367,7 @@ public class ConnectorImpl implements Connector {
    * @param x The x-coordinate of a {@link Tile} from the current {@code fieldTiles}.
    * @param y The y-coordinate of a {@link Tile} from the current {@code fieldTiles}.
    * @return {@code true} if the given {@link Tile} is the input of a {@link Factory}, {@code false}
-   * otherwise.
+   *         otherwise.
    */
   private boolean isFactoryInput(int x, int y) {
     var object = this.fieldTiles[x][y].getObject().orElse(null);
@@ -367,7 +381,7 @@ public class ConnectorImpl implements Connector {
    *
    * @param mines A {@link Collection} of mines.
    * @return an array with coordinates of all outputs of all {@link Mine}s in the given
-   * {@link Collection}.
+   *         {@link Collection}.
    */
   private Point[] gatherMineOutputs(Collection<Mine> mines) {
     var outputs = new Point[mines.size()];
@@ -408,82 +422,75 @@ public class ConnectorImpl implements Connector {
   }
 
   /**
-   * TODO
+   * Tries to find outputs for the given inputs. This function prioritizes four tile
+   * {@link Conveyor}s over three tile {@link Conveyor}s.
    *
-   * @param factoryInputs  TODO
-   * @param currentIndex   TODO
-   * @param reachableMines TODO
+   * @param factoryInputs  An array of input coordinates that are already connected to the factory.
+   * @param reachableMines A {@link HashSet} of all mines that have been found until now.
    */
   private void buildConnectionMatrixWithFourTileConveyors(Point[] factoryInputs,
       HashSet<Mine> reachableMines) {
     for (int i = 0; i < FACTORY_OUTPUT_COUNT; ++i) {
-      var coord = factoryInputs[i];
-      this.queue = new ArrayDeque<>();
-      this.queue.add(coord);
-      this.current2DConnectionMatrix = this.connectionMatrix3D[i];
-      this.current2DConnectionMatrix[coord.y][coord.x] = new TileConnectionInfo(NodeType.INPUT,
-          0, new LinkedList<>());
-
-      while (!this.queue.isEmpty()) {
-        var currentInputCoord = this.queue.poll();
-        this.jumpCount =
-            this.current2DConnectionMatrix[currentInputCoord.y][currentInputCoord.x].jumpCount + 1;
-        var possibleOutputs = gatherPossibleOutputs(reachableMines, currentInputCoord);
-        var outputInputMap = determinePotentialConveyorInputsForOutputs(possibleOutputs,
-            Priority.FOUR_TILE_CONVEYOR);
-        updateConnectionMatrix(outputInputMap);
-      }
+      breadthFirstSearchMines(reachableMines, factoryInputs, i, Priority.FOUR_TILE_CONVEYOR);
     }
   }
 
   /**
-   * TODO
+   * Tries to find outputs for the given inputs. This function prioritizes three tile
+   * {@link Conveyor}s over four tile {@link Conveyor}s.
    *
-   * @param factoryInputs  TODO
-   * @param currentIndex   TODO
-   * @param reachableMines TODO
+   * @param factoryInputs  An array of input coordinates that are already connected to the factory.
+   * @param reachableMines A {@link HashSet} of all mines that have been found until now.
    */
   private void buildConnectionMatrixWithThreeTileConveyors(Point[] factoryInputs,
       HashSet<Mine> reachableMines) {
     for (int i = FACTORY_OUTPUT_COUNT; i < 2 * FACTORY_OUTPUT_COUNT; ++i) {
-      var coord = factoryInputs[i];
-      this.queue = new ArrayDeque<>();
-      this.queue.add(coord);
-      this.current2DConnectionMatrix = this.connectionMatrix3D[i];
-      this.current2DConnectionMatrix[coord.y][coord.x] = new TileConnectionInfo(NodeType.INPUT,
-          0, new LinkedList<>());
-
-      while (!this.queue.isEmpty()) {
-        var currentInputCoord = this.queue.poll();
-        this.jumpCount =
-            this.current2DConnectionMatrix[currentInputCoord.y][currentInputCoord.x].jumpCount + 1;
-        var possibleOutputs = gatherPossibleOutputs(reachableMines, currentInputCoord);
-        var outputInputMap = determinePotentialConveyorInputsForOutputs(possibleOutputs,
-            Priority.THREE_TILE_CONVEYOR);
-        updateConnectionMatrix(outputInputMap);
-      }
+      breadthFirstSearchMines(reachableMines, factoryInputs, i, Priority.THREE_TILE_CONVEYOR);
     }
   }
 
+  /**
+   * Tries to find outputs for the given inputs. This function chooses the {@link Conveyor} length
+   * randomly.
+   *
+   * @param factoryInputs  An array of input coordinates that are already connected to the factory.
+   * @param reachableMines A {@link HashSet} of all mines that have been found until now.
+   */
   private void buildConnectionMatrixWithRandomConveyors(Point[] factoryInputs,
       HashSet<Mine> reachableMines) {
     for (int i = 2 * FACTORY_OUTPUT_COUNT; i < 3 * FACTORY_OUTPUT_COUNT; ++i) {
-      var coord = factoryInputs[i];
-      this.queue = new ArrayDeque<>();
-      this.queue.add(coord);
-      this.current2DConnectionMatrix = this.connectionMatrix3D[i];
-      this.current2DConnectionMatrix[coord.y][coord.x] = new TileConnectionInfo(NodeType.INPUT,
-          0, new LinkedList<>());
+      breadthFirstSearchMines(reachableMines, factoryInputs, i, Priority.RANDOM);
+    }
+  }
 
-      while (!this.queue.isEmpty()) {
-        var currentInputCoord = this.queue.poll();
-        this.jumpCount =
-            this.current2DConnectionMatrix[currentInputCoord.y][currentInputCoord.x].jumpCount + 1;
-        var possibleOutputs = gatherPossibleOutputs(reachableMines, currentInputCoord);
-        var outputInputMap = determinePotentialConveyorInputsForOutputs(possibleOutputs,
-            Priority.RANDOM);
-        updateConnectionMatrix(outputInputMap);
-      }
+  /**
+   * Modified BFS that tries to find each reachable mine for one input {@link Tile} of a
+   * {@link Factory}.
+   *
+   * @param reachableMines A set of all mines that have been identified as reachable so far.
+   * @param factoryInputs The inputs of the {@link Factory} that is currently processed.
+   * @param i The current index of {@code factoryInputs}.
+   * @param prio The prioritized {@link Conveyor} length that will be placed during the search.
+   */
+  private void breadthFirstSearchMines(HashSet<Mine> reachableMines, Point[] factoryInputs, int i,
+      Priority prio) {
+    // Initialization
+    var coord = factoryInputs[i];
+    this.queue = new ArrayDeque<>();
+    this.queue.add(coord);
+    this.currentLayer = this.connectionMatrix3D[i];
+    this.currentLayer[coord.coordinateB][coord.coordinateA] = new TileConnectionInfo(NodeType.INPUT,
+        0, new LinkedList<>());
+
+    // BFS
+    while (!this.queue.isEmpty()) {
+      var currentInputCoord = this.queue.poll();
+      this.jumpCount =
+          this.currentLayer[currentInputCoord.coordinateB][currentInputCoord.coordinateA].jumpCount
+              + 1;
+      var possibleOutputs = gatherPossibleOutputs(reachableMines, currentInputCoord);
+      var outputInputMap = determinePotentialConveyorInputsForOutputs(possibleOutputs, prio);
+      updateConnectionMatrix(outputInputMap);
     }
   }
 
@@ -558,72 +565,88 @@ public class ConnectorImpl implements Connector {
   private Deque<Point> gatherPossibleInputs(Point output) {
     var inputDeque = new ArrayDeque<Point>();
     // NORTH POINTING CONVEYOR
-    boolean conveyorCanBePlaced = output.y - 3 >= 0;
+    boolean conveyorCanBePlaced = output.coordinateB - 3 >= 0;
     if (conveyorCanBePlaced) {
-      if (tileIsVacant(output.x, output.y - 1, NodeType.IN_BETWEEN) && tileIsVacant(output.x,
-          output.y - 2, NodeType.IN_BETWEEN) && tileIsVacant(output.x, output.y - 3,
-          NodeType.INPUT)) {
-        inputDeque.add(new Point(output.x, output.y - 3, NodeType.INPUT));
+      if (tileIsVacant(output.coordinateA, output.coordinateB
+          - 1, NodeType.IN_BETWEEN)
+          && tileIsVacant(output.coordinateA, output.coordinateB
+          - 2, NodeType.IN_BETWEEN)
+          && tileIsVacant(output.coordinateA, output.coordinateB
+          - 3, NodeType.INPUT)) {
+        inputDeque.add(new Point(output.coordinateA, output.coordinateB
+            - 3, NodeType.INPUT));
       } else {
         conveyorCanBePlaced = false;
       }
     }
-    if (!conveyorCanBePlaced && output.y - 2 >= 0) {
-      if (tileIsVacant(output.x, output.y - 1, NodeType.IN_BETWEEN) && tileIsVacant(output.x,
-          output.y - 2, NodeType.INPUT)) {
-        inputDeque.add(new Point(output.x, output.y - 2, NodeType.INPUT));
+    if (!conveyorCanBePlaced && output.coordinateB - 2 >= 0) {
+      if (tileIsVacant(output.coordinateA, output.coordinateB
+          - 1, NodeType.IN_BETWEEN)
+          && tileIsVacant(output.coordinateA, output.coordinateB
+          - 2, NodeType.INPUT)) {
+        inputDeque.add(new Point(output.coordinateA, output.coordinateB
+            - 2, NodeType.INPUT));
       }
     }
 
     // EAST POINTING CONVEYOR
-    conveyorCanBePlaced = output.x + 3 < this.field.getWidth();
+    conveyorCanBePlaced = output.coordinateA + 3 < this.field.getWidth();
     if (conveyorCanBePlaced) {
-      if (tileIsVacant(output.x + 1, output.y, NodeType.IN_BETWEEN) && tileIsVacant(output.x + 2,
-          output.y, NodeType.IN_BETWEEN) && tileIsVacant(output.x + 3, output.y, NodeType.INPUT)) {
-        inputDeque.add(new Point(output.x + 3, output.y, NodeType.INPUT));
+      if (tileIsVacant(output.coordinateA + 1, output.coordinateB, NodeType.IN_BETWEEN)
+          && tileIsVacant(output.coordinateA + 2, output.coordinateB, NodeType.IN_BETWEEN)
+          && tileIsVacant(output.coordinateA + 3, output.coordinateB, NodeType.INPUT)) {
+        inputDeque.add(new Point(output.coordinateA + 3, output.coordinateB, NodeType.INPUT));
       } else {
         conveyorCanBePlaced = false;
       }
     }
-    if (!conveyorCanBePlaced && output.x + 2 < this.field.getWidth()) {
-      if (tileIsVacant(output.x + 1, output.y, NodeType.IN_BETWEEN) && tileIsVacant(output.x + 2,
-          output.y, NodeType.INPUT)) {
-        inputDeque.add(new Point(output.x + 2, output.y, NodeType.INPUT));
+    if (!conveyorCanBePlaced && output.coordinateA + 2 < this.field.getWidth()) {
+      if (tileIsVacant(output.coordinateA + 1, output.coordinateB, NodeType.IN_BETWEEN)
+          && tileIsVacant(output.coordinateA + 2, output.coordinateB, NodeType.INPUT)) {
+        inputDeque.add(new Point(output.coordinateA + 2, output.coordinateB, NodeType.INPUT));
       }
     }
 
     // SOUTH POINTING CONVEYOR
-    conveyorCanBePlaced = output.y + 3 < this.field.getHeight();
+    conveyorCanBePlaced = output.coordinateB + 3 < this.field.getHeight();
     if (conveyorCanBePlaced) {
-      if (tileIsVacant(output.x, output.y + 1, NodeType.IN_BETWEEN) && tileIsVacant(output.x,
-          output.y + 2, NodeType.IN_BETWEEN) && tileIsVacant(output.x, output.y + 3,
-          NodeType.INPUT)) {
-        inputDeque.add(new Point(output.x, output.y + 3, NodeType.INPUT));
+      if (tileIsVacant(output.coordinateA, output.coordinateB
+          + 1, NodeType.IN_BETWEEN)
+          && tileIsVacant(output.coordinateA, output.coordinateB
+          + 2, NodeType.IN_BETWEEN)
+          && tileIsVacant(output.coordinateA, output.coordinateB
+          + 3, NodeType.INPUT)) {
+        inputDeque.add(new Point(output.coordinateA, output.coordinateB
+            + 3, NodeType.INPUT));
       } else {
         conveyorCanBePlaced = false;
       }
     }
-    if (!conveyorCanBePlaced && output.y + 2 < this.field.getHeight()) {
-      if (tileIsVacant(output.x, output.y + 1, NodeType.IN_BETWEEN) && tileIsVacant(output.x,
-          output.y + 2, NodeType.INPUT)) {
-        inputDeque.add(new Point(output.x, output.y + 2, NodeType.IN_BETWEEN));
+    if (!conveyorCanBePlaced && output.coordinateB + 2 < this.field.getHeight()) {
+      if (tileIsVacant(output.coordinateA, output.coordinateB
+          + 1, NodeType.IN_BETWEEN)
+          && tileIsVacant(output.coordinateA, output.coordinateB
+          + 2, NodeType.INPUT)) {
+        inputDeque.add(new Point(output.coordinateA, output.coordinateB
+            + 2, NodeType.IN_BETWEEN));
       }
     }
 
     // WEST POINTING CONVEYOR
-    conveyorCanBePlaced = output.x - 3 >= 0;
+    conveyorCanBePlaced = output.coordinateA - 3 >= 0;
     if (conveyorCanBePlaced) {
-      if (tileIsVacant(output.x - 1, output.y, NodeType.IN_BETWEEN) && tileIsVacant(output.x - 2,
-          output.y, NodeType.IN_BETWEEN) && tileIsVacant(output.x - 3, output.y, NodeType.INPUT)) {
-        inputDeque.add(new Point(output.x - 3, output.y, NodeType.INPUT));
+      if (tileIsVacant(output.coordinateA - 1, output.coordinateB, NodeType.IN_BETWEEN)
+          && tileIsVacant(output.coordinateA - 2, output.coordinateB, NodeType.IN_BETWEEN)
+          && tileIsVacant(output.coordinateA - 3, output.coordinateB, NodeType.INPUT)) {
+        inputDeque.add(new Point(output.coordinateA - 3, output.coordinateB, NodeType.INPUT));
       } else {
         conveyorCanBePlaced = false;
       }
     }
-    if (!conveyorCanBePlaced && output.x - 2 >= 0) {
-      if (tileIsVacant(output.x - 1, output.y, NodeType.IN_BETWEEN) && tileIsVacant(output.x - 2,
-          output.y, NodeType.INPUT)) {
-        inputDeque.add(new Point(output.x - 2, output.y, NodeType.INPUT));
+    if (!conveyorCanBePlaced && output.coordinateA - 2 >= 0) {
+      if (tileIsVacant(output.coordinateA - 1, output.coordinateB, NodeType.IN_BETWEEN)
+          && tileIsVacant(output.coordinateA - 2, output.coordinateB, NodeType.INPUT)) {
+        inputDeque.add(new Point(output.coordinateA - 2, output.coordinateB, NodeType.INPUT));
       }
     }
     return inputDeque;
@@ -632,73 +655,89 @@ public class ConnectorImpl implements Connector {
   private Deque<Point> gatherPossibleInputsAlt1(Point output) {
     var inputDeque = new ArrayDeque<Point>();
     // NORTH POINTING CONVEYOR
-    boolean conveyorCanBePlaced = output.y - 2 >= 0;
+    boolean conveyorCanBePlaced = output.coordinateB - 2 >= 0;
     if (conveyorCanBePlaced) {
-      if (tileIsVacant(output.x, output.y - 1, NodeType.IN_BETWEEN) && tileIsVacant(output.x,
-          output.y - 2, NodeType.INPUT)) {
-        inputDeque.add(new Point(output.x, output.y - 2, NodeType.INPUT));
+      if (tileIsVacant(output.coordinateA, output.coordinateB
+          - 1, NodeType.IN_BETWEEN)
+          && tileIsVacant(output.coordinateA, output.coordinateB
+          - 2, NodeType.INPUT)) {
+        inputDeque.add(new Point(output.coordinateA, output.coordinateB
+            - 2, NodeType.INPUT));
       } else {
         conveyorCanBePlaced = false;
       }
     }
-    if (!conveyorCanBePlaced && output.y - 3 >= 0) {
-      if (tileIsVacant(output.x, output.y - 1, NodeType.IN_BETWEEN) && tileIsVacant(output.x,
-          output.y - 2, NodeType.IN_BETWEEN) && tileIsVacant(output.x, output.y - 3,
-          NodeType.INPUT)) {
-        inputDeque.add(new Point(output.x, output.y - 3, NodeType.INPUT));
+    if (!conveyorCanBePlaced && output.coordinateB - 3 >= 0) {
+      if (tileIsVacant(output.coordinateA, output.coordinateB
+          - 1, NodeType.IN_BETWEEN)
+          && tileIsVacant(output.coordinateA, output.coordinateB
+          - 2, NodeType.IN_BETWEEN)
+          && tileIsVacant(output.coordinateA, output.coordinateB
+          - 3, NodeType.INPUT)) {
+        inputDeque.add(new Point(output.coordinateA, output.coordinateB
+            - 3, NodeType.INPUT));
       }
     }
 
     // EAST POINTING CONVEYOR
-    conveyorCanBePlaced = output.x + 2 < this.field.getWidth();
+    conveyorCanBePlaced = output.coordinateA + 2 < this.field.getWidth();
     if (conveyorCanBePlaced) {
-      if (tileIsVacant(output.x + 1, output.y, NodeType.IN_BETWEEN) && tileIsVacant(output.x + 2,
-          output.y, NodeType.INPUT)) {
-        inputDeque.add(new Point(output.x + 2, output.y, NodeType.INPUT));
+      if (tileIsVacant(output.coordinateA + 1, output.coordinateB, NodeType.IN_BETWEEN)
+          && tileIsVacant(output.coordinateA + 2, output.coordinateB, NodeType.INPUT)) {
+        inputDeque.add(new Point(output.coordinateA + 2, output.coordinateB, NodeType.INPUT));
       } else {
         conveyorCanBePlaced = false;
       }
     }
-    if (!conveyorCanBePlaced && output.x + 3 < this.field.getWidth()) {
-      if (tileIsVacant(output.x + 1, output.y, NodeType.IN_BETWEEN) && tileIsVacant(output.x + 2,
-          output.y, NodeType.IN_BETWEEN) && tileIsVacant(output.x + 3, output.y,
+    if (!conveyorCanBePlaced && output.coordinateA + 3 < this.field.getWidth()) {
+      if (tileIsVacant(output.coordinateA + 1, output.coordinateB, NodeType.IN_BETWEEN)
+          && tileIsVacant(output.coordinateA + 2, output.coordinateB, NodeType.IN_BETWEEN)
+          && tileIsVacant(output.coordinateA + 3, output.coordinateB,
           NodeType.INPUT)) {
-        inputDeque.add(new Point(output.x + 3, output.y, NodeType.INPUT));
+        inputDeque.add(new Point(output.coordinateA + 3, output.coordinateB, NodeType.INPUT));
       }
     }
 
     // SOUTH POINTING CONVEYOR
-    conveyorCanBePlaced = output.y + 2 < this.field.getHeight();
+    conveyorCanBePlaced = output.coordinateB + 2 < this.field.getHeight();
     if (conveyorCanBePlaced) {
-      if (tileIsVacant(output.x, output.y + 1, NodeType.IN_BETWEEN) && tileIsVacant(output.x,
-          output.y + 2, NodeType.IN_BETWEEN)) {
-        inputDeque.add(new Point(output.x, output.y + 2, NodeType.INPUT));
+      if (tileIsVacant(output.coordinateA, output.coordinateB
+          + 1, NodeType.IN_BETWEEN)
+          && tileIsVacant(output.coordinateA, output.coordinateB
+          + 2, NodeType.IN_BETWEEN)) {
+        inputDeque.add(new Point(output.coordinateA, output.coordinateB
+            + 2, NodeType.INPUT));
       } else {
         conveyorCanBePlaced = false;
       }
     }
-    if (!conveyorCanBePlaced && output.y + 3 < this.field.getHeight()) {
-      if (tileIsVacant(output.x, output.y + 1, NodeType.IN_BETWEEN) && tileIsVacant(output.x,
-          output.y + 2, NodeType.IN_BETWEEN) && tileIsVacant(output.x, output.y + 3,
-          NodeType.INPUT)) {
-        inputDeque.add(new Point(output.x, output.y + 3, NodeType.IN_BETWEEN));
+    if (!conveyorCanBePlaced && output.coordinateB + 3 < this.field.getHeight()) {
+      if (tileIsVacant(output.coordinateA, output.coordinateB
+          + 1, NodeType.IN_BETWEEN)
+          && tileIsVacant(output.coordinateA, output.coordinateB
+          + 2, NodeType.IN_BETWEEN)
+          && tileIsVacant(output.coordinateA, output.coordinateB
+          + 3, NodeType.INPUT)) {
+        inputDeque.add(new Point(output.coordinateA, output.coordinateB
+            + 3, NodeType.IN_BETWEEN));
       }
     }
 
     // WEST POINTING CONVEYOR
-    conveyorCanBePlaced = output.x - 2 >= 0;
+    conveyorCanBePlaced = output.coordinateA - 2 >= 0;
     if (conveyorCanBePlaced) {
-      if (tileIsVacant(output.x - 1, output.y, NodeType.IN_BETWEEN) && tileIsVacant(output.x - 2,
-          output.y, NodeType.INPUT)) {
-        inputDeque.add(new Point(output.x - 2, output.y, NodeType.INPUT));
+      if (tileIsVacant(output.coordinateA - 1, output.coordinateB, NodeType.IN_BETWEEN)
+          && tileIsVacant(output.coordinateA - 2, output.coordinateB, NodeType.INPUT)) {
+        inputDeque.add(new Point(output.coordinateA - 2, output.coordinateB, NodeType.INPUT));
       } else {
         conveyorCanBePlaced = false;
       }
     }
-    if (!conveyorCanBePlaced && output.x - 3 >= 0) {
-      if (tileIsVacant(output.x - 1, output.y, NodeType.IN_BETWEEN) && tileIsVacant(output.x - 2,
-          output.y, NodeType.IN_BETWEEN) && tileIsVacant(output.x - 3, output.y, NodeType.INPUT)) {
-        inputDeque.add(new Point(output.x - 3, output.y, NodeType.INPUT));
+    if (!conveyorCanBePlaced && output.coordinateA - 3 >= 0) {
+      if (tileIsVacant(output.coordinateA - 1, output.coordinateB, NodeType.IN_BETWEEN)
+          && tileIsVacant(output.coordinateA - 2, output.coordinateB, NodeType.IN_BETWEEN)
+          && tileIsVacant(output.coordinateA - 3, output.coordinateB, NodeType.INPUT)) {
+        inputDeque.add(new Point(output.coordinateA - 3, output.coordinateB, NodeType.INPUT));
       }
     }
     return inputDeque;
@@ -717,8 +756,9 @@ public class ConnectorImpl implements Connector {
    */
   private Collection<Point> gatherPossibleOutputs(Collection<Mine> reachableMines, Point center) {
     var possibleOutputCoords = new ArrayList<Point>();
-    if (center.y - 1 >= 0) {
-      var currTile = this.field.getTiles()[center.x][center.y - 1];
+    if (center.coordinateB - 1 >= 0) {
+      var currTile = this.field.getTiles()[center.coordinateA][center.coordinateB
+          - 1];
       var baseObject = currTile.getObject().orElse(null);
       if (baseObject != null && baseObject.getClass() == Mine.class
           && currTile.getType() == TileType.OUTPUT) {
@@ -727,14 +767,15 @@ public class ConnectorImpl implements Connector {
         }
       } else {
         if (currTile.getType() == TileType.EMPTY
-            && this.current2DConnectionMatrix[center.y - 1][center.x] == null) {
-          possibleOutputCoords.add(new Point(center.x, center.y - 1, NodeType.OUTPUT));
+            && this.currentLayer[center.coordinateB - 1][center.coordinateA] == null) {
+          possibleOutputCoords.add(new Point(center.coordinateA, center.coordinateB
+              - 1, NodeType.OUTPUT));
         }
       }
     }
 
-    if (center.x + 1 < this.field.getWidth()) {
-      var currTile = this.field.getTiles()[center.x + 1][center.y];
+    if (center.coordinateA + 1 < this.field.getWidth()) {
+      var currTile = this.field.getTiles()[center.coordinateA + 1][center.coordinateB];
       var baseObject = currTile.getObject().orElse(null);
       if (baseObject != null && baseObject.getClass() == Mine.class
           && currTile.getType() == TileType.OUTPUT) {
@@ -743,14 +784,16 @@ public class ConnectorImpl implements Connector {
         }
       } else {
         if (currTile.getType() == TileType.EMPTY
-            && this.current2DConnectionMatrix[center.y][center.x + 1] == null) {
-          possibleOutputCoords.add(new Point(center.x + 1, center.y, NodeType.OUTPUT));
+            && this.currentLayer[center.coordinateB][center.coordinateA + 1] == null) {
+          possibleOutputCoords.add(
+              new Point(center.coordinateA + 1, center.coordinateB, NodeType.OUTPUT));
         }
       }
     }
 
-    if (center.y + 1 < this.field.getHeight()) {
-      var currTile = this.field.getTiles()[center.x][center.y + 1];
+    if (center.coordinateB + 1 < this.field.getHeight()) {
+      var currTile = this.field.getTiles()[center.coordinateA][center.coordinateB
+          + 1];
       var baseObject = currTile.getObject().orElse(null);
       if (baseObject != null && baseObject.getClass() == Mine.class
           && currTile.getType() == TileType.OUTPUT) {
@@ -759,14 +802,15 @@ public class ConnectorImpl implements Connector {
         }
       } else {
         if (currTile.getType() == TileType.EMPTY
-            && this.current2DConnectionMatrix[center.y + 1][center.x] == null) {
-          possibleOutputCoords.add(new Point(center.x, center.y + 1, NodeType.OUTPUT));
+            && this.currentLayer[center.coordinateB + 1][center.coordinateA] == null) {
+          possibleOutputCoords.add(new Point(center.coordinateA, center.coordinateB
+              + 1, NodeType.OUTPUT));
         }
       }
     }
 
-    if (center.x - 1 >= 0) {
-      var currTile = this.field.getTiles()[center.x - 1][center.y];
+    if (center.coordinateA - 1 >= 0) {
+      var currTile = this.field.getTiles()[center.coordinateA - 1][center.coordinateB];
       var baseObject = currTile.getObject().orElse(null);
       if (baseObject != null && baseObject.getClass() == Mine.class
           && currTile.getType() == TileType.OUTPUT) {
@@ -775,8 +819,9 @@ public class ConnectorImpl implements Connector {
         }
       } else {
         if (currTile.getType() == TileType.EMPTY
-            && this.current2DConnectionMatrix[center.y][center.x - 1] == null) {
-          possibleOutputCoords.add(new Point(center.x - 1, center.y, NodeType.OUTPUT));
+            && this.currentLayer[center.coordinateB][center.coordinateA - 1] == null) {
+          possibleOutputCoords.add(
+              new Point(center.coordinateA - 1, center.coordinateB, NodeType.OUTPUT));
         }
       }
     }
@@ -789,20 +834,21 @@ public class ConnectorImpl implements Connector {
    * be placed. The check is different for {@code NodeType.INPUT} tiles and for
    * {@code NodeType.IN_BETWEEN} tiles.
    *
-   * @param xPos         The horizontal position of the tile that will be checked.
-   * @param yPos         The vertical position of the tile that will be checked.
+   * @param horizontalPosition The horizontal position of the tile that will be checked.
+   * @param verticalPosition   The vertical position of the tile that will be checked.
    * @param requiredType The {@link NodeType} the tile will be checked for.
    * @return true if a tile of the given type can be placed at the given coordinates.
    */
-  private boolean tileIsVacant(int xPos, int yPos, NodeType requiredType) {
+  private boolean tileIsVacant(int horizontalPosition, int verticalPosition,
+      NodeType requiredType) {
     if (requiredType == NodeType.INPUT) {
-      return this.fieldTiles[xPos][yPos].getType() == TileType.EMPTY && (
-          this.current2DConnectionMatrix[yPos][xPos] == null
-              || this.current2DConnectionMatrix[yPos][xPos].type == NodeType.INPUT);
+      return this.fieldTiles[horizontalPosition][verticalPosition].getType() == TileType.EMPTY
+          && (this.currentLayer[verticalPosition][horizontalPosition] == null
+          || this.currentLayer[verticalPosition][horizontalPosition].type == NodeType.INPUT);
     } else {
-      return (this.fieldTiles[xPos][yPos].getType() == TileType.EMPTY
-          || this.fieldTiles[xPos][yPos].getType() == TileType.CROSSABLE)
-          && this.current2DConnectionMatrix[yPos][xPos] == null;
+      return (this.fieldTiles[horizontalPosition][verticalPosition].getType() == TileType.EMPTY
+          || this.fieldTiles[horizontalPosition][verticalPosition].getType() == TileType.CROSSABLE)
+          && this.currentLayer[verticalPosition][horizontalPosition] == null;
     }
   }
 
@@ -825,70 +871,81 @@ public class ConnectorImpl implements Connector {
   }
 
   /**
-   * Determines the {@link Orientation} of the {@link Conveyer} defined by {@code output} and
+   * Determines the {@link Orientation} of the {@link Conveyor} defined by {@code output} and
    * {@code input} and writes it to the {@code current2DConnectionMatrix}. No check is performed for
-   * validity of the placed {@link Conveyer}, because only valid conveyors are expected by this
+   * validity of the placed {@link Conveyor}, because only valid conveyors are expected by this
    * method.
    *
-   * @param output The coordinates of the output of the placed {@link Conveyer}.
-   * @param input  The coordinates of the input of the placed {@link Conveyer}.
+   * @param output The coordinates of the output of the placed {@link Conveyor}.
+   * @param input  The coordinates of the input of the placed {@link Conveyor}.
    */
   private synchronized void writeConveyorPositionToConnectionMatrix(Point output, Point input) {
-    var orientation = output.x - input.x < 0 ? Orientation.EAST
-        : output.x - input.x > 0 ? Orientation.WEST
-            : output.y - input.y < 0 ? Orientation.SOUTH : Orientation.NORTH;
     // Input node handling.
     // In this function the input tile can only be of type input or equal to null.
-    if (this.current2DConnectionMatrix[input.y][input.x] == null) {
-      this.current2DConnectionMatrix[input.y][input.x] = new TileConnectionInfo(NodeType.INPUT,
+    if (this.currentLayer[input.coordinateB][input.coordinateA] == null) {
+      this.currentLayer[input.coordinateB][input.coordinateA] = new TileConnectionInfo(
+          NodeType.INPUT,
           this.jumpCount, new LinkedList<>());
-      this.current2DConnectionMatrix[input.y][input.x].connectedNodes.addLast(output);
+      this.currentLayer[input.coordinateB][input.coordinateA].connectedNodes.addLast(output);
       this.queue.add(input);
-    } else if (this.current2DConnectionMatrix[input.y][input.x].type == NodeType.INPUT) {
-      this.current2DConnectionMatrix[input.y][input.x].connectedNodes.addLast(output);
-      if (this.current2DConnectionMatrix[input.y][input.x].jumpCount > this.jumpCount) {
-        this.current2DConnectionMatrix[input.y][input.x].jumpCount = this.jumpCount;
+    } else if (this.currentLayer[input.coordinateB][input.coordinateA].type == NodeType.INPUT) {
+      this.currentLayer[input.coordinateB][input.coordinateA].connectedNodes.addLast(output);
+      if (this.currentLayer[input.coordinateB][input.coordinateA].jumpCount > this.jumpCount) {
+        this.currentLayer[input.coordinateB][input.coordinateA].jumpCount = this.jumpCount;
       }
     }
     // Output node.
-    if (this.current2DConnectionMatrix[output.y][output.x] == null) {
-      this.current2DConnectionMatrix[output.y][output.x] = new TileConnectionInfo(NodeType.OUTPUT,
+    if (this.currentLayer[output.coordinateB][output.coordinateA] == null) {
+      this.currentLayer[output.coordinateB][output.coordinateA] = new TileConnectionInfo(
+          NodeType.OUTPUT,
           this.jumpCount, new LinkedList<>());
     }
-    this.current2DConnectionMatrix[output.y][output.x].connectedNodes.addLast(input);
+    this.currentLayer[output.coordinateB][output.coordinateA].connectedNodes.addLast(input);
+    var orientation = output.coordinateA
+        - input.coordinateA < 0 ? Orientation.EAST
+        : output.coordinateA
+            - input.coordinateA > 0 ? Orientation.WEST
+            : output.coordinateB
+                - input.coordinateB < 0 ? Orientation.SOUTH : Orientation.NORTH;
     // HANDLE NODES IN BETWEEN.
     switch (orientation) {
       case NORTH -> {
-        this.current2DConnectionMatrix[output.y - 1][output.x] = new TileConnectionInfo(
+        this.currentLayer[output.coordinateB - 1][output.coordinateA] = new TileConnectionInfo(
             NodeType.IN_BETWEEN, this.jumpCount, null);
-        if (output.y - input.y > 2) {
-          this.current2DConnectionMatrix[output.y - 2][output.x] = new TileConnectionInfo(
+        if (output.coordinateB
+            - input.coordinateB > 2) {
+          this.currentLayer[output.coordinateB - 2][output.coordinateA] = new TileConnectionInfo(
               NodeType.IN_BETWEEN, this.jumpCount, null);
         }
       }
       case EAST -> {
-        this.current2DConnectionMatrix[output.y][output.x + 1] = new TileConnectionInfo(
+        this.currentLayer[output.coordinateB][output.coordinateA + 1] = new TileConnectionInfo(
             NodeType.IN_BETWEEN, this.jumpCount, null);
-        if (input.x - output.x > 2) {
-          this.current2DConnectionMatrix[output.y][output.x + 2] = new TileConnectionInfo(
+        if (input.coordinateA
+            - output.coordinateA > 2) {
+          this.currentLayer[output.coordinateB][output.coordinateA + 2] = new TileConnectionInfo(
               NodeType.IN_BETWEEN, this.jumpCount, null);
         }
       }
       case SOUTH -> {
-        this.current2DConnectionMatrix[output.y + 1][output.x] = new TileConnectionInfo(
+        this.currentLayer[output.coordinateB + 1][output.coordinateA] = new TileConnectionInfo(
             NodeType.IN_BETWEEN, this.jumpCount, null);
-        if (input.y - output.y > 2) {
-          this.current2DConnectionMatrix[output.y + 2][output.x] = new TileConnectionInfo(
+        if (input.coordinateB
+            - output.coordinateB > 2) {
+          this.currentLayer[output.coordinateB + 2][output.coordinateA] = new TileConnectionInfo(
               NodeType.IN_BETWEEN, this.jumpCount, null);
         }
       }
       case WEST -> {
-        this.current2DConnectionMatrix[output.y][output.x - 1] = new TileConnectionInfo(
+        this.currentLayer[output.coordinateB][output.coordinateA - 1] = new TileConnectionInfo(
             NodeType.IN_BETWEEN, this.jumpCount, null);
-        if (output.x - input.x > 2) {
-          this.current2DConnectionMatrix[output.y][output.x - 2] = new TileConnectionInfo(
+        if (output.coordinateA
+            - input.coordinateA > 2) {
+          this.currentLayer[output.coordinateB][output.coordinateA - 2] = new TileConnectionInfo(
               NodeType.IN_BETWEEN, this.jumpCount, null);
         }
+      }
+      default -> {
       }
     }
   }
@@ -905,7 +962,7 @@ public class ConnectorImpl implements Connector {
      */
     LinkedList<Point> connectedNodes;
     /**
-     * The amount of {@link Conveyer} jumps that must be performed from this tile to reach the
+     * The amount of {@link Conveyor} jumps that must be performed from this tile to reach the
      * {@code currentFactory}.
      */
     int jumpCount;
@@ -925,15 +982,15 @@ public class ConnectorImpl implements Connector {
    */
   private enum NodeType {
     /**
-     * The input of a {@link Conveyer} can be placed here.
+     * The input of a {@link Conveyor} can be placed here.
      */
     INPUT,
     /**
-     * The output of a {@link Conveyer} can be placed here.
+     * The output of a {@link Conveyor} can be placed here.
      */
     OUTPUT,
     /**
-     * The passable part of a {@link Conveyer} can be placed here.
+     * The passable part of a {@link Conveyor} can be placed here.
      */
     IN_BETWEEN,
   }
@@ -951,14 +1008,14 @@ public class ConnectorImpl implements Connector {
    */
   private static class Point {
 
-    int x;
-    int y;
+    int coordinateA;
+    int coordinateB;
     NodeType type;
 
 
-    Point(int x, int y, NodeType type) {
-      this.x = x;
-      this.y = y;
+    Point(int coordinateA, int coordinateB, NodeType type) {
+      this.coordinateA = coordinateA;
+      this.coordinateB = coordinateB;
       this.type = type;
     }
 
@@ -966,14 +1023,16 @@ public class ConnectorImpl implements Connector {
     public boolean equals(Object obj) {
       if (obj != null && obj.getClass() == Point.class) {
         var lhs = (Point) obj;
-        return this.x == lhs.x && this.y == lhs.y && this.type == lhs.type;
+        return this.coordinateA
+            == lhs.coordinateA && this.coordinateB
+            == lhs.coordinateB && this.type == lhs.type;
       }
       return false;
     }
   }
 
   /**
-   * A {@link Conveyer} described by an input an output and the number of jumps that are required
+   * A {@link Conveyor} described by an input an output and the number of jumps that are required
    * from the respective conveyor to reach the {@code currentFactory}.
    */
   private static class ConveyorTriple {
@@ -1051,6 +1110,11 @@ public class ConnectorImpl implements Connector {
               case INPUT -> stringBuilder.append("+");
               case OUTPUT -> stringBuilder.append("-");
               case IN_BETWEEN -> stringBuilder.append("o");
+              default -> {
+                // There is no other value than INPUT, OUTPUT and IN_BETWEEN in this enum,
+                // Mr. Google Style, why do I need a default case here...? O_o
+                // ALL HAIL THE Rust match STATEMENT!!!
+              }
             }
           } else {
             stringBuilder.append(".");

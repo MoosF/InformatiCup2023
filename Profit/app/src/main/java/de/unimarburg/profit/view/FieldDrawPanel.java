@@ -1,7 +1,6 @@
 package de.unimarburg.profit.view;
 
 import de.unimarburg.profit.model.BaseObject;
-import de.unimarburg.profit.model.Conveyer;
 import de.unimarburg.profit.model.Field;
 import de.unimarburg.profit.model.Tile;
 import java.awt.Color;
@@ -69,7 +68,7 @@ public class FieldDrawPanel extends JPanel {
     switch (baseObject.getClass().getSimpleName()) {
       case "Obstacle" -> color = Color.DARK_GRAY;
       case "Deposit" -> color = Color.LIGHT_GRAY;
-      case "Conveyer" -> color = Color.ORANGE;
+      case "Conveyor" -> color = Color.ORANGE;
       case "Mine" -> color = new Color(0, 200, 40);
       case "Factory" -> color = new Color(64, 93, 239);
       case "Combiner" -> color = new Color(255, 150, 0);
