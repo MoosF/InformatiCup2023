@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.Random;
 import java.util.Stack;
 
 /**
@@ -69,12 +70,16 @@ public class ConnectorImpl implements Connector {
   private Deque<Point> queue;
   private Stack<Conveyer> placedConveyorsStack;
   /**
-   * The maximum output count of a {@link Factory}. If the size of the factory grows, this value
-   * must be adjusted. Otherwise, calling this classes methods will lead to
+   * The maximum input count of a {@link Factory}. If the size of the factory grows, this value must
+   * be adjusted. Otherwise, calling this classes methods will lead to
    * ArrayIndexOutOfBoundsExceptions.
    */
   private static final int FACTORY_OUTPUT_COUNT = 16;
-  private static final int LAYER_COUNT = FACTORY_OUTPUT_COUNT * 2;
+  /**
+   * The number of times a connection matrix will be build for every input of the factory.
+   */
+  private static final int RUNS = 3;
+  private static final int LAYER_COUNT = FACTORY_OUTPUT_COUNT * RUNS;
 
   /**
    * Constructor of class {@link ConnectorImpl}. Sets the {@link Field} this {@link Connector} will
@@ -395,7 +400,23 @@ public class ConnectorImpl implements Connector {
     var factoryInputs = gatherFactoryInputCoordinates();
     var reachableMines = new HashSet<Mine>();
 
-    for (int i = 0; i < factoryInputs.length; ++i) {
+    buildConnectionMatrixWithFourTileConveyors(factoryInputs, reachableMines);
+    buildConnectionMatrixWithThreeTileConveyors(factoryInputs, reachableMines);
+    buildConnectionMatrixWithRandomConveyors(factoryInputs, reachableMines);
+
+    return reachableMines;
+  }
+
+  /**
+   * TODO
+   *
+   * @param factoryInputs  TODO
+   * @param currentIndex   TODO
+   * @param reachableMines TODO
+   */
+  private void buildConnectionMatrixWithFourTileConveyors(Point[] factoryInputs,
+      HashSet<Mine> reachableMines) {
+    for (int i = 0; i < FACTORY_OUTPUT_COUNT; ++i) {
       var coord = factoryInputs[i];
       this.queue = new ArrayDeque<>();
       this.queue.add(coord);
@@ -405,13 +426,65 @@ public class ConnectorImpl implements Connector {
 
       while (!this.queue.isEmpty()) {
         var currentInputCoord = this.queue.poll();
-        this.jumpCount = this.current2DConnectionMatrix[currentInputCoord.y][currentInputCoord.x].jumpCount + 1;
+        this.jumpCount =
+            this.current2DConnectionMatrix[currentInputCoord.y][currentInputCoord.x].jumpCount + 1;
         var possibleOutputs = gatherPossibleOutputs(reachableMines, currentInputCoord);
-        var outputInputMap = determinePotentialConveyorInputsForOutputs(possibleOutputs);
+        var outputInputMap = determinePotentialConveyorInputsForOutputs(possibleOutputs,
+            Priority.FOUR_TILE_CONVEYOR);
         updateConnectionMatrix(outputInputMap);
       }
     }
-    return reachableMines;
+  }
+
+  /**
+   * TODO
+   *
+   * @param factoryInputs  TODO
+   * @param currentIndex   TODO
+   * @param reachableMines TODO
+   */
+  private void buildConnectionMatrixWithThreeTileConveyors(Point[] factoryInputs,
+      HashSet<Mine> reachableMines) {
+    for (int i = FACTORY_OUTPUT_COUNT; i < 2 * FACTORY_OUTPUT_COUNT; ++i) {
+      var coord = factoryInputs[i];
+      this.queue = new ArrayDeque<>();
+      this.queue.add(coord);
+      this.current2DConnectionMatrix = this.connectionMatrix3D[i];
+      this.current2DConnectionMatrix[coord.y][coord.x] = new TileConnectionInfo(NodeType.INPUT,
+          0, new LinkedList<>());
+
+      while (!this.queue.isEmpty()) {
+        var currentInputCoord = this.queue.poll();
+        this.jumpCount =
+            this.current2DConnectionMatrix[currentInputCoord.y][currentInputCoord.x].jumpCount + 1;
+        var possibleOutputs = gatherPossibleOutputs(reachableMines, currentInputCoord);
+        var outputInputMap = determinePotentialConveyorInputsForOutputs(possibleOutputs,
+            Priority.THREE_TILE_CONVEYOR);
+        updateConnectionMatrix(outputInputMap);
+      }
+    }
+  }
+
+  private void buildConnectionMatrixWithRandomConveyors(Point[] factoryInputs,
+      HashSet<Mine> reachableMines) {
+    for (int i = 2 * FACTORY_OUTPUT_COUNT; i < 3 * FACTORY_OUTPUT_COUNT; ++i) {
+      var coord = factoryInputs[i];
+      this.queue = new ArrayDeque<>();
+      this.queue.add(coord);
+      this.current2DConnectionMatrix = this.connectionMatrix3D[i];
+      this.current2DConnectionMatrix[coord.y][coord.x] = new TileConnectionInfo(NodeType.INPUT,
+          0, new LinkedList<>());
+
+      while (!this.queue.isEmpty()) {
+        var currentInputCoord = this.queue.poll();
+        this.jumpCount =
+            this.current2DConnectionMatrix[currentInputCoord.y][currentInputCoord.x].jumpCount + 1;
+        var possibleOutputs = gatherPossibleOutputs(reachableMines, currentInputCoord);
+        var outputInputMap = determinePotentialConveyorInputsForOutputs(possibleOutputs,
+            Priority.RANDOM);
+        updateConnectionMatrix(outputInputMap);
+      }
+    }
   }
 
   /**
@@ -423,11 +496,25 @@ public class ConnectorImpl implements Connector {
    * @return A map of (output, input list)-Key-Value-pairs. Is never {@code null}, but can be empty.
    */
   private Map<Point, Deque<Point>> determinePotentialConveyorInputsForOutputs(
-      Collection<Point> possibleOutputs) {
+      Collection<Point> possibleOutputs, Priority prio) {
     var outputInputMapping = new HashMap<Point, Deque<Point>>();
 
     for (Point output : possibleOutputs) {
-      var possibleInputs = gatherPossibleInputs(output);
+      Deque<Point> possibleInputs;
+
+      switch (prio) {
+        case THREE_TILE_CONVEYOR -> possibleInputs = gatherPossibleInputsAlt1(output);
+        case FOUR_TILE_CONVEYOR -> possibleInputs = gatherPossibleInputs(output);
+        case RANDOM -> {
+          if (new Random(System.currentTimeMillis()).nextInt(2) == 0) {
+            possibleInputs = gatherPossibleInputs(output);
+          } else {
+            possibleInputs = gatherPossibleInputsAlt1(output);
+          }
+        }
+        default -> possibleInputs = new ArrayDeque<>();
+      }
+
       outputInputMapping.put(output, possibleInputs);
     }
 
@@ -440,22 +527,24 @@ public class ConnectorImpl implements Connector {
    * @return coordinates for all input tiles for the {@code currentFactory}.
    */
   private Point[] gatherFactoryInputCoordinates() {
-    var factoryOutputs = new Point[FACTORY_OUTPUT_COUNT];
+    var factoryInputs = new Point[LAYER_COUNT];
     var factoryX = this.currentFactory.getX();
     var factoryY = this.currentFactory.getY();
     var count = 0;
 
-    for (int y = factoryY; y < factoryY + 5; ++y) {
-      for (int x = factoryX; x < factoryX + 5; ++x) {
-        if ((x == factoryX || y == factoryY || x == factoryX + 4 || y == factoryY + 4)
-            && count < factoryOutputs.length) {
-          factoryOutputs[count] = new Point(x, y, NodeType.INPUT);
-          ++count;
+    for (int i = 0; i < RUNS; ++i) {
+      for (int y = factoryY; y < factoryY + 5; ++y) {
+        for (int x = factoryX; x < factoryX + 5; ++x) {
+          if ((x == factoryX || y == factoryY || x == factoryX + 4 || y == factoryY + 4)
+              && count < factoryInputs.length) {
+            factoryInputs[count] = new Point(x, y, NodeType.INPUT);
+            ++count;
+          }
         }
       }
     }
 
-    return factoryOutputs;
+    return factoryInputs;
   }
 
   /**
@@ -533,8 +622,83 @@ public class ConnectorImpl implements Connector {
     }
     if (!conveyorCanBePlaced && output.x - 2 >= 0) {
       if (tileIsVacant(output.x - 1, output.y, NodeType.IN_BETWEEN) && tileIsVacant(output.x - 2,
-          output.y, NodeType.IN_BETWEEN)) {
+          output.y, NodeType.INPUT)) {
         inputDeque.add(new Point(output.x - 2, output.y, NodeType.INPUT));
+      }
+    }
+    return inputDeque;
+  }
+
+  private Deque<Point> gatherPossibleInputsAlt1(Point output) {
+    var inputDeque = new ArrayDeque<Point>();
+    // NORTH POINTING CONVEYOR
+    boolean conveyorCanBePlaced = output.y - 2 >= 0;
+    if (conveyorCanBePlaced) {
+      if (tileIsVacant(output.x, output.y - 1, NodeType.IN_BETWEEN) && tileIsVacant(output.x,
+          output.y - 2, NodeType.INPUT)) {
+        inputDeque.add(new Point(output.x, output.y - 2, NodeType.INPUT));
+      } else {
+        conveyorCanBePlaced = false;
+      }
+    }
+    if (!conveyorCanBePlaced && output.y - 3 >= 0) {
+      if (tileIsVacant(output.x, output.y - 1, NodeType.IN_BETWEEN) && tileIsVacant(output.x,
+          output.y - 2, NodeType.IN_BETWEEN) && tileIsVacant(output.x, output.y - 3,
+          NodeType.INPUT)) {
+        inputDeque.add(new Point(output.x, output.y - 3, NodeType.INPUT));
+      }
+    }
+
+    // EAST POINTING CONVEYOR
+    conveyorCanBePlaced = output.x + 2 < this.field.getWidth();
+    if (conveyorCanBePlaced) {
+      if (tileIsVacant(output.x + 1, output.y, NodeType.IN_BETWEEN) && tileIsVacant(output.x + 2,
+          output.y, NodeType.INPUT)) {
+        inputDeque.add(new Point(output.x + 2, output.y, NodeType.INPUT));
+      } else {
+        conveyorCanBePlaced = false;
+      }
+    }
+    if (!conveyorCanBePlaced && output.x + 3 < this.field.getWidth()) {
+      if (tileIsVacant(output.x + 1, output.y, NodeType.IN_BETWEEN) && tileIsVacant(output.x + 2,
+          output.y, NodeType.IN_BETWEEN) && tileIsVacant(output.x + 3, output.y,
+          NodeType.INPUT)) {
+        inputDeque.add(new Point(output.x + 3, output.y, NodeType.INPUT));
+      }
+    }
+
+    // SOUTH POINTING CONVEYOR
+    conveyorCanBePlaced = output.y + 2 < this.field.getHeight();
+    if (conveyorCanBePlaced) {
+      if (tileIsVacant(output.x, output.y + 1, NodeType.IN_BETWEEN) && tileIsVacant(output.x,
+          output.y + 2, NodeType.IN_BETWEEN)) {
+        inputDeque.add(new Point(output.x, output.y + 2, NodeType.INPUT));
+      } else {
+        conveyorCanBePlaced = false;
+      }
+    }
+    if (!conveyorCanBePlaced && output.y + 3 < this.field.getHeight()) {
+      if (tileIsVacant(output.x, output.y + 1, NodeType.IN_BETWEEN) && tileIsVacant(output.x,
+          output.y + 2, NodeType.IN_BETWEEN) && tileIsVacant(output.x, output.y + 3,
+          NodeType.INPUT)) {
+        inputDeque.add(new Point(output.x, output.y + 3, NodeType.IN_BETWEEN));
+      }
+    }
+
+    // WEST POINTING CONVEYOR
+    conveyorCanBePlaced = output.x - 2 >= 0;
+    if (conveyorCanBePlaced) {
+      if (tileIsVacant(output.x - 1, output.y, NodeType.IN_BETWEEN) && tileIsVacant(output.x - 2,
+          output.y, NodeType.INPUT)) {
+        inputDeque.add(new Point(output.x - 2, output.y, NodeType.INPUT));
+      } else {
+        conveyorCanBePlaced = false;
+      }
+    }
+    if (!conveyorCanBePlaced && output.x - 3 >= 0) {
+      if (tileIsVacant(output.x - 1, output.y, NodeType.IN_BETWEEN) && tileIsVacant(output.x - 2,
+          output.y, NodeType.IN_BETWEEN) && tileIsVacant(output.x - 3, output.y, NodeType.INPUT)) {
+        inputDeque.add(new Point(output.x - 3, output.y, NodeType.INPUT));
       }
     }
     return inputDeque;
@@ -824,6 +988,12 @@ public class ConnectorImpl implements Connector {
       this.jumpCount = jumpCount;
     }
 
+  }
+
+  private static enum Priority {
+    THREE_TILE_CONVEYOR,
+    FOUR_TILE_CONVEYOR,
+    RANDOM,
   }
 
   /**

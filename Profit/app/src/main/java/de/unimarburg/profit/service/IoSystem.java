@@ -100,5 +100,15 @@ public class IoSystem {
     String outputString = InputOutputHandle.generateOutput(movableObjects);
     printStream.println(outputString);
 
+    for (var obj : movableObjects) {
+      try {
+        field.addBaseObject(obj);
+      } catch (CouldNotPlaceObjectException e) {
+        System.err.println(e.getMessage());
+        System.err.println(Arrays.toString(e.getStackTrace()));
+      }
+    }
+    field.show();
+
   }
 }
