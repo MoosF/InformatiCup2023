@@ -14,8 +14,18 @@ import java.util.Collection;
  */
 public interface CombinationFinder {
 
-  Collection<TypeAndMinesCombination> findCombinations(
-      Collection<Mine> connectableMines, Collection<MineWithResources> mineWithResources,
-      Collection<Product> products,
+  /**
+   * Finds possible combinations of {@link Mine}s, that should be connected to a {@link Factory}, in
+   * order to produce points.
+   *
+   * @param connectableMines  {@link Mine}s, that can be connected to the {@link Factory}.
+   * @param mineWithResources All {@link Mine}s, that exists on the
+   *                          {@link de.unimarburg.profit.model.Field} with their resources.
+   * @param products {@link Product}s, that can be produced by the {@link Factory}.
+   * @param factory Factory, to which the {@link Mine}s should be connected.
+   * @return Possible combinations of {@link Mine}s. 
+   */
+  Collection<TypeAndMinesCombination> findCombinations(Collection<Mine> connectableMines,
+      Collection<MineWithResources> mineWithResources, Collection<Product> products,
       Factory factory);
 }
