@@ -1,23 +1,11 @@
 package de.unimarburg.profit.service;
 
-import de.unimarburg.profit.algorithm.Algorithm;
-import de.unimarburg.profit.algorithm.AlgorithmImpl;
-import de.unimarburg.profit.algorithm.factoryplacing.combination.CombinationFinderImpl;
-import de.unimarburg.profit.algorithm.factoryplacing.factory.FactoryChooserRandom;
-import de.unimarburg.profit.algorithm.factoryplacing.factory.FactoryPlaceFinderImpl;
-import de.unimarburg.profit.algorithm.factoryplacing.factory.FactoryPlacerImpl;
-import de.unimarburg.profit.algorithm.mineplacing.MinePlaceChooserImpl;
-import de.unimarburg.profit.algorithm.mineplacing.MinePlaceFinderImpl;
-import de.unimarburg.profit.algorithm.mineplacing.MinePlacerImpl;
-import de.unimarburg.profit.model.Field;
-import de.unimarburg.profit.model.FixedObject;
+import de.unimarburg.profit.controller.Controller;
 import de.unimarburg.profit.model.MovableObject;
-import de.unimarburg.profit.model.exceptions.CouldNotPlaceObjectException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Scanner;
 
@@ -32,6 +20,7 @@ public class IoSystem {
   private final PrintStream printStream;
   private final Scanner scanner;
   private boolean isReading;
+  private final Controller controller;
 
   /**
    * Constructor of the {@link IoSystem}.
@@ -40,8 +29,10 @@ public class IoSystem {
    *                     scanner.
    * @param outputStream {@link OutputStream}, to which the output will be written. Should support a
    *                     printStream.
+   * @param controller
    */
-  public IoSystem(InputStream inputStream, OutputStream outputStream) {
+  public IoSystem(InputStream inputStream, OutputStream outputStream, Controller controller) {
+    this.controller = controller;
     this.isReading = false;
     scanner = new Scanner(inputStream);
     printStream = new PrintStream(outputStream);
@@ -80,35 +71,11 @@ public class IoSystem {
   private void readField(String line) throws IOException {
     Input input = InputOutputHandle.readInputFrom(line);
 
-    Field field = new Field(input.getWidth(), input.getHeight());
-
-    for (FixedObject obj : input.getInputObjects()) {
-      try {
-        field.addBaseObject(obj);
-      } catch (CouldNotPlaceObjectException e) {
-        throw new IOException("Could not place all Objects");
-      }
-    }
-
-    Algorithm algorithm = new AlgorithmImpl(new MinePlaceFinderImpl(), new MinePlaceChooserImpl(),
-        new MinePlacerImpl(), new FactoryPlaceFinderImpl(), new FactoryChooserRandom(),
-        new FactoryPlacerImpl(), new CombinationFinderImpl());
-
-    Collection<MovableObject> movableObjects = algorithm.runAlgorithm(field, input.getTime(),
-        input.getTurns(), input.getProducts());
+    Collection<MovableObject> movableObjects = controller.startAlgorithm(input);
 
     String outputString = InputOutputHandle.generateOutput(movableObjects);
     printStream.println(outputString);
 
-    for (var obj : movableObjects) {
-      try {
-        field.addBaseObject(obj);
-      } catch (CouldNotPlaceObjectException e) {
-        System.err.println(e.getMessage());
-        System.err.println(Arrays.toString(e.getStackTrace()));
-      }
-    }
-    field.show();
-
   }
+
 }
