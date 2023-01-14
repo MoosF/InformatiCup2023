@@ -9,20 +9,13 @@ import de.unimarburg.profit.algorithm.factoryplacing.factory.FactoryPlacerImpl;
 import de.unimarburg.profit.algorithm.mineplacing.MinePlaceChooserImpl;
 import de.unimarburg.profit.algorithm.mineplacing.MinePlaceFinderImpl;
 import de.unimarburg.profit.algorithm.mineplacing.MinePlacerImpl;
-import de.unimarburg.profit.model.Field;
-import de.unimarburg.profit.model.FixedObject;
-import de.unimarburg.profit.model.exceptions.CouldNotPlaceObjectException;
-import de.unimarburg.profit.service.Input;
-import de.unimarburg.profit.service.InputOutputException;
-import de.unimarburg.profit.service.InputOutputHandle;
-import de.unimarburg.profit.service.InputOutputHandle.FileType;
+import de.unimarburg.profit.controller.Controller;
 import de.unimarburg.profit.service.IoSystem;
-import de.unimarburg.profit.service.Settings;
 import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * Second temporary main method to test the {@link IoSystem}.
+ * Class that contains main method.
  *
  * @author Yannick Kraml.
  */
@@ -32,53 +25,27 @@ public class Main {
   /**
    * Main method.
    *
-   * @param args Arguments
+   * @param args Arguments. Should be empty.
    */
   public static void main(String[] args) {
-    //testMain(args);
-    startIo();
-  }
 
-  private static void startIo() {
+    Algorithm algorithm = new AlgorithmImpl(
+        new MinePlaceFinderImpl(),
+        new MinePlaceChooserImpl(),
+        new MinePlacerImpl(),
+        new FactoryPlaceFinderImpl(),
+        new FactoryChooserRandom(),
+        new FactoryPlacerImpl(),
+        new CombinationFinderImpl());
+
+    Controller controller = new Controller(algorithm);
+
     InputStream inputStream = System.in;
     OutputStream outputStream = System.out;
 
-    IoSystem ioSystem = new IoSystem(inputStream, outputStream);
-
+    IoSystem ioSystem = new IoSystem(inputStream, outputStream, controller);
     ioSystem.start();
-  }
 
-  private static void testMain(String[] args) throws InputOutputException {
-    var settings = Settings.getInstance();
-    settings.updateImportTarget(false);
-    settings.updateImportFileType(FileType.JSON);
-
-    for (int i = 0; i < args.length; i++) {
-      String file = args[i];
-      Input input = InputOutputHandle.readInputFrom(file);
-
-      Field field = new Field(input.getWidth(), input.getHeight());
-
-      for (FixedObject obj : input.getInputObjects()) {
-        try {
-          field.addBaseObject(obj);
-        } catch (CouldNotPlaceObjectException e) {
-          throw new RuntimeException(e);
-        }
-      }
-
-      Algorithm algorithm = new AlgorithmImpl(
-          new MinePlaceFinderImpl(),
-          new MinePlaceChooserImpl(),
-          new MinePlacerImpl(),
-          new FactoryPlaceFinderImpl(),
-          new FactoryChooserRandom(),
-          new FactoryPlacerImpl(),
-          new CombinationFinderImpl()
-      );
-
-      algorithm.runAlgorithm(field, input.getTime(), input.getTurns(), input.getProducts());
-    }
   }
 
 
