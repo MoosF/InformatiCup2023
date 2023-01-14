@@ -31,7 +31,6 @@ public class MinePlaceFinderImpl implements MinePlaceFinder {
       int height = deposit.getHeight();
 
       //From left to right.
-      ResourceType resource = deposit.getResourceType();
       for (int i = horPos; i < horPos + width; i++) {
         placements.put(Mine.createMine(i - 1, verPos - 3, MineSubType.OUTPUT_NORTH), deposit);
         placements.put(Mine.createMine(i + 1, verPos - 2, MineSubType.OUTPUT_EAST), deposit);

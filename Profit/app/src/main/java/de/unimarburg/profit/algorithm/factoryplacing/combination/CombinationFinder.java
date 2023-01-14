@@ -23,7 +23,7 @@ public interface CombinationFinder {
    *                          {@link de.unimarburg.profit.model.Field} with their resources.
    * @param products {@link Product}s, that can be produced by the {@link Factory}.
    * @param factory Factory, to which the {@link Mine}s should be connected.
-   * @return Possible combinations of {@link Mine}s. 
+   * @return Possible combinations of {@link Mine}s.
    */
   Collection<TypeAndMinesCombination> findCombinations(Collection<Mine> connectableMines,
       Collection<MineWithResources> mineWithResources, Collection<Product> products,

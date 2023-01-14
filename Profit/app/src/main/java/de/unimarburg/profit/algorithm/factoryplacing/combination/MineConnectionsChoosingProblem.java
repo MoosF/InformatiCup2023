@@ -12,7 +12,7 @@ import org.moeaframework.problem.AbstractProblem;
 
 /**
  * {@link MineConnectionsChoosingProblem} extends {@link AbstractProblem}. It models the
- * optimization problem of choosing which {@link Mine}s, that should be connected to a single
+ * optimization problem of choosing which {@link Mine}s should be connected to a single
  * {@link Factory}, that produces a specific {@link Product}. The problem optimizes the amount of
  * {@link Mine}s, the generated Points of the {@link Factory} and the distances between the
  * {@link Mine}s and the {@link Factory}.

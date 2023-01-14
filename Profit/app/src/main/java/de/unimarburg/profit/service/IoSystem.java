@@ -29,7 +29,7 @@ public class IoSystem {
    *                     scanner.
    * @param outputStream {@link OutputStream}, to which the output will be written. Should support a
    *                     printStream.
-   * @param controller
+   * @param controller   Controller with which the IO communicates.
    */
   public IoSystem(InputStream inputStream, OutputStream outputStream, Controller controller) {
     this.controller = controller;
@@ -70,12 +70,9 @@ public class IoSystem {
 
   private void readField(String line) throws IOException {
     Input input = InputOutputHandle.readInputFrom(line);
-
     Collection<MovableObject> movableObjects = controller.startAlgorithm(input);
-
     String outputString = InputOutputHandle.generateOutput(movableObjects);
     printStream.println(outputString);
-
   }
 
 }

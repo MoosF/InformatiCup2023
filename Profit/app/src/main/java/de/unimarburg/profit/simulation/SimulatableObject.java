@@ -73,16 +73,16 @@ public class SimulatableObject {
   }
 
   /**
-   * Returns the {@link BaseObject}, that is simulated.
+   * Returns the {@link Worker}, that is simulated.
    *
-   * @return BaseObject, that is wrapped inside this {@link SimulatableObject}.
+   * @return Worker, that is wrapped inside this {@link SimulatableObject}.
    */
   public Worker getWorker() {
     return worker;
   }
 
   /**
-   * Transfers all inputted resources from the temporary storage to the final storage.
+   * Transfers all inputted resources from the temporary input storage to the final storage.
    */
   public void transfer() {
     inputtedResources.forEach((resourceType, integer) -> {

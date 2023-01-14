@@ -36,7 +36,8 @@ public class Main {
         new FactoryPlaceFinderImpl(),
         new FactoryChooserRandom(),
         new FactoryPlacerImpl(),
-        new CombinationFinderImpl());
+        new CombinationFinderImpl()
+    );
 
     Controller controller = new Controller(algorithm);
 
