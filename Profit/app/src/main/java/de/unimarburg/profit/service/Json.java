@@ -7,7 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSyntaxException;
 import de.unimarburg.profit.model.Combiner;
-import de.unimarburg.profit.model.Conveyer;
+import de.unimarburg.profit.model.Conveyor;
 import de.unimarburg.profit.model.Deposit;
 import de.unimarburg.profit.model.Factory;
 import de.unimarburg.profit.model.Field;
@@ -94,7 +94,7 @@ final class Json extends InputOutputHandle {
    * @param input The relative or absolute path to a file containing a {@link JsonObject} or a
    *              {@link String} containing a {@link JsonObject}.
    * @return An instance of a class that implements the interface {@link Input} and holds all
-   * relevant information about the {@link Field} defined by the input file.
+   *         relevant information about the {@link Field} defined by the input file.
    * @throws InputOutputException when an error has occurred while parsing the input or if
    *                              {@code input} has been {@code null}.
    */
@@ -115,7 +115,7 @@ final class Json extends InputOutputHandle {
    *
    * @param output the {@link MovableObject}s that will be turned into a JSON-Array.
    * @return a {@link String} containing the {@link MovableObject}s from {@code output} as a
-   * JSON-Array.
+   *         JSON-Array.
    */
   static String generateOutputString(Collection<MovableObject> output) {
     JsonArray outputArray = new JsonArray();
@@ -135,7 +135,7 @@ final class Json extends InputOutputHandle {
 
       Number number = switch (movableObject.getType()) {
         case COMBINER -> ((Combiner) movableObject).getSubType().ordinal();
-        case CONVEYER -> ((Conveyer) movableObject).getSubType().ordinal();
+        case CONVEYER -> ((Conveyor) movableObject).getSubType().ordinal();
         case FACTORY -> ((Factory) movableObject).getSubType().ordinal();
         case MINE -> ((Mine) movableObject).getSubType().ordinal();
       };
@@ -163,6 +163,9 @@ final class Json extends InputOutputHandle {
   }
 
   /**
+   * Reads all content from the given input file and returns the whole content of the file as one
+   * {@link String}.
+   *
    * @param inputFileName The absolute path or the relative path to the current working directory of
    *                      the input file.
    * @return The file inputFileName as one String. An empty String if an Exception has been caused.
@@ -185,7 +188,7 @@ final class Json extends InputOutputHandle {
    * @param jsonFile An absolute or relative path to the JSON file that holds the
    *                 {@link FixedObject} definitions.
    * @return An {@link Object} that implements the interface {@link Input} and holds all relevant
-   * information about the {@link Field} defined by the input file.
+   *         information about the {@link Field} defined by the input file.
    * @throws InputOutputException when an error has occurred while parsing the input.
    */
   private static Input getInputFromFile(String jsonFile) throws InputOutputException {
@@ -199,8 +202,8 @@ final class Json extends InputOutputHandle {
    *
    * @param inputString Contains the JSON-object.
    * @return an {@link Input} object containing all information required to build a valid
-   * {@link Field}. The returned object is never {@code null}. When an error occurs, an Exception is
-   * thrown.
+   *         {@link Field}. The returned object is never {@code null}. When an error occurs, an
+   *         Exception is thrown.
    * @throws InputOutputException when an error has occurred while parsing the input.
    */
   private static Input getInputFromString(String inputString) throws InputOutputException {

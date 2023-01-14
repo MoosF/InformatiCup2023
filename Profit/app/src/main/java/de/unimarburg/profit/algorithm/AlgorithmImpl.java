@@ -12,13 +12,15 @@ import de.unimarburg.profit.algorithm.mineplacing.MinePlaceChooser;
 import de.unimarburg.profit.algorithm.mineplacing.MinePlaceFinder;
 import de.unimarburg.profit.algorithm.mineplacing.MinePlacer;
 import de.unimarburg.profit.algorithm.mineplacing.MineWithResources;
-import de.unimarburg.profit.model.Conveyer;
+import de.unimarburg.profit.model.Conveyor;
 import de.unimarburg.profit.model.Deposit;
 import de.unimarburg.profit.model.Factory;
 import de.unimarburg.profit.model.Field;
 import de.unimarburg.profit.model.Mine;
 import de.unimarburg.profit.model.MovableObject;
 import de.unimarburg.profit.model.Product;
+import de.unimarburg.profit.model.exceptions.CouldNotPlaceObjectException;
+import de.unimarburg.profit.model.exceptions.CouldNotRemoveObjectException;
 import de.unimarburg.profit.simulation.SimulateException;
 import de.unimarburg.profit.simulation.Simulator;
 import java.util.Collection;
@@ -28,7 +30,10 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -85,7 +90,7 @@ public class AlgorithmImpl implements Algorithm {
 
     uuids = new HashMap<>();
     futures = new HashSet<>();
-    executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+    executorService = Executors.newFixedThreadPool(2);
   }
 
 
@@ -128,15 +133,74 @@ public class AlgorithmImpl implements Algorithm {
 
     uuids.put(uuid, false);
 
-    Optional<Integer> maxPoints = solutions.keySet().stream().max(Comparator.naturalOrder());
-    if (maxPoints.isPresent()) {
-      Integer bestPoints = maxPoints.get();
-      Field bestField = solutions.get(bestPoints);
-      return bestField.getMovableObjects();
-    } else {
+    try {
+      // Try to combine solutions.
+      return buildSolution(solutions);
+    } catch (CouldNotPlaceObjectException | CouldNotRemoveObjectException e) {
+      // If an error occurred, just return best solution.
+      Optional<Integer> maxPoints = solutions.keySet().stream().max(Comparator.naturalOrder());
+      if (maxPoints.isPresent()) {
+        Integer bestPoints = maxPoints.get();
+        Field bestField = solutions.get(bestPoints);
+        return bestField.getMovableObjects();
+      } else {
+        return new LinkedList<>();
+      }
+    }
+  }
+
+  /**
+   * Tries to combine all solutions into one. Only none-overlapping solutions can be combined.
+   *
+   * @param solutions All solutions that have been found by the {@link Algorithm}.
+   * @return All {@link MovableObject}s that are part of the best solution found.
+   * @throws CouldNotPlaceObjectException If an object could not be placed on a {@link Field}.
+   * @throws CouldNotRemoveObjectException If an object could not be removed from a {@link Field}.
+   */
+  private Collection<MovableObject> buildSolution(Map<Integer, Field> solutions)
+      throws CouldNotPlaceObjectException, CouldNotRemoveObjectException {
+    // No solution found.
+    if (solutions.isEmpty()) {
       return new LinkedList<>();
     }
 
+    // Build the best possible solution.
+    Queue<Entry<Integer, Field>> solQueue = new PriorityQueue<>(
+        (e1, e2) -> e2.getKey() - e1.getKey());
+    solQueue.addAll(solutions.entrySet());
+    if (solQueue.isEmpty()) {
+      return new LinkedList<>();
+    }
+    var bestSingleSolution = solQueue.poll().getValue();
+    LinkedList<MovableObject> perfectSolution = new LinkedList<>(
+        bestSingleSolution.getMovableObjects());
+
+    while (!solQueue.isEmpty()) {
+      var nextBestSolution = solQueue.poll();
+      if (nextBestSolution.getKey() == 0) {
+        break;
+      }
+      var nextBestField = nextBestSolution.getValue();
+      var movableObjs = nextBestField.getMovableObjects();
+      var addedMovableObjects = new LinkedList<MovableObject>();
+
+      for (MovableObject obj : movableObjs) {
+        if (bestSingleSolution.baseObjectCanBePlaced(obj)) {
+          bestSingleSolution.addBaseObject(obj);
+        } else {
+          for (var placedObjects : addedMovableObjects) {
+            bestSingleSolution.removeBaseObject(placedObjects);
+          }
+          addedMovableObjects.clear();
+          break;
+        }
+
+        addedMovableObjects.add(obj);
+      }
+      perfectSolution.addAll(addedMovableObjects);
+    }
+
+    return perfectSolution;
   }
 
   private void createAndAddNewSolutions(Map<Integer, Field> solutions, int turns, Field field,
@@ -230,7 +294,7 @@ public class AlgorithmImpl implements Algorithm {
             .sorted((o1, o2) -> -(int) (o1.getValue() - o2.getValue())).toList();
 
         boolean connectedAll = false;
-        Collection<Conveyer> beforeConveyers = field.getObjectsOfClass(Conveyer.class);
+        Collection<Conveyor> beforeConveyors = field.getObjectsOfClass(Conveyor.class);
         for (TypeAndMinesCombination combination : combinations) {
 
           connectedAll = connector.connectMines(combination.getMines());
@@ -241,7 +305,7 @@ public class AlgorithmImpl implements Algorithm {
             break;
           }
 
-          connector.removePlacedConveyers(field, beforeConveyers);
+          connector.removePlacedConveyers(field, beforeConveyors);
         }
 
         if (!connectedAll) {

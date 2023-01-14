@@ -1,6 +1,6 @@
 package de.unimarburg.profit.algorithm.factoryplacing.connector;
 
-import de.unimarburg.profit.model.Conveyer;
+import de.unimarburg.profit.model.Conveyor;
 import de.unimarburg.profit.model.Factory;
 import de.unimarburg.profit.model.Field;
 import de.unimarburg.profit.model.Mine;
@@ -31,23 +31,23 @@ public interface Connector {
    *
    * @param factory The factory that is reachable from the returned {@link Mine}s.
    * @return a {@link Collection} of {@link Mine}s that can be connected to the given
-   *         {@link Factory} by using {@link Conveyer}s.
+   *         {@link Factory} by using {@link Conveyor}s.
    */
   Collection<Mine> getReachableMines(Factory factory);
 
   /**
-   * Removes all {@link Conveyer}s from a {@link Field}, that are placed since a specified time.
+   * Removes all {@link Conveyor}s from a {@link Field}, that are placed since a specified time.
    * The time is indirectly given by the beforeConveyers.
    *
-   * @param field {@link Field}, from which the {@link Conveyer}s should be removed.
-   * @param beforeConveyers {@link Conveyer}s, that are placed before the specified time.
+   * @param field {@link Field}, from which the {@link Conveyor}s should be removed.
+   * @param beforeConveyors {@link Conveyor}s, that are placed before the specified time.
    */
-  default void removePlacedConveyers(Field field, Collection<Conveyer> beforeConveyers) {
-    Collection<Conveyer> afterConveyers = field.getObjectsOfClass(Conveyer.class);
-    for (Conveyer conveyer : afterConveyers) {
-      if (!beforeConveyers.contains(conveyer)) {
+  default void removePlacedConveyers(Field field, Collection<Conveyor> beforeConveyors) {
+    Collection<Conveyor> afterConveyors = field.getObjectsOfClass(Conveyor.class);
+    for (Conveyor conveyor : afterConveyors) {
+      if (!beforeConveyors.contains(conveyor)) {
         try {
-          field.removeBaseObject(conveyer);
+          field.removeBaseObject(conveyor);
         } catch (CouldNotRemoveObjectException e) {
           throw new RuntimeException(e);
         }
