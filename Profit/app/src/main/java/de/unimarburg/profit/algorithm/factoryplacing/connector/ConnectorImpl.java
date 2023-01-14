@@ -74,6 +74,7 @@ public class ConnectorImpl implements Connector {
    * ArrayIndexOutOfBoundsExceptions.
    */
   private static final int FACTORY_OUTPUT_COUNT = 16;
+  private static final int LAYER_COUNT = FACTORY_OUTPUT_COUNT * 2;
 
   /**
    * Constructor of class {@link ConnectorImpl}. Sets the {@link Field} this {@link Connector} will
@@ -84,7 +85,7 @@ public class ConnectorImpl implements Connector {
   public ConnectorImpl(Field field) {
     this.field = field;
     this.fieldTiles = field.getTiles();
-    this.connectionMatrix3D = new TileConnectionInfo[FACTORY_OUTPUT_COUNT][this.field.getHeight()][this.field.getWidth()];
+    this.connectionMatrix3D = new TileConnectionInfo[LAYER_COUNT][this.field.getHeight()][this.field.getWidth()];
     for (TileConnectionInfo[][] rows : this.connectionMatrix3D) {
       for (TileConnectionInfo[] columns : rows) {
         Arrays.fill(columns, null);
@@ -391,20 +392,21 @@ public class ConnectorImpl implements Connector {
   @Override
   public Collection<Mine> getReachableMines(Factory factory) {
     this.currentFactory = factory;
-    var factoryOutputs = gatherFactoryOutputCoordinates();
+    var factoryInputs = gatherFactoryInputCoordinates();
     var reachableMines = new HashSet<Mine>();
 
-    for (int i = 0; i < factoryOutputs.length; ++i) {
-      var coords = factoryOutputs[i];
+    for (int i = 0; i < factoryInputs.length; ++i) {
+      var coord = factoryInputs[i];
       this.queue = new ArrayDeque<>();
-      this.queue.add(coords);
+      this.queue.add(coord);
       this.current2DConnectionMatrix = this.connectionMatrix3D[i];
-      this.jumpCount = 0;
+      this.current2DConnectionMatrix[coord.y][coord.x] = new TileConnectionInfo(NodeType.INPUT,
+          0, new LinkedList<>());
 
       while (!this.queue.isEmpty()) {
-        ++this.jumpCount;
-        var currentInputCoords = this.queue.poll();
-        var possibleOutputs = gatherPossibleOutputs(reachableMines, currentInputCoords);
+        var currentInputCoord = this.queue.poll();
+        this.jumpCount = this.current2DConnectionMatrix[currentInputCoord.y][currentInputCoord.x].jumpCount + 1;
+        var possibleOutputs = gatherPossibleOutputs(reachableMines, currentInputCoord);
         var outputInputMap = determinePotentialConveyorInputsForOutputs(possibleOutputs);
         updateConnectionMatrix(outputInputMap);
       }
@@ -437,7 +439,7 @@ public class ConnectorImpl implements Connector {
    *
    * @return coordinates for all input tiles for the {@code currentFactory}.
    */
-  private Point[] gatherFactoryOutputCoordinates() {
+  private Point[] gatherFactoryInputCoordinates() {
     var factoryOutputs = new Point[FACTORY_OUTPUT_COUNT];
     var factoryX = this.currentFactory.getX();
     var factoryY = this.currentFactory.getY();
@@ -667,17 +669,10 @@ public class ConnectorImpl implements Connector {
    * @param output The coordinates of the output of the placed {@link Conveyer}.
    * @param input  The coordinates of the input of the placed {@link Conveyer}.
    */
-<<<<<<< HEAD
-  private void writeConveyorPositionToConnectionMatrix(Point output, Point input) {
+  private synchronized void writeConveyorPositionToConnectionMatrix(Point output, Point input) {
     var orientation = output.x - input.x < 0 ? Orientation.EAST
         : output.x - input.x > 0 ? Orientation.WEST
             : output.y - input.y < 0 ? Orientation.SOUTH : Orientation.NORTH;
-=======
-  private synchronized void writeConveyorPositionToConnectionMatrix(Point output, Point input) {
-    var orientation = output.x - input.x < 0 ? Orientation.EAST :
-        output.x - input.x > 0 ? Orientation.WEST :
-            output.y - input.y < 0 ? Orientation.SOUTH : Orientation.NORTH;
->>>>>>> e2844156fd0c73e7b066813d2c2fbd496de01d19
     // Input node handling.
     // In this function the input tile can only be of type input or equal to null.
     if (this.current2DConnectionMatrix[input.y][input.x] == null) {

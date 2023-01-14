@@ -1,4 +1,4 @@
-package de.unimarburg.profit.algorithm.connector;
+package de.unimarburg.profit.algorithm.factoryplacing.connector;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -83,7 +83,7 @@ class ConnectorImplTest {
     // Try to connect reachable mines (Depends on previous method "getReachableMines") *************
     assertTrue(connector.connectMines(reachableMines));
     var simulator = Simulator.getInstance();
-    assertEquals(45, simulator.simulate(field, 60), 1);
+    assertEquals(45, simulator.simulate(field, 60));
   }
 
   @Test
@@ -116,7 +116,7 @@ class ConnectorImplTest {
     var allPlaced = connector.connectMines(reachableMines);
     assertTrue(allPlaced);
     var simulator = Simulator.getInstance();
-    assertEquals(45, simulator.simulate(field, 60), 1);
+    assertEquals(45, simulator.simulate(field, 60));
   }
 
   @Test
