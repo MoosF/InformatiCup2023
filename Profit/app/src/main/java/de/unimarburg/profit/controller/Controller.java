@@ -6,6 +6,8 @@ import de.unimarburg.profit.model.FixedObject;
 import de.unimarburg.profit.model.MovableObject;
 import de.unimarburg.profit.model.exceptions.CouldNotPlaceObjectException;
 import de.unimarburg.profit.service.Input;
+import de.unimarburg.profit.simulation.SimulateException;
+import de.unimarburg.profit.simulation.Simulator;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -41,17 +43,6 @@ public class Controller {
       }
     }
 
-    Collection<MovableObject> movableObjects = algorithm.runAlgorithm(field, input.getTime(),
-        input.getTurns(), input.getProducts());
-
-    for (var obj : movableObjects) {
-      try {
-        field.addBaseObject(obj);
-      } catch (CouldNotPlaceObjectException e) {
-        System.err.println(e.getMessage());
-        System.err.println(Arrays.toString(e.getStackTrace()));
-      }
-    }
-    return movableObjects;
+    return algorithm.runAlgorithm(field, input.getTime(), input.getTurns(), input.getProducts());
   }
 }

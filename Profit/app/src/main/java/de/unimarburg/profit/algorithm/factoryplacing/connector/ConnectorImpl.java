@@ -169,9 +169,8 @@ public class ConnectorImpl implements Connector {
       Conveyor topOfStack = this.placedConveyorsStack.pop();
       try {
         this.field.removeBaseObject(topOfStack);
-      } catch (CouldNotRemoveObjectException e) {
-        System.err.println(e.getMessage());
-        System.err.println(Arrays.toString(e.getStackTrace()));
+      } catch (CouldNotRemoveObjectException ignored) {
+        //Ignore
       }
     }
   }

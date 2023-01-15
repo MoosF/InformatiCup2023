@@ -232,8 +232,6 @@ class JsonOutputTest {
       assertNull(reader.readLine());
       reader.close();
     } catch (IOException e) {
-      System.err.println(e.getMessage());
-      System.err.println(Arrays.toString(e.getStackTrace()));
     }
 
     File outputFile = new File(settings.getExportFileName());

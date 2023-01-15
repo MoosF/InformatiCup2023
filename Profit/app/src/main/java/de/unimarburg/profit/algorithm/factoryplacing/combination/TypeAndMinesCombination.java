@@ -9,6 +9,7 @@ import de.unimarburg.profit.model.enums.ResourceType;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Predicate;
 
 /**
  * This class saves a single combination of a {@link ProductType} and a set of {@link Mine}s.
@@ -54,7 +55,8 @@ public class TypeAndMinesCombination {
    */
   public double getValue() {
 
-    Map<ResourceType, Integer> neededResources = product.getNeededResources();
+    Map<ResourceType, Integer> neededResources = new HashMap<>(product.getNeededResources());
+    neededResources.keySet().removeIf(resourceType -> neededResources.get(resourceType) == 0);
 
     Map<ResourceType, Integer> availableResources = new HashMap<>();
     for (ResourceType resourceType : ResourceType.values()) {
