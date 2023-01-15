@@ -7,8 +7,8 @@ package de.unimarburg.profit.view;
  */
 public class Environment {
 
-  protected final int width;
-  protected final int height;
+  private final int width;
+  private final int height;
   private double mouseWorldHorPos;
   private double mouseWorldVerPos;
   private double worldHorOffset;

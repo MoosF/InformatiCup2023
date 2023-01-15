@@ -11,8 +11,11 @@ import de.unimarburg.profit.algorithm.mineplacing.MinePlaceFinderImpl;
 import de.unimarburg.profit.algorithm.mineplacing.MinePlacerImpl;
 import de.unimarburg.profit.controller.Controller;
 import de.unimarburg.profit.service.IoSystem;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Class that contains main method.

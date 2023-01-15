@@ -126,13 +126,4 @@ public class TypeAndMinesCombination {
   public Collection<Mine> getMines() {
     return minesWithResources.stream().map(MineWithResources::getMine).toList();
   }
-
-  @Override
-  public String toString() {
-    return "TypeAndMinesCombination{"
-        + "factory=" + factory
-        + ", product=" + product
-        + ", minesWithResources=" + minesWithResources
-        + '}';
-  }
 }
