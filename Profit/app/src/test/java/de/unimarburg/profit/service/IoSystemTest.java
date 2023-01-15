@@ -11,10 +11,14 @@ import de.unimarburg.profit.algorithm.factoryplacing.factory.FactoryPlacerImpl;
 import de.unimarburg.profit.algorithm.mineplacing.MinePlaceChooserImpl;
 import de.unimarburg.profit.algorithm.mineplacing.MinePlaceFinderImpl;
 import de.unimarburg.profit.algorithm.mineplacing.MinePlacerImpl;
+import de.unimarburg.profit.controller.ControllerImpl;
 import de.unimarburg.profit.controller.Controller;
+import de.unimarburg.profit.model.MovableObject;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -26,7 +30,7 @@ class IoSystemTest {
 
 
   @BeforeAll
-  public static void setUp(){
+  public static void setUp() {
     Algorithm algorithm = new AlgorithmImpl(
         new MinePlaceFinderImpl(),
         new MinePlaceChooserImpl(),
@@ -35,14 +39,15 @@ class IoSystemTest {
         new FactoryChooserRandom(),
         new FactoryPlacerImpl(),
         new CombinationFinderImpl());
-    controller = new Controller(algorithm);
+    controller = input -> new ControllerImpl(algorithm).startAlgorithm(input);
   }
 
   @Test
   public void test1() {
 
     String inputText = "ShouldThrowError\nShouldThrowError\n\n";
-    ByteArrayInputStream inputStream = new ByteArrayInputStream(inputText.getBytes(StandardCharsets.UTF_8));
+    ByteArrayInputStream inputStream = new ByteArrayInputStream(
+        inputText.getBytes(StandardCharsets.UTF_8));
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     IoSystem ioSystem = new IoSystem(inputStream, outputStream, controller);
     ioSystem.start();
@@ -57,10 +62,11 @@ class IoSystemTest {
   }
 
   @Test
-  public void testAlreadyStarted(){
+  public void testAlreadyStarted() {
 
     String inputText = "\n";
-    ByteArrayInputStream inputStream = new ByteArrayInputStream(inputText.getBytes(StandardCharsets.UTF_8));
+    ByteArrayInputStream inputStream = new ByteArrayInputStream(
+        inputText.getBytes(StandardCharsets.UTF_8));
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     IoSystem ioSystem = new IoSystem(inputStream, outputStream, controller);
     ioSystem.start();
@@ -145,8 +151,6 @@ class IoSystemTest {
     Assertions.assertTrue(outputLines.length != 0);
     Assertions.assertFalse(outputLines[0].contains("Could not read field."));
   }
-
-
 
 
 }

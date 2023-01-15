@@ -123,12 +123,8 @@ public class AlgorithmImpl implements Algorithm {
     try {
       //The future will be canceled five seconds before the time limit.
       future.get(time - 10, TimeUnit.SECONDS);
-    } catch (InterruptedException | TimeoutException ignored) {
+    } catch (InterruptedException | TimeoutException | ExecutionException ignored) {
       //Just ignore. These exceptions will be thrown, if the time ends.
-    } catch (ExecutionException e) {
-      //If this is caught, an exception occurred in the method "get()"
-      // from the supplier in the future.
-      throw new RuntimeException(e);
     }
 
     uuids.put(uuid, false);

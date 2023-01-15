@@ -10,12 +10,10 @@ import de.unimarburg.profit.algorithm.mineplacing.MinePlaceChooserImpl;
 import de.unimarburg.profit.algorithm.mineplacing.MinePlaceFinderImpl;
 import de.unimarburg.profit.algorithm.mineplacing.MinePlacerImpl;
 import de.unimarburg.profit.controller.Controller;
+import de.unimarburg.profit.controller.ControllerImpl;
 import de.unimarburg.profit.service.IoSystem;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 
 /**
  * Class that contains main method.
@@ -42,7 +40,7 @@ public class Main {
         new CombinationFinderImpl()
     );
 
-    Controller controller = new Controller(algorithm);
+    Controller controller = new ControllerImpl(algorithm);
 
     InputStream inputStream = System.in;
     OutputStream outputStream = System.out;
