@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.Collection;
 
 /**
- * The Controller handles the communication between the IO and the rest of the program.
+ * Implementation of {@link Controller}.
  *
  * @author Yannick Kraml
  */
@@ -46,6 +46,7 @@ public class ControllerImpl implements Controller {
 
   @Override
   public void stopEverything() {
+    //Exit the programm instantly
     System.exit(0);
   }
 }
