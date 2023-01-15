@@ -4,7 +4,6 @@ import de.unimarburg.profit.model.enums.MineSubType;
 import de.unimarburg.profit.model.enums.ResourceType;
 import de.unimarburg.profit.model.enums.TileType;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * This class models a {@link Mine}.
@@ -13,7 +12,7 @@ import java.util.Objects;
  */
 public class Mine extends MovableObject {
 
-  private MineSubType subType;
+  private final MineSubType subType;
 
   /**
    * Constructor of {@link Mine}.
@@ -37,52 +36,42 @@ public class Mine extends MovableObject {
    */
   public static Mine createMine(int horPos, int verPos, MineSubType type) {
 
-    Tile[] tiles = null;
+    Tile[] tiles;
     switch (type) {
 
-      case OUTPUT_EAST -> {
-        tiles = new Tile[]{
-            new Tile(-1, 1, TileType.MINE_INPUT),
-            new Tile(0, 0, TileType.SOLID),
-            new Tile(0, 1, TileType.SOLID),
-            new Tile(1, 1, TileType.SOLID),
-            new Tile(1, 0, TileType.SOLID),
-            new Tile(2, 1, TileType.OUTPUT)
-        };
-      }
-      case OUTPUT_SOUTH -> {
-        tiles = new Tile[]{
-            new Tile(0, -1, TileType.MINE_INPUT),
-            new Tile(0, 0, TileType.SOLID),
-            new Tile(0, 1, TileType.SOLID),
-            new Tile(1, 1, TileType.SOLID),
-            new Tile(1, 0, TileType.SOLID),
-            new Tile(0, 2, TileType.OUTPUT)
-        };
-      }
-      case OUTPUT_WEST -> {
-        tiles = new Tile[]{
-            new Tile(2, 0, TileType.MINE_INPUT),
-            new Tile(0, 0, TileType.SOLID),
-            new Tile(0, 1, TileType.SOLID),
-            new Tile(1, 1, TileType.SOLID),
-            new Tile(1, 0, TileType.SOLID),
-            new Tile(-1, 0, TileType.OUTPUT)
-        };
-      }
-      case OUTPUT_NORTH -> {
-        tiles = new Tile[]{
-            new Tile(1, 2, TileType.MINE_INPUT),
-            new Tile(0, 0, TileType.SOLID),
-            new Tile(0, 1, TileType.SOLID),
-            new Tile(1, 1, TileType.SOLID),
-            new Tile(1, 0, TileType.SOLID),
-            new Tile(1, -1, TileType.OUTPUT)
-        };
-      }
-      default -> {
-        throw new RuntimeException("Unknown branch.");
-      }
+      case OUTPUT_EAST -> tiles = new Tile[]{
+          new Tile(-1, 1, TileType.MINE_INPUT),
+          new Tile(0, 0, TileType.SOLID),
+          new Tile(0, 1, TileType.SOLID),
+          new Tile(1, 1, TileType.SOLID),
+          new Tile(1, 0, TileType.SOLID),
+          new Tile(2, 1, TileType.OUTPUT)
+      };
+      case OUTPUT_SOUTH -> tiles = new Tile[]{
+          new Tile(0, -1, TileType.MINE_INPUT),
+          new Tile(0, 0, TileType.SOLID),
+          new Tile(0, 1, TileType.SOLID),
+          new Tile(1, 1, TileType.SOLID),
+          new Tile(1, 0, TileType.SOLID),
+          new Tile(0, 2, TileType.OUTPUT)
+      };
+      case OUTPUT_WEST -> tiles = new Tile[]{
+          new Tile(2, 0, TileType.MINE_INPUT),
+          new Tile(0, 0, TileType.SOLID),
+          new Tile(0, 1, TileType.SOLID),
+          new Tile(1, 1, TileType.SOLID),
+          new Tile(1, 0, TileType.SOLID),
+          new Tile(-1, 0, TileType.OUTPUT)
+      };
+      case OUTPUT_NORTH -> tiles = new Tile[]{
+          new Tile(1, 2, TileType.MINE_INPUT),
+          new Tile(0, 0, TileType.SOLID),
+          new Tile(0, 1, TileType.SOLID),
+          new Tile(1, 1, TileType.SOLID),
+          new Tile(1, 0, TileType.SOLID),
+          new Tile(1, -1, TileType.OUTPUT)
+      };
+      default -> throw new RuntimeException("Unknown branch.");
     }
 
     return new Mine(horPos, verPos, tiles, MovableObjectType.MINE, type);

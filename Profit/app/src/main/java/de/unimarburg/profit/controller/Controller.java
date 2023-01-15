@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
- * The Controller handels the communication between the IO and the rest of the programm.
+ * The Controller handles the communication between the IO and the rest of the program.
  *
  * @author Yannick Kraml
  */

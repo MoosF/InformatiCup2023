@@ -119,12 +119,15 @@ public class ConnectorImpl implements Connector {
    */
   @Override
   public synchronized boolean connectMines(Collection<Mine> minesToConnect) {
-    this.placedConveyorsStack = (new Stack<>());
+    this.placedConveyorsStack = new Stack<>();
     var mineOutputs = gatherMineOutputs(minesToConnect);
     var successfullyConnected = true;
 
     for (var output : mineOutputs) {
       successfullyConnected = successfullyConnected && connectMineToFactory(output);
+      for (var conveyor : this.placedConveyorsStack) {
+        conveyor.setConnectedFactory(this.currentFactory);
+      }
     }
 
     return successfullyConnected;
@@ -319,27 +322,25 @@ public class ConnectorImpl implements Connector {
     // NORTH SIDE
     if (output.coordinateB - 1 >= 0) {
       factoryInputFound =
-          isFactoryInput(output.coordinateA, output.coordinateB
-              - 1) || isFactoryConnectedConveyorInput(output.coordinateA,
-              output.coordinateB - 1);
+          isFactoryInput(output.coordinateA, output.coordinateB - 1)
+              || isFactoryConnectedConveyorInput(output.coordinateA, output.coordinateB - 1);
     }
     // EAST SIDE
     if (output.coordinateA + 1 < this.field.getWidth()) {
-      factoryInputFound = factoryInputFound || isFactoryInput(output.coordinateA
-          + 1, output.coordinateB)
+      factoryInputFound = factoryInputFound
+          || isFactoryInput(output.coordinateA + 1, output.coordinateB)
           || isFactoryConnectedConveyorInput(output.coordinateA + 1, output.coordinateB);
     }
     // SOUTH SIDE
     if (output.coordinateB + 1 < this.field.getHeight()) {
-      factoryInputFound = factoryInputFound || isFactoryInput(output.coordinateA, output.coordinateB
-          + 1)
-          || isFactoryConnectedConveyorInput(output.coordinateA, output.coordinateB
-          + 1);
+      factoryInputFound = factoryInputFound
+          || isFactoryInput(output.coordinateA, output.coordinateB + 1)
+          || isFactoryConnectedConveyorInput(output.coordinateA, output.coordinateB + 1);
     }
     // WEST SIDE
     if (output.coordinateA - 1 >= 0) {
-      factoryInputFound = factoryInputFound || isFactoryInput(output.coordinateA
-          - 1, output.coordinateB)
+      factoryInputFound = factoryInputFound
+          || isFactoryInput(output.coordinateA - 1, output.coordinateB)
           || isFactoryConnectedConveyorInput(output.coordinateA - 1, output.coordinateB);
     }
     return factoryInputFound;
@@ -356,8 +357,10 @@ public class ConnectorImpl implements Connector {
    */
   private boolean isFactoryConnectedConveyorInput(int x, int y) {
     var object = this.fieldTiles[x][y].getObject().orElse(null);
-    var isConnectedConveyor = object != null && object.getClass().equals(Conveyor.class)
-        && this.placedConveyorsStack.contains((Conveyor) object);
+    var conveyor = object != null && object.getClass().equals(Conveyor.class)
+        ? (Conveyor) object : null;
+    var factory = conveyor != null ? conveyor.getConnectedFactory() : null;
+    var isConnectedConveyor = factory == this.currentFactory;
     return this.fieldTiles[x][y].getType() == TileType.INPUT && isConnectedConveyor;
   }
 
@@ -1049,7 +1052,7 @@ public class ConnectorImpl implements Connector {
 
   }
 
-  private static enum Priority {
+  private enum Priority {
     THREE_TILE_CONVEYOR,
     FOUR_TILE_CONVEYOR,
     RANDOM,
