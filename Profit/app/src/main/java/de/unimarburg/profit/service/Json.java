@@ -313,7 +313,7 @@ final class Json extends InputOutputHandle {
         throw new InputOutputException("\"objects\"-array contained non JSON-object element!");
       }
       var object = elem.getAsJsonObject();
-      var type = readStringFromJsonObject(object, KEY_TYPE);
+      var type = readTypeFromJsonObject(object);
       var width = readIntFromJsonObject(object, KEY_WIDTH);
       var height = readIntFromJsonObject(object, KEY_HEIGHT);
       var x = readIntFromJsonObject(object, KEY_X);
@@ -390,7 +390,7 @@ final class Json extends InputOutputHandle {
         throw new InputOutputException("\"products\"-array contained non JSON-object element!");
       }
       var object = elem.getAsJsonObject();
-      var type = readStringFromJsonObject(object, KEY_TYPE);
+      var type = readTypeFromJsonObject(object);
       if (!TYPE_VALUE_PRODUCT.equals(type)) {
         throw new InputOutputException("Unsupported products type \"" + type + "\" encountered!");
       }
@@ -430,15 +430,14 @@ final class Json extends InputOutputHandle {
    * Reads a {@link String} from a {@link JsonObject}.
    *
    * @param jsonObject The {@link JsonObject} the {@code String} will be retrieved from.
-   * @param key        The key that maps to the desired value in the json object.
    * @return the string the {@code key} maps to in the given json object.
    * @throws InputOutputException if there is an exception while reading the primitive value from
    *                              the {@link JsonObject}.
    * @see Json#readPrimitiveValueFromJsonObject(JsonObject, String)
    */
-  private static String readStringFromJsonObject(JsonObject jsonObject, final String key)
+  private static String readTypeFromJsonObject(JsonObject jsonObject)
       throws InputOutputException {
-    var maybeValue = readPrimitiveValueFromJsonObject(jsonObject, key);
+    var maybeValue = readPrimitiveValueFromJsonObject(jsonObject, Json.KEY_TYPE);
     // All Exceptions that could be thrown by getAsString are already handled in
     // readPrimitiveValueFromJsonObject!
     return maybeValue.getAsString();

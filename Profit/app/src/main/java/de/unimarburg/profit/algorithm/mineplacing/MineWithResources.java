@@ -6,7 +6,7 @@ import de.unimarburg.profit.model.enums.ResourceType;
 /**
  * An object of {@link MineWithResources} wraps a single {@link Mine} and adds more information to
  * it. It stores what {@link ResourceType} the Resources have, that the {@link Mine} produces and
- * how much the mine will produce in its life cicle.
+ * how much the mine will produce in its life cycle.
  *
  * @author Yannick Kraml
  */

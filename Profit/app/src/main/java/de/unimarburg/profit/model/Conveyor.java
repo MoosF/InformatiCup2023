@@ -13,6 +13,7 @@ import java.util.Map;
 public class Conveyor extends MovableObject {
 
   private final ConveyorSubType subType;
+  private Factory connectedFactory;
 
   /**
    * Constructor of {@link Conveyor}.
@@ -37,47 +38,65 @@ public class Conveyor extends MovableObject {
    */
   public static Conveyor createConveyor(int horPos, int verPos, ConveyorSubType subtype) {
 
-    Tile[] tiles = null;
+    Tile[] tiles;
     switch (subtype) {
 
-      case SHORT_OUTPUT_SOUTH -> {
-        tiles = new Tile[]{new Tile(0, -1, TileType.INPUT), new Tile(0, 0, TileType.CROSSABLE),
-            new Tile(0, 1, TileType.OUTPUT)};
-      }
-      case SHORT_OUTPUT_EAST -> {
-        tiles = new Tile[]{new Tile(-1, 0, TileType.INPUT), new Tile(0, 0, TileType.CROSSABLE),
-            new Tile(1, 0, TileType.OUTPUT)};
-      }
-      case SHORT_OUTPUT_NORTH -> {
-        tiles = new Tile[]{new Tile(0, 1, TileType.INPUT), new Tile(0, 0, TileType.CROSSABLE),
-            new Tile(0, -1, TileType.OUTPUT)};
-      }
-      case SHORT_OUTPUT_WEST -> {
-        tiles = new Tile[]{new Tile(1, 0, TileType.INPUT), new Tile(0, 0, TileType.CROSSABLE),
-            new Tile(-1, 0, TileType.OUTPUT)};
-      }
-      case LONG_OUTPUT_SOUTH -> {
-        tiles = new Tile[]{new Tile(0, -1, TileType.INPUT), new Tile(0, 0, TileType.CROSSABLE),
-            new Tile(0, 1, TileType.CROSSABLE), new Tile(0, 2, TileType.OUTPUT)};
-      }
-      case LONG_OUTPUT_WEST -> {
-        tiles = new Tile[]{new Tile(2, 0, TileType.INPUT), new Tile(1, 0, TileType.CROSSABLE),
-            new Tile(0, 0, TileType.CROSSABLE), new Tile(-1, 0, TileType.OUTPUT)};
-      }
-      case LONG_OUTPUT_NORTH -> {
-        tiles = new Tile[]{new Tile(0, 2, TileType.INPUT), new Tile(0, 1, TileType.CROSSABLE),
-            new Tile(0, 0, TileType.CROSSABLE), new Tile(0, -1, TileType.OUTPUT)};
-      }
-      case LONG_OUTPUT_EAST -> {
-        tiles = new Tile[]{new Tile(-1, 0, TileType.INPUT), new Tile(0, 0, TileType.CROSSABLE),
-            new Tile(1, 0, TileType.CROSSABLE), new Tile(2, 0, TileType.OUTPUT)};
-      }
-      default -> {
-        throw new RuntimeException("Unknown branch.");
-      }
+      case SHORT_OUTPUT_SOUTH -> tiles = new Tile[]{
+          new Tile(0, -1, TileType.INPUT),
+          new Tile(0, 0, TileType.CROSSABLE),
+          new Tile(0, 1, TileType.OUTPUT)
+      };
+      case SHORT_OUTPUT_EAST -> tiles = new Tile[]{
+          new Tile(-1, 0, TileType.INPUT),
+          new Tile(0, 0, TileType.CROSSABLE),
+          new Tile(1, 0, TileType.OUTPUT)
+      };
+      case SHORT_OUTPUT_NORTH -> tiles = new Tile[]{
+          new Tile(0, 1, TileType.INPUT),
+          new Tile(0, 0, TileType.CROSSABLE),
+          new Tile(0, -1, TileType.OUTPUT)
+      };
+      case SHORT_OUTPUT_WEST -> tiles = new Tile[]{
+          new Tile(1, 0, TileType.INPUT),
+          new Tile(0, 0, TileType.CROSSABLE),
+          new Tile(-1, 0, TileType.OUTPUT)
+      };
+      case LONG_OUTPUT_SOUTH -> tiles = new Tile[]{
+          new Tile(0, -1, TileType.INPUT),
+          new Tile(0, 0, TileType.CROSSABLE),
+          new Tile(0, 1, TileType.CROSSABLE),
+          new Tile(0, 2, TileType.OUTPUT)
+      };
+      case LONG_OUTPUT_WEST -> tiles = new Tile[]{
+          new Tile(2, 0, TileType.INPUT),
+          new Tile(1, 0, TileType.CROSSABLE),
+          new Tile(0, 0, TileType.CROSSABLE),
+          new Tile(-1, 0, TileType.OUTPUT)
+      };
+      case LONG_OUTPUT_NORTH -> tiles = new Tile[]{
+          new Tile(0, 2, TileType.INPUT),
+          new Tile(0, 1, TileType.CROSSABLE),
+          new Tile(0, 0, TileType.CROSSABLE),
+          new Tile(0, -1, TileType.OUTPUT)
+      };
+      case LONG_OUTPUT_EAST -> tiles = new Tile[]{
+          new Tile(-1, 0, TileType.INPUT),
+          new Tile(0, 0, TileType.CROSSABLE),
+          new Tile(1, 0, TileType.CROSSABLE),
+          new Tile(2, 0, TileType.OUTPUT)
+      };
+      default -> throw new RuntimeException("Unknown branch.");
     }
 
     return new Conveyor(horPos, verPos, tiles, MovableObjectType.CONVEYER, subtype);
+  }
+
+  public Factory getConnectedFactory() {
+    return this.connectedFactory;
+  }
+
+  public void setConnectedFactory(Factory factory) {
+    this.connectedFactory = factory;
   }
 
   @Override
@@ -88,5 +107,10 @@ public class Conveyor extends MovableObject {
 
   public ConveyorSubType getSubType() {
     return this.subType;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    return super.equals(obj);
   }
 }

@@ -28,7 +28,7 @@ public class MineConnectionsChoosingProblem extends AbstractProblem {
   /**
    * Constructor of {@link MineConnectionsChoosingProblem}.
    *
-   * @param factory          {@link Factory}, for which the {@link Mine}s should be choosen.
+   * @param factory          {@link Factory}, for which the {@link Mine}s should be chosen.
    * @param connectableMines {@link Mine}s, that can be connected to the {@link Factory}.
    * @param product          {@link Product}, that the Factory will produce.
    */

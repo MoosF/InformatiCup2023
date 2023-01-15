@@ -2,7 +2,6 @@ package de.unimarburg.profit.algorithm.factoryplacing.factory;
 
 import de.unimarburg.profit.model.Factory;
 import de.unimarburg.profit.model.Field;
-import de.unimarburg.profit.model.Product;
 import de.unimarburg.profit.model.Tile;
 import de.unimarburg.profit.model.enums.TileType;
 import java.util.Collection;

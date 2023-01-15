@@ -53,6 +53,7 @@ public class IoSystem {
 
       String line = scanner.nextLine();
       if (line.isEmpty()) {
+        scanner.close();
         isReading = false;
         break;
       }

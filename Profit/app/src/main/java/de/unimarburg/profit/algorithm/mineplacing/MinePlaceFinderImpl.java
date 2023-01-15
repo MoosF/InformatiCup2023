@@ -4,7 +4,6 @@ import de.unimarburg.profit.model.Deposit;
 import de.unimarburg.profit.model.Field;
 import de.unimarburg.profit.model.Mine;
 import de.unimarburg.profit.model.enums.MineSubType;
-import de.unimarburg.profit.model.enums.ResourceType;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;

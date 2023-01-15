@@ -102,9 +102,9 @@ public class Field {
 
     objects.get(o.getClass()).remove(o);
     for (Tile tile : o.getTiles()) {
-      int verticalPostion = o.getX() + tile.getRelHorPos();
+      int verticalPosition = o.getX() + tile.getRelHorPos();
       int horizontalPosition = o.getY() + tile.getRelVerPos();
-      tiles[verticalPostion][horizontalPosition] = new Tile(verticalPostion, horizontalPosition,
+      tiles[verticalPosition][horizontalPosition] = new Tile(verticalPosition, horizontalPosition,
           TileType.EMPTY);
     }
 

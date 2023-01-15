@@ -13,7 +13,7 @@ import org.moeaframework.core.Solution;
 import org.moeaframework.core.variable.EncodingUtils;
 
 /**
- * Implementierung von {@link MinePlaceChooser}.
+ * Implementation of {@link MinePlaceChooser}.
  *
  * @author Yannick Kraml
  */

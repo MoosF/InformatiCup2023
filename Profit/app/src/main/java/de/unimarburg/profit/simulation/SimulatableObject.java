@@ -116,7 +116,7 @@ public class SimulatableObject {
     }
     storedResources.put(key, newAmount);
 
-    //Entfernen
+    // Remove
     Collection<ResourceType> toBeDeleted = new ArrayList<>();
     for (Entry<ResourceType, Integer> resourceTypeIntegerEntry : storedResources.entrySet()) {
       if (resourceTypeIntegerEntry.getValue() == 0) {

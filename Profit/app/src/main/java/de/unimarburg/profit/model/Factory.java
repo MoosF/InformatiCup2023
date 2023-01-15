@@ -6,9 +6,6 @@ import de.unimarburg.profit.model.enums.TileType;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.function.BiConsumer;
-import java.util.function.Predicate;
-
 /**
  * This class models a {@link Factory}.
  *

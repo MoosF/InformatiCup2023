@@ -50,19 +50,19 @@ public interface Worker {
    *
    * @return Tiles, that construct the {@link Worker}.
    */
-  public Tile[] getTiles();
+  Tile[] getTiles();
 
   /**
    * Returns the horizontal position of this {@link Worker}.
    *
    * @return X-Coordinate of the {@link Worker}.
    */
-  public int getX();
+  int getX();
 
   /**
    * Returns the vertical position of this {@link Worker}.
    *
    * @return Y-Coordinate of the {@link Worker}.
    */
-  public int getY();
+  int getY();
 }

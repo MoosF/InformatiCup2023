@@ -33,13 +33,13 @@ class JsonInputTest {
 
   @Test
   void testExampleTask001() {
-    String testFile = "../input/001.task.json";
+    String testFile = "../input/001-task.json";
     assertThrows(InputOutputException.class, () -> InputOutputHandle.readInputFrom(testFile));
   }
 
   @Test
   void testExampleTask001WithTime() throws InputOutputException {
-    String testFile = "001.task-with-time.json";
+    String testFile = "001-task-with-time.json";
     Input input = InputOutputHandle.readInputFrom(testFile);
 
     assertNotNull(input);
@@ -72,13 +72,13 @@ class JsonInputTest {
 
   @Test
   void testExampleTask002() {
-    String testFile = "002.task.json";
+    String testFile = "002-task.json";
     assertThrows(InputOutputException.class, () -> InputOutputHandle.readInputFrom(testFile));
   }
 
   @Test
   void testExampleTask002WithTime() throws InputOutputException {
-    String testFile = "002.task-with-time.json";
+    String testFile = "002-task-with-time.json";
     Input input = InputOutputHandle.readInputFrom(testFile);
 
     assertNotNull(input);
@@ -108,13 +108,13 @@ class JsonInputTest {
 
   @Test
   void testExampleTask003() {
-    String testFile = "003.task.json";
+    String testFile = "003-task.json";
     assertThrows(InputOutputException.class, () -> InputOutputHandle.readInputFrom(testFile));
   }
 
   @Test
   void testExampleTask003WithTime() throws InputOutputException {
-    String testFile = "003.task-with-time.json";
+    String testFile = "003-task-with-time.json";
     Input input = InputOutputHandle.readInputFrom(testFile);
 
     assertNotNull(input);
@@ -144,13 +144,13 @@ class JsonInputTest {
 
   @Test
   void testExampleTask004() {
-    String testFile = "004.task.json";
+    String testFile = "004-task.json";
     assertThrows(InputOutputException.class, () -> InputOutputHandle.readInputFrom(testFile));
   }
 
   @Test
   void testExampleTask004WithTime() throws InputOutputException {
-    String testFile = "004.task-with-time.json";
+    String testFile = "004-task-with-time.json";
     Input input = InputOutputHandle.readInputFrom(testFile);
 
     assertNotNull(input);

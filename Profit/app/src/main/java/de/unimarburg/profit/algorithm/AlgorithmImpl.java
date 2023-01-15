@@ -90,7 +90,7 @@ public class AlgorithmImpl implements Algorithm {
 
     uuids = new HashMap<>();
     futures = new HashSet<>();
-    executorService = Executors.newFixedThreadPool(2);
+    executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
   }
 
 
